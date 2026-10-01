@@ -1,0 +1,340 @@
+//@version=6
+// ═══════════════════════════════════════════════════════════════════════════════
+//  Spot Confluence Regime (SCR) — Strategy (backtest twin of the indicator)
+//  Identical scoring, regime, BUY and EXIT logic. Long-only spot, no leverage.
+//
+//  Costs: commission_value = 0.2 % per side = 0.1 % exchange fee + 0.1 % slippage.
+//  Pine's built-in `slippage` is measured in ticks, which means something different
+//  on every coin, so the slippage is folded into the percentage commission instead.
+//  Fills: process_orders_on_close = true → entries/signal exits fill at the signal
+//  bar's close (matches the indicator); stops/targets fill intrabar on later bars.
+//  Educational tool, not financial advice. Past results do not predict the future.
+// ═══════════════════════════════════════════════════════════════════════════════
+strategy("Spot Confluence Regime [Strategy]", shorttitle = "SCR-S", overlay = true,
+         initial_capital = 10000,
+         default_qty_type = strategy.percent_of_equity, default_qty_value = 100,
+         commission_type = strategy.commission.percent, commission_value = 0.2,
+         slippage = 0, pyramiding = 0, process_orders_on_close = true,
+         margin_long = 100, margin_short = 100, max_labels_count = 500)
+
+// ───────────────────────────── INPUTS ─────────────────────────────
+const string G_DISP = "① Display"
+const string G_TRND = "② Trend line (KAMA)"
+const string G_HTF  = "③ Higher-timeframe & market filters"
+const string G_RGM  = "④ Regime classifier"
+const string G_CMP  = "⑤ Component settings"
+const string G_WGT  = "⑥ Score weights (0-100, auto-normalised)"
+const string G_SIG  = "⑦ Signal rules"
+const string G_RISK = "⑧ Risk management"
+const string G_BT   = "⑩ Backtest window & sizing"
+const string G_COL  = "⑨ Colours"
+
+// Display
+minimal    = input.bool(false, "Minimal mode (trend line only)", group = G_DISP)
+showBg     = input.bool(true,  "Regime background",          group = G_DISP)
+showLevels = input.bool(true,  "Stop / target lines",        group = G_DISP)
+
+// Trend line
+kamaLen  = input.int(10, "Efficiency length", minval = 2,  group = G_TRND, tooltip = "Kaufman Adaptive MA: fast in clean trends, nearly flat in chop.")
+kamaFast = input.int(2,  "Fast period",       minval = 1,  group = G_TRND)
+kamaSlow = input.int(30, "Slow period",       minval = 5,  group = G_TRND)
+
+// HTF & market filters
+useWeekly  = input.bool(true, "Require weekly uptrend for BUY", group = G_HTF)
+htfTf      = input.timeframe("W", "Higher timeframe",           group = G_HTF)
+wLen       = input.int(21, "HTF EMA length", minval = 2,        group = G_HTF)
+htfMode    = input.string("Confirmed (prev HTF bar)", "HTF fetch mode", options = ["Confirmed (prev HTF bar)", "Lookahead off (raw)"], group = G_HTF,
+             tooltip = "Confirmed: request.security(expr[1], lookahead_on) — TradingView's documented form; identical in history and real time.\nRaw: lookahead_off on the live HTF bar — no future leak, but mid-week realtime values can change until the week closes.")
+weeklyExit = input.bool(true, "EXIT when HTF trend turns bearish", group = G_HTF)
+useBtc     = input.bool(true, "Require BTC above its EMA (alts)", group = G_HTF, tooltip = "Ignored automatically when the chart itself is BTC.")
+btcSym     = input.symbol("BINANCE:BTCUSDT", "BTC symbol",       group = G_HTF)
+btcLen     = input.int(50, "BTC EMA length", minval = 2,         group = G_HTF)
+
+// Regime
+adxLen  = input.int(14,    "ADX length",                      minval = 2,  group = G_RGM)
+adxTh   = input.float(20,  "Trend: ADX ≥",                    minval = 0,  group = G_RGM)
+erLen   = input.int(20,    "Efficiency-ratio length",          minval = 2,  group = G_RGM)
+erTh    = input.float(0.25,"Trend: efficiency ratio ≥",        minval = 0,  maxval = 1, step = 0.05, group = G_RGM)
+volLook = input.int(252,   "Volatility rank lookback",         minval = 20, group = G_RGM)
+hvPct   = input.float(85,  "High-vol: ATR% percentile ≥",      minval = 50, maxval = 100, group = G_RGM)
+
+// Components
+momLen     = input.int(20,    "Momentum length",                       minval = 2,  group = G_CMP)
+stretchMax = input.float(3.0, "Over-stretch: close above KAMA (ATR) >", minval = 0.5, step = 0.25, group = G_CMP, tooltip = "Momentum score is halved when price is this many ATRs above the trend line (blow-off protection).")
+flowLen    = input.int(20,    "Volume lookback",                       minval = 2,  group = G_CMP)
+pvL        = input.int(5,     "Pivot left bars",                       minval = 1,  group = G_CMP)
+pvR        = input.int(3,     "Pivot right bars (confirmation delay)", minval = 1,  group = G_CMP)
+structMem  = input.int(10,    "Structure event memory (bars)",         minval = 1,  group = G_CMP)
+sweepRvol  = input.float(1.2, "Sweep needs relative volume ≥",         minval = 0,  step = 0.1, group = G_CMP)
+bbLen      = input.int(20,    "Bollinger length",                      minval = 2,  group = G_CMP)
+bbMult     = input.float(2.0, "Bollinger multiplier",                  minval = 0.5, step = 0.1, group = G_CMP)
+sqzLook    = input.int(120,   "Squeeze rank lookback",                 minval = 20, group = G_CMP)
+sqzPct     = input.float(20,  "Squeeze: width percentile ≤",           minval = 1,  maxval = 50, group = G_CMP)
+sqzMem     = input.int(10,    "Squeeze memory (bars)",                 minval = 1,  group = G_CMP)
+
+// Weights
+wTrend  = input.int(25, "Trend",      minval = 0, maxval = 100, group = G_WGT, inline = "w1")
+wMom    = input.int(20, "Momentum",   minval = 0, maxval = 100, group = G_WGT, inline = "w1")
+wFlow   = input.int(20, "Volume",     minval = 0, maxval = 100, group = G_WGT, inline = "w2")
+wStruct = input.int(20, "Structure",  minval = 0, maxval = 100, group = G_WGT, inline = "w2")
+wVol    = input.int(15, "Volatility", minval = 0, maxval = 100, group = G_WGT, inline = "w3")
+
+// Signal rules
+thTrend    = input.int(65, "BUY score ≥ (Trend regime)",    minval = 0, maxval = 100, group = G_SIG)
+thRange    = input.int(75, "BUY score ≥ (Range regime)",    minval = 0, maxval = 100, group = G_SIG)
+thHV       = input.int(80, "BUY score ≥ (High-vol regime)", minval = 0, maxval = 100, group = G_SIG)
+allowRange = input.bool(true, "Allow Range entries (sweep & reclaim only)", group = G_SIG)
+allowHV    = input.bool(true, "Allow High-vol entries",                    group = G_SIG)
+minAgree   = input.int(3, "Min components agreeing (of 5)", minval = 1, maxval = 5, group = G_SIG)
+agreeLvl   = input.float(0.6, "Component 'agrees' when ≥", minval = 0.1, maxval = 1, step = 0.05, group = G_SIG)
+exitTh     = input.int(35, "EXIT: close < trend line AND score <", minval = 0, maxval = 100, group = G_SIG)
+cooldown   = input.int(3, "Cooldown bars after EXIT", minval = 0, group = G_SIG)
+
+// Risk
+atrLen        = input.int(14,    "ATR length",                       minval = 1,   group = G_RISK)
+slAtr         = input.float(2.5, "Initial stop (ATR)",               minval = 0.5, step = 0.25, group = G_RISK)
+useStructStop = input.bool(true, "Tighten stop to last swing low when valid", group = G_RISK)
+minStopAtr    = input.float(1.0, "Minimum stop distance (ATR)",      minval = 0.25, step = 0.25, group = G_RISK)
+tpMode        = input.string("Partial 50% + trail", "Target mode", options = ["Partial 50% + trail", "Full exit", "Off"], group = G_RISK)
+tpR           = input.float(2.5, "Target (R multiple)",              minval = 0.5, step = 0.25, group = G_RISK)
+beAfterTp     = input.bool(true, "Move stop to breakeven after target", group = G_RISK)
+useTrail      = input.bool(true, "ATR trailing stop",                group = G_RISK)
+trailMult     = input.float(3.0, "Trail distance (ATR)",             minval = 0.5, step = 0.25, group = G_RISK)
+trailStartR   = input.float(1.0, "Start trailing after +R",          minval = 0,   step = 0.25, group = G_RISK)
+acctRisk      = input.float(1.0, "Account risk per trade (%)",       minval = 0.1, step = 0.1, group = G_RISK)
+hvRiskMult    = input.float(0.5, "Risk multiplier in High-vol",      minval = 0.1, maxval = 1, step = 0.1, group = G_RISK)
+
+// Backtest window & sizing (use the window for in-sample / out-of-sample splits)
+startTime  = input.time(timestamp("01 Jan 2018 00:00 +0000"), "Start", group = G_BT)
+endTime    = input.time(timestamp("31 Dec 2099 00:00 +0000"), "End",   group = G_BT)
+sizingMode = input.string("Risk-based", "Position sizing", options = ["Risk-based", "Fixed % of equity"], group = G_BT)
+maxAlloc   = input.float(98, "Max / fixed allocation (% of equity)", minval = 1, maxval = 100, group = G_BT, tooltip = "Spot: never above 100 %. Slightly under 100 % leaves room for fees.")
+
+// Colours
+upC      = input.color(#26A69A, "Trend up",        group = G_COL, inline = "c1")
+dnC      = input.color(#EF5350, "Trend down",      group = G_COL, inline = "c1")
+flatC    = input.color(#9E9E9E, "Flat",            group = G_COL, inline = "c1")
+bgTrendC = input.color(#4CAF50, "BG trend",        group = G_COL, inline = "c2")
+bgRangeC = input.color(#9E9E9E, "BG range",        group = G_COL, inline = "c2")
+bgHvC    = input.color(#FF9800, "BG high-vol",     group = G_COL, inline = "c2")
+buyC     = input.color(#00C853, "BUY",             group = G_COL, inline = "c3")
+exitC    = input.color(#D50000, "EXIT",            group = G_COL, inline = "c3")
+slC      = input.color(#FF5252, "Stop",            group = G_COL, inline = "c4")
+tpC      = input.color(#2962FF, "Target",          group = G_COL, inline = "c4")
+
+// ───────────────────────────── HELPERS ─────────────────────────────
+f_clamp01(float x) => math.max(0.0, math.min(1.0, x))
+
+// Kaufman Adaptive Moving Average
+f_kama(float src, int len, int fastLen, int slowLen) =>
+    float chg  = math.abs(src - src[len])
+    float path = math.sum(math.abs(src - src[1]), len)
+    float er   = path > 0 ? chg / path : 0.0
+    float fsc  = 2.0 / (fastLen + 1)
+    float ssc  = 2.0 / (slowLen + 1)
+    float sc   = math.pow(nz(er) * (fsc - ssc) + ssc, 2)
+    var float k = na
+    k := na(k) ? src : k + sc * (src - k)
+    k
+
+// HTF trend: close above its EMA. `off` = 1 returns the previous (closed) HTF bar.
+f_htfBull(int len, int off) =>
+    bool b = close > ta.ema(close, len)
+    b[off]
+
+f_aboveEma(int len) => close > ta.ema(close, len)
+
+f_num(float x) => na(x) ? "null" : str.tostring(x, format.mintick)
+
+
+// ───────────────────────────── CORE SERIES ─────────────────────────────
+float atr    = ta.atr(atrLen)
+float kama   = f_kama(close, kamaLen, kamaFast, kamaSlow)
+
+// Trend-line direction with a small ATR dead-band to stop colour flicker
+var int tDir = 0
+float kSlope = kama - kama[2]
+tDir := kSlope > 0.05 * atr ? 1 : kSlope < -0.05 * atr ? -1 : tDir
+
+// Higher timeframe (weekly) trend — no future leak in either mode
+bool htfConfirmed = htfMode == "Confirmed (prev HTF bar)"
+bool wkBull = request.security(syminfo.tickerid, htfTf, f_htfBull(wLen, htfConfirmed ? 1 : 0),
+              lookahead = htfConfirmed ? barmerge.lookahead_on : barmerge.lookahead_off)
+
+// BTC market filter (same timeframe, lookahead off → final at bar close)
+bool btcBull    = request.security(btcSym, timeframe.period, f_aboveEma(btcLen), lookahead = barmerge.lookahead_off)
+bool isBtcChart = syminfo.basecurrency == "BTC"
+bool btcOk      = not useBtc or isBtcChart or btcBull
+bool wkOk       = not useWeekly or wkBull
+
+// ───────────────────────────── REGIME ─────────────────────────────
+[diPlus, diMinus, adx] = ta.dmi(adxLen, adxLen)
+float erPath  = math.sum(math.abs(close - close[1]), erLen)
+float effR    = erPath > 0 ? math.abs(close - close[erLen]) / erPath : 0.0
+float atrPct  = atr / close * 100.0
+float volRank = ta.percentrank(atrPct, volLook)
+bool  isHV    = volRank >= hvPct
+bool  isTrend = not isHV and adx >= adxTh and effR >= erTh
+int   regime  = isHV ? 2 : isTrend ? 1 : 0            // 0 range · 1 trend · 2 high-vol
+string rgName = regime == 1 ? "TREND" : regime == 2 ? "HIGH VOL" : "RANGE"
+
+// ───────────────────────────── COMPONENTS (each 0..1) ─────────────────────────────
+// 1) Trend: price vs adaptive line, line slope, weekly trend
+float trendS = 0.4 * (close > kama ? 1.0 : 0.0) + 0.3 * (tDir == 1 ? 1.0 : 0.0) + 0.3 * (wkBull ? 1.0 : 0.0)
+
+// 2) Momentum: log-return over N divided by its expected noise (σ·√N) = trend t-stat
+float lr      = math.log(close / close[1])
+float sdR     = ta.stdev(lr, momLen)
+float tMom    = sdR > 0 ? math.log(close / close[momLen]) / (sdR * math.sqrt(momLen)) : 0.0
+float stretch = atr > 0 ? (close - kama) / atr : 0.0
+float momS    = f_clamp01((tMom + 0.5) / 2.5) * (stretch > stretchMax ? 0.5 : 1.0)
+
+// 3) Volume / flow: share of volume on up-closes + recent up-bar relative-volume thrust
+float volSma   = ta.sma(volume, flowLen)
+bool  volOk    = volSma > 0
+float upV      = math.sum(close > close[1] ? volume : 0.0, flowLen)
+float totV     = math.sum(volume, flowLen)
+float upRatio  = totV > 0 ? upV / totV : 0.5
+float rvol     = volOk ? volume / volSma : 1.0
+float upThrust = ta.highest(close >= open ? rvol : 0.0, 3)
+float flowS    = volOk ? 0.6 * f_clamp01((upRatio - 0.40) / 0.25) + 0.4 * f_clamp01((upThrust - 0.8) / 1.2) : 0.5
+
+// 4) Market structure: confirmed pivots only (they appear pvR bars late → no repaint)
+float ph = ta.pivothigh(high, pvL, pvR)
+float pl = ta.pivotlow(low, pvL, pvR)
+var float lastPH   = na
+var float lastPL   = na
+var float prevPL   = na
+var bool  phBroken = false
+if not na(ph)
+    lastPH   := ph
+    phBroken := false
+if not na(pl)
+    prevPL := lastPL
+    lastPL := pl
+bool bosEvent = false
+if not phBroken and not na(lastPH) and close > lastPH
+    bosEvent := true
+    phBroken := true
+bool sweepEvent   = not na(lastPL) and low < lastPL and close > lastPL and (not volOk or rvol >= sweepRvol)
+bool higherLow    = not na(prevPL) and lastPL > prevPL
+bool structBroken = not na(lastPL) and close < lastPL
+int  bsBos        = ta.barssince(bosEvent)
+int  bsSweep      = ta.barssince(sweepEvent)
+bool recentBos    = not na(bsBos) and bsBos <= structMem
+bool recentSweep  = not na(bsSweep) and bsSweep <= structMem
+float structS     = structBroken ? 0.0 : 0.4 * (higherLow ? 1.0 : 0.0) + 0.6 * (recentBos ? 1.0 : recentSweep ? 0.9 : 0.0)
+
+// 5) Volatility: squeeze (low BB-width percentile) followed by expansion above the basis
+[bbMid, bbUp, bbLo] = ta.bb(close, bbLen, bbMult)
+float bw         = bbMid != 0 ? (bbUp - bbLo) / bbMid : na
+float bwRank     = ta.percentrank(bw, sqzLook)
+bool  wasSqueeze = ta.lowest(bwRank, sqzMem) <= sqzPct
+bool  sqzRelease = wasSqueeze and bw > bw[1] and close > bbMid
+float volS       = isHV ? 0.2 : sqzRelease ? 1.0 : close > bbMid ? 0.6 : 0.3
+
+// ───────────────────────────── CONFLUENCE SCORE ─────────────────────────────
+float wSum  = wTrend + wMom + wFlow + wStruct + wVol
+float score = wSum > 0 ? 100.0 * (wTrend * trendS + wMom * momS + wFlow * flowS + wStruct * structS + wVol * volS) / wSum : 0.0
+int   agree = (trendS >= agreeLvl ? 1 : 0) + (momS >= agreeLvl ? 1 : 0) + (flowS >= agreeLvl ? 1 : 0) + (structS >= agreeLvl ? 1 : 0) + (volS >= agreeLvl ? 1 : 0)
+
+float buyTh    = regime == 1 ? thTrend : regime == 2 ? thHV : thRange
+bool  regimeOk = regime == 1 or (regime == 0 and allowRange) or (regime == 2 and allowHV)
+bool  setupOk  = regime != 0 or recentSweep                  // Range: mean-reversion only after a sweep & reclaim
+bool  trigger  = (score >= buyTh and score[1] < buyTh) or bosEvent or sweepEvent
+bool  inWindow = time >= startTime and time <= endTime
+
+// ───────────────────────────── TRADE STATE MACHINE (mirrors the indicator) ─────────────────────────────
+var bool  inTrade     = false
+var float entryPx     = na
+var float slPx        = na
+var float tpPx        = na
+var float riskPx      = na
+var float hiClose     = na
+var bool  tpHit       = false
+var int   lastExitBar = -100000
+
+bool   buySig  = false
+bool   exitSig = false
+string exitWhy = ""
+
+if barstate.isconfirmed
+    if inTrade
+        // a) resting stop / target from the previous bar (the broker emulator fills these)
+        if low <= slPx
+            exitSig := true
+            exitWhy := tpHit or slPx >= entryPx ? "Trailing stop" : "Stop loss"
+        else if tpMode != "Off" and not tpHit and high >= tpPx
+            if tpMode == "Full exit"
+                exitSig := true
+                exitWhy := "Take profit"
+            else
+                tpHit := true
+        // b) thesis exits at the close
+        if not exitSig
+            if close < kama and score < exitTh
+                exitSig := true
+                exitWhy := "Trend break"
+            else if useWeekly and weeklyExit and not wkBull
+                exitSig := true
+                exitWhy := "HTF bearish"
+            else if not inWindow
+                exitSig := true
+                exitWhy := "Window end"
+        // safety: broker already flat (e.g. intrabar stop) → sync state
+        if not exitSig and strategy.position_size == 0
+            exitSig := true
+            exitWhy := "Synced flat"
+        if exitSig
+            inTrade     := false
+            lastExitBar := bar_index
+        else
+            hiClose := math.max(hiClose, close)
+            if tpHit and beAfterTp
+                slPx := math.max(slPx, entryPx)
+            if useTrail and hiClose >= entryPx + trailStartR * riskPx
+                slPx := math.max(slPx, hiClose - trailMult * atr)
+    else
+        bool cooldownOk = bar_index - lastExitBar > cooldown
+        if inWindow and score >= buyTh and agree >= minAgree and trigger and regimeOk and setupOk and wkOk and btcOk and cooldownOk and atr > 0
+            float atrStop    = close - slAtr * atr
+            float structStop = not na(lastPL) and lastPL < close ? lastPL - 0.25 * atr : atrStop
+            float stop       = useStructStop ? math.max(atrStop, structStop) : atrStop
+            stop    := math.min(stop, close - minStopAtr * atr)
+            buySig  := true
+            inTrade := true
+            entryPx := close
+            slPx    := stop
+            riskPx  := close - stop
+            tpPx    := close + tpR * riskPx
+            hiClose := close
+            tpHit   := false
+
+// ───────────────────────────── ORDERS ─────────────────────────────
+if buySig
+    float riskCash = strategy.equity * acctRisk / 100.0 * (regime == 2 ? hvRiskMult : 1.0)
+    float qtyMax   = strategy.equity * maxAlloc / 100.0 / close
+    float qty      = sizingMode == "Risk-based" ? math.min(riskCash / riskPx, qtyMax) : qtyMax
+    strategy.entry("Long", strategy.long, qty = qty, comment = "BUY " + str.tostring(score, "#"))
+
+if inTrade
+    if tpMode == "Partial 50% + trail" and not tpHit
+        strategy.exit("TP1", "Long", qty_percent = 50, limit = tpPx, stop = slPx, comment_profit = "TP1", comment_loss = "SL")
+        strategy.exit("Rest", "Long", stop = slPx, comment_loss = "SL")
+    else if tpMode == "Full exit"
+        strategy.exit("TP/SL", "Long", limit = tpPx, stop = slPx, comment_profit = "TP", comment_loss = "SL")
+    else
+        strategy.exit("Rest", "Long", stop = slPx, comment_loss = slPx >= entryPx ? "Trail" : "SL")
+
+if exitSig
+    strategy.close("Long", comment = exitWhy)     // no-op if a stop/target already flattened the position
+
+// ───────────────────────────── VISUALS ─────────────────────────────
+bool full = not minimal
+plot(kama, "Trend line", color = tDir == 1 ? upC : tDir == -1 ? dnC : flatC, linewidth = 2)
+color bgCol = regime == 1 ? color.new(bgTrendC, 88) : regime == 2 ? color.new(bgHvC, 85) : color.new(bgRangeC, 90)
+bgcolor(full and showBg ? bgCol : na, title = "Regime background")
+bool lvlOn = full and showLevels
+plot(inTrade ? slPx : na, "Stop",   color = lvlOn ? slC : na, style = plot.style_linebr, linewidth = 2)
+plot(inTrade and tpMode != "Off" and not tpHit ? tpPx : na, "Target", color = lvlOn ? tpC : na, style = plot.style_linebr, linewidth = 2)
+plot(score, "Score", display = display.data_window)
