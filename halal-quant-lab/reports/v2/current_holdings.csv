@@ -1,0 +1,31 @@
+Ticker,weight,sector
+NSC,0.0575,Industrials
+KO,0.0563,Consumer Defensive
+UNP,0.0562,Industrials
+CSX,0.056,Industrials
+JNJ,0.0539,Healthcare
+GWW,0.0526,Industrials
+CVX,0.049,Energy
+XOM,0.0455,Energy
+GILD,0.0438,Healthcare
+ROST,0.0433,Consumer Cyclical
+AAPL,0.0416,Technology
+COP,0.0398,Energy
+PSX,0.0357,Energy
+NUE,0.0349,Basic Materials
+MPC,0.0315,Energy
+MRK,0.031,Healthcare
+VLO,0.0291,Energy
+GOOGL,0.0259,Communication Services
+AMZN,0.0251,Consumer Cyclical
+APH,0.0251,Technology
+CAT,0.0248,Industrials
+KEYS,0.024,Technology
+ABNB,0.0223,Consumer Cyclical
+FCX,0.022,Basic Materials
+AMD,0.0145,Technology
+CRWD,0.0142,Technology
+MU,0.0119,Technology
+DELL,0.0116,Technology
+INTC,0.011,Technology
+TER,0.0099,Technology

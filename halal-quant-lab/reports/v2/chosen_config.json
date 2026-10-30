@@ -1,0 +1,17 @@
+{
+ "top_n": 30,
+ "sell_pct": 0.4,
+ "weighting": "invvol",
+ "name_cap": 0.06,
+ "sector_cap": 0.3,
+ "weights": {
+  "mom": 1,
+  "resid": 1,
+  "high52": 1,
+  "lowvol": 1,
+  "overnight": 1,
+  "ear": 1
+ },
+ "trend_overlay": true,
+ "vol_target": 0.15
+}
