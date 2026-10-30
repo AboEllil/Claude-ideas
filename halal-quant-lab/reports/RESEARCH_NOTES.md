@@ -61,3 +61,30 @@ stock picker; it is (a) owning a broad, cheap, Shariah-screened portfolio and
 less return in strong bull markets for much smaller losses in bear markets.
 Anyone promising 30-50%/yr with low drawdowns from indicators is overfitting
 or selling something.
+
+## 5. Debate round (optimist vs pessimist, impartial judge)
+- Optimist: replace 0% cash with sukuk/gold, validate on survivorship-free
+  Amana funds, dual momentum across halal asset classes, core + quality tilt.
+- Pessimist: sukuk has only 6 years of history and fell with stocks in 2022;
+  gold's Shariah status is debated and it has decade-long flat spells; ETF
+  histories are too short for dual momentum; quality will likely fail like v2.
+- Judge's realistic full-cycle targets for a long-only halal investor:
+  buy-and-hold 8-11% CAGR, Sharpe 0.55-0.7, max DD -45 to -55%;
+  with slow overlay 7-10%, Sharpe 0.65-0.85, max DD -25 to -35%.
+
+## 6. Survivorship-free tests (`run_v3.py`, `reports/v3/REPORT.md`)
+Pass/fail rules were fixed before running.
+| Experiment | Result | Verdict |
+|---|---|---|
+| Overlay on Amana Growth (AMAGX), 0% cash | 12.2% -> 11.4% CAGR, Sharpe 0.73 -> 0.81, max DD -42% -> -23% | **PASS** (both halves) |
+| Same overlay, freed weight in gold | 12.7% CAGR, Sharpe 0.84, max DD -31% | FAIL (DD cut 26% < 30% rule) - best return/risk, near miss |
+| Static 70% equity / 15% gold / 15% sukuk | Sharpe 0.75 -> 0.85, max DD -42% -> -30% | FAIL (borderline) |
+| Dual momentum across halal asset classes | Sharpe 0.73, below the static mix | FAIL |
+
+## Final conclusion
+The one result that survived every test - unbiased data, both halves of the
+sample, a pre-registered rule - is: **hold a broad Shariah equity fund/ETF and
+apply a slow, partial risk overlay** (cut to 50% only when the market is both
+below its 10-month average AND down over 12 months; scale down when
+volatility exceeds 20%). It roughly halves crash losses for under 1%/yr of
+return. Stock picking, whale signals and asset rotation did not beat it.

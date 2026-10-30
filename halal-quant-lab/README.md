@@ -5,11 +5,12 @@ trading strategies from many concepts at once, backtests thousands of variants
 on 20+ years of daily data, and measures them **honestly** with walk-forward
 testing. Free data (Yahoo Finance), no paid platform needed.
 
-**Latest results:** [reports/v2/REPORT.md](reports/v2/REPORT.md) (v2 multi-factor) ·
+**Latest results:** [reports/v3/REPORT.md](reports/v3/REPORT.md) (v3 survivorship-free, final) ·
+[reports/v2/REPORT.md](reports/v2/REPORT.md) (v2 multi-factor) ·
 [reports/RESEARCH_NOTES.md](reports/RESEARCH_NOTES.md) (what institutions do, what we learned) ·
 [reports/REPORT.md](reports/REPORT.md) (v1 random search, superseded)
 
-`run_v2.py` is the current pipeline. v1 (`run_research.py`) is kept for reference; a code
+`run_v3.py` and `run_v2.py` are the current pipelines. v1 (`run_research.py`) is kept for reference; a code
 audit found its regime-to-cash switch whipsaws, its swing dip entries can collide with
 short-SMA exits, and its `exposure` stat counts days with P&L rather than capital invested.
 
@@ -17,6 +18,7 @@ short-SMA exits, and its `exposure` stat counts days with P&L rather than capita
 ```bash
 pip install -r requirements.txt
 python run_v2.py                                         # v2 multi-factor, pre-registered (~2 min)
+python run_v3.py                                         # v3 survivorship-free halal funds/ETFs (~1 min)
 python run_research.py                                   # 400 + 400 configs, ~10 min
 python run_research.py --n-rotation 1000 --n-swing 1000  # bigger search
 python run_research.py --refresh                         # re-download data
