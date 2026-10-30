@@ -1,0 +1,157 @@
+ticker,name,sector,industry,debt_to_mcap,cash_to_mcap,compliant,reason
+AAPL,Apple Inc.,Technology,Consumer Electronics,0.017,0.012,True,pass
+MSFT,Microsoft Corporation,Technology,Software - Infrastructure,0.015,0.017,True,pass
+NVDA,NVIDIA Corporation,Technology,Semiconductors,0.008,0.013,True,pass
+GOOGL,Alphabet Inc.,Communication Services,Internet Content & Information,0.041,0.077,True,pass
+META,"Meta Platforms, Inc.",Communication Services,Internet Content & Information,0.073,0.052,True,pass
+AVGO,Broadcom Inc.,Technology,Semiconductors,0.038,0.015,True,pass
+AMD,"Advanced Micro Devices, Inc.",Technology,Semiconductors,0.005,0.016,True,pass
+MU,"Micron Technology, Inc.",Technology,Semiconductors,0.005,0.044,True,pass
+QCOM,QUALCOMM Incorporated,Technology,Semiconductors,0.088,0.048,True,pass
+TXN,Texas Instruments Incorporated,Technology,Semiconductors,0.05,0.03,True,pass
+INTC,Intel Corporation,Technology,Semiconductors,0.148,0.087,True,pass
+AMAT,"Applied Materials, Inc.",Technology,Semiconductor Equipment & Materials,0.024,0.03,True,pass
+LRCX,Lam Research Corporation,Technology,Semiconductor Equipment & Materials,0.013,0.025,True,pass
+KLAC,KLA Corporation,Technology,Semiconductor Equipment & Materials,0.028,0.023,True,pass
+ADI,"Analog Devices, Inc.",Technology,Semiconductors,0.046,0.012,True,pass
+MCHP,Microchip Technology Incorporat,Technology,Semiconductors,0.13,0.007,True,pass
+NXPI,NXP Semiconductors N.V.,Technology,Semiconductors,0.17,0.061,True,pass
+ON,ON Semiconductor Corporation,Technology,Semiconductors,0.172,0.141,True,pass
+MPWR,"Monolithic Power Systems, Inc.",Technology,Semiconductors,0.0,0.024,True,pass
+ADBE,Adobe Inc.,Technology,Software - Application,0.07,0.058,True,pass
+CRM,"Salesforce, Inc.",Technology,Software - Application,0.225,0.06,True,pass
+NOW,"ServiceNow, Inc.",Technology,Software - Application,0.078,0.043,True,pass
+INTU,Intuit Inc.,Technology,Software - Application,0.092,0.079,True,pass
+PANW,"Palo Alto Networks, Inc.",Technology,Software - Infrastructure,0.009,0.01,True,pass
+CRWD,"CrowdStrike Holdings, Inc.",Technology,Software - Infrastructure,0.003,0.02,True,pass
+FTNT,"Fortinet, Inc.",Technology,Software - Infrastructure,0.005,0.048,True,pass
+ANET,"Arista Networks, Inc.",Technology,Computer Hardware,0.0,0.063,True,pass
+CSCO,"Cisco Systems, Inc.",Technology,Communication Equipment,0.076,0.039,True,pass
+SNPS,"Synopsys, Inc.",Technology,Software - Infrastructure,0.121,0.04,True,pass
+CDNS,"Cadence Design Systems, Inc.",Technology,Software - Application,0.031,0.017,True,pass
+ADSK,"Autodesk, Inc.",Technology,Software - Application,0.072,0.081,True,pass
+WDAY,"Workday, Inc.",Technology,Software - Application,0.079,0.071,True,pass
+DDOG,"Datadog, Inc.",Technology,Software - Application,0.015,0.059,True,pass
+ZS,"Zscaler, Inc.",Technology,Software - Infrastructure,0.049,0.091,True,pass
+ACN,Accenture plc,Technology,Information Technology Services,0.085,0.081,True,pass
+IT,"Gartner, Inc.",Technology,Information Technology Services,0.232,0.104,True,pass
+KEYS,Keysight Technologies Inc.,Technology,Scientific & Technical Instruments,0.053,0.05,True,pass
+TER,"Teradyne, Inc.",Technology,Semiconductor Equipment & Materials,0.003,0.011,True,pass
+GLW,Corning Incorporated,Technology,Electronic Components,0.078,0.024,True,pass
+APH,Amphenol Corporation,Technology,Electronic Components,0.093,0.028,True,pass
+TEL,TE Connectivity plc,Technology,Electronic Components,0.092,0.028,True,pass
+ORCL,Oracle Corporation,Technology,Software - Infrastructure,0.426,0.093,False,debt/mcap 43%
+IBM,International Business Machines,Technology,Information Technology Services,0.277,0.046,True,pass
+HPQ,HP Inc.,Technology,Computer Hardware,0.398,0.161,False,debt/mcap 40%
+DELL,Dell Technologies Inc.,Technology,Computer Hardware,0.133,0.044,True,pass
+AMZN,"Amazon.com, Inc.",Consumer Cyclical,Internet Retail,0.097,0.047,True,pass
+TSLA,"Tesla, Inc.",Consumer Cyclical,Auto Manufacturers,0.01,0.029,True,pass
+COST,Costco Wholesale Corporation,Consumer Defensive,Discount Stores,0.023,0.047,True,pass
+WMT,Walmart Inc.,Consumer Defensive,Discount Stores,0.076,0.012,True,pass
+TJX,"TJX Companies, Inc. (The)",Consumer Cyclical,Apparel Retail,0.091,0.038,True,pass
+ROST,"Ross Stores, Inc.",Consumer Cyclical,Apparel Retail,0.064,0.058,True,pass
+LULU,lululemon athletica inc.,Consumer Cyclical,Apparel Retail,0.172,0.112,True,pass
+NKE,"Nike, Inc.",Consumer Cyclical,Footwear & Accessories,0.193,0.145,True,pass
+DECK,Deckers Outdoor Corporation,Consumer Cyclical,Footwear & Accessories,0.049,0.11,True,pass
+HD,"Home Depot, Inc. (The)",Consumer Cyclical,Home Improvement Retail,0.192,0.006,True,pass
+LOW,"Lowe's Companies, Inc.",Consumer Cyclical,Home Improvement Retail,0.357,0.027,False,debt/mcap 36%
+TSCO,Tractor Supply Company,Consumer Cyclical,Specialty Retail,0.38,0.011,False,debt/mcap 38%
+ORLY,"O'Reilly Automotive, Inc.",Consumer Cyclical,Auto Parts,0.143,0.003,True,pass
+AZO,"AutoZone, Inc.",Consumer Cyclical,Auto Parts,0.258,0.007,True,pass
+BKNG,Booking Holdings Inc. Common St,Consumer Cyclical,Travel Services,0.188,0.154,True,pass
+ABNB,"Airbnb, Inc.",Consumer Cyclical,Travel Services,0.025,0.122,True,pass
+PG,Procter & Gamble Company (The),Consumer Defensive,Household & Personal Products,0.103,0.041,True,pass
+CL,Colgate-Palmolive Company,Consumer Defensive,Household & Personal Products,0.102,0.019,True,pass
+KMB,Kimberly-Clark Corporation,Consumer Defensive,Household & Personal Products,0.179,0.026,True,pass
+CHD,"Church & Dwight Company, Inc.",Consumer Defensive,Household & Personal Products,0.095,0.01,True,pass
+CLX,Clorox Company (The),Consumer Defensive,Household & Personal Products,0.52,0.013,False,debt/mcap 52%
+EL,"Estee Lauder Companies, Inc. (T",Consumer Defensive,Household & Personal Products,0.235,0.089,True,pass
+KO,Coca-Cola Company (The),Consumer Defensive,Beverages - Non-Alcoholic,0.104,0.041,True,pass
+PEP,"Pepsico, Inc.",Consumer Defensive,Beverages - Non-Alcoholic,0.275,0.059,True,pass
+MDLZ,"Mondelez International, Inc.",Consumer Defensive,Confectioners,0.266,0.021,True,pass
+HSY,The Hershey Company,Consumer Defensive,Confectioners,0.154,0.02,True,pass
+GIS,"General Mills, Inc.",Consumer Defensive,Packaged Foods,0.737,0.023,False,debt/mcap 74%
+LLY,Eli Lilly and Company,Healthcare,Drug Manufacturers - General,0.0,0.0,True,pass
+JNJ,Johnson & Johnson,Healthcare,Drug Manufacturers - General,0.067,0.026,True,pass
+MRK,"Merck & Company, Inc.",Healthcare,Drug Manufacturers - General,0.0,0.0,True,pass
+ABBV,AbbVie Inc.,Healthcare,Drug Manufacturers - General,0.136,0.013,True,pass
+ABT,Abbott Laboratories,Healthcare,Medical Devices,0.178,0.03,True,pass
+TMO,Thermo Fisher Scientific Inc,Healthcare,Diagnostics & Research,0.16,0.023,True,pass
+DHR,Danaher Corporation,Healthcare,Diagnostics & Research,0.171,0.035,True,pass
+ISRG,"Intuitive Surgical, Inc.",Healthcare,Medical Instruments & Supplies,0.0,0.026,True,pass
+SYK,Stryker Corporation,Healthcare,Medical Devices,0.136,0.031,True,pass
+BSX,Boston Scientific Corporation,Healthcare,Medical Devices,0.207,0.009,True,pass
+MDT,Medtronic plc.,Healthcare,Medical Devices,0.227,0.071,True,pass
+EW,Edwards Lifesciences Corporatio,Healthcare,Medical Devices,0.013,0.079,True,pass
+REGN,"Regeneron Pharmaceuticals, Inc.",Healthcare,Biotechnology,0.029,0.086,True,pass
+VRTX,Vertex Pharmaceuticals Incorpor,Healthcare,Biotechnology,0.014,0.055,True,pass
+AMGN,Amgen Inc.,Healthcare,Drug Manufacturers - General,0.226,0.055,True,pass
+GILD,"Gilead Sciences, Inc.",Healthcare,Drug Manufacturers - General,0.123,0.023,True,pass
+ZTS,Zoetis Inc.,Healthcare,Drug Manufacturers - Specialty & Generic,0.279,0.051,True,pass
+IDXX,"IDEXX Laboratories, Inc.",Healthcare,Diagnostics & Research,0.025,0.004,True,pass
+DXCM,"DexCom, Inc.",Healthcare,Medical Devices,0.045,0.062,True,pass
+IQV,"IQVIA Holdings, Inc.",Healthcare,Diagnostics & Research,0.373,0.055,False,debt/mcap 37%
+A,"Agilent Technologies, Inc.",Healthcare,Diagnostics & Research,0.084,0.036,True,pass
+WST,"West Pharmaceutical Services, I",Healthcare,Medical Instruments & Supplies,0.011,0.016,True,pass
+RMD,ResMed Inc.,Healthcare,Medical Instruments & Supplies,0.025,0.045,True,pass
+ALGN,"Align Technology, Inc.",Healthcare,Medical Instruments & Supplies,0.011,0.109,True,pass
+CAT,"Caterpillar, Inc.",Industrials,Farm & Heavy Construction Machinery,0.157,0.027,True,pass
+DE,Deere & Company,Industrials,Farm & Heavy Construction Machinery,0.355,0.038,False,debt/mcap 36%
+ETN,"Eaton Corporation, PLC",Industrials,Specialty Industrial Machinery,0.149,0.005,True,pass
+EMR,Emerson Electric Company,Industrials,Specialty Industrial Machinery,0.15,0.024,True,pass
+ITW,Illinois Tool Works Inc.,Industrials,Specialty Industrial Machinery,0.117,0.01,True,pass
+PH,Parker-Hannifin Corporation,Industrials,Specialty Industrial Machinery,0.076,0.004,True,pass
+ROK,"Rockwell Automation, Inc.",Industrials,Specialty Industrial Machinery,0.074,0.01,True,pass
+HON,Honeywell International Inc.,Industrials,Conglomerates,0.246,0.088,True,pass
+GE,GE Aerospace,Industrials,Aerospace & Defense,0.066,0.031,True,pass
+CMI,Cummins Inc.,Industrials,Specialty Industrial Machinery,0.12,0.057,True,pass
+PCAR,PACCAR Inc.,Industrials,Farm & Heavy Construction Machinery,0.307,0.171,False,debt/mcap 31%
+ODFL,"Old Dominion Freight Line, Inc.",Industrials,Trucking,0.001,0.013,True,pass
+FAST,Fastenal Company,Industrials,Industrial Distribution,0.008,0.004,True,pass
+GWW,"W.W. Grainger, Inc.",Industrials,Industrial Distribution,0.044,0.009,True,pass
+CTAS,Cintas Corporation,Industrials,Specialty Business Services,0.031,0.004,True,pass
+CPRT,"Copart, Inc.",Industrials,Specialty Business Services,0.003,0.16,True,pass
+URI,"United Rentals, Inc.",Industrials,Rental & Leasing Services,0.219,0.002,True,pass
+WM,"Waste Management, Inc.",Industrials,Waste Management,0.25,0.003,True,pass
+RSG,"Republic Services, Inc.",Industrials,Waste Management,0.191,0.001,True,pass
+UNP,Union Pacific Corporation,Industrials,Railroads,0.172,0.017,True,pass
+CSX,CSX Corporation,Industrials,Railroads,0.202,0.017,True,pass
+NSC,Norfolk Southern Corporation,Industrials,Railroads,0.223,0.021,True,pass
+UPS,"United Parcel Service, Inc.",Industrials,Integrated Freight & Logistics,0.327,0.074,False,debt/mcap 33%
+FDX,FedEx Corporation,Industrials,Integrated Freight & Logistics,0.459,0.154,False,debt/mcap 46%
+XOM,ExxonMobil Holdings Corporation,Energy,Oil & Gas Integrated,0.055,0.014,True,pass
+CVX,Chevron Corporation,Energy,Oil & Gas Integrated,0.08,0.018,True,pass
+COP,ConocoPhillips,Energy,Oil & Gas E&P,0.126,0.042,True,pass
+EOG,"EOG Resources, Inc.",Energy,Oil & Gas E&P,0.095,0.057,True,pass
+SLB,SLB Limited,Energy,Oil & Gas Equipment & Services,0.164,0.046,True,pass
+OXY,Occidental Petroleum Corporatio,Energy,Oil & Gas E&P,0.229,0.065,True,pass
+DVN,Devon Energy Corporation,Energy,Oil & Gas E&P,0.208,0.017,True,pass
+HAL,Halliburton Company,Energy,Oil & Gas Equipment & Services,0.274,0.062,True,pass
+MPC,Marathon Petroleum Corporation,Energy,Oil & Gas Refining & Marketing,0.277,0.063,True,pass
+PSX,Phillips 66,Energy,Oil & Gas Refining & Marketing,0.188,0.038,True,pass
+VLO,Valero Energy Corporation,Energy,Oil & Gas Refining & Marketing,0.1,0.089,True,pass
+LIN,Linde plc,Basic Materials,Specialty Chemicals,0.112,0.017,True,pass
+APD,"Air Products and Chemicals, Inc",Basic Materials,Specialty Chemicals,0.261,0.014,True,pass
+SHW,Sherwin-Williams Company (The),Basic Materials,Specialty Chemicals,0.185,0.003,True,pass
+ECL,Ecolab Inc.,Basic Materials,Specialty Chemicals,0.163,0.009,True,pass
+NUE,Nucor Corporation,Basic Materials,Steel,0.115,0.059,True,pass
+FCX,"Freeport-McMoRan, Inc.",Basic Materials,Copper,0.116,0.049,True,pass
+NEM,Newmont Corporation,Basic Materials,Gold,0.051,0.081,True,pass
+DD,"DuPont de Nemours, Inc.",Basic Materials,Specialty Chemicals,0.168,0.092,True,pass
+DOW,Dow Inc.,Basic Materials,Chemicals,0.76,0.18,False,debt/mcap 76%
+NFLX,"Netflix, Inc.",Communication Services,Entertainment,0.068,0.032,False,industry: Entertainment
+DIS,Walt Disney Company (The),Communication Services,Entertainment,0.24,0.027,False,industry: Entertainment
+T,AT&T Inc.,Communication Services,Telecom Services,1.252,0.075,False,debt/mcap 125%
+VZ,Verizon Communications Inc.,Communication Services,Telecom Services,1.012,0.024,False,debt/mcap 101%
+JPM,JP Morgan Chase & Co.,Financial Services,Banks - Diversified,1.477,2.095,False,sector: Financial Services
+BAC,Bank of America Corporation,Financial Services,Banks - Diversified,2.15,2.858,False,sector: Financial Services
+V,Visa Inc.,Financial Services,Credit Services,0.028,0.018,False,sector: Financial Services
+MA,Mastercard Incorporated,Financial Services,Credit Services,0.043,0.019,False,sector: Financial Services
+STZ,"Constellation Brands, Inc.",Consumer Defensive,Beverages - Brewers,0.454,0.004,False,industry: Beverages - Brewers
+MO,"Altria Group, Inc.",Consumer Defensive,Tobacco,0.185,0.021,False,industry: Tobacco
+PM,Philip Morris International Inc,Consumer Defensive,Tobacco,0.146,0.021,False,industry: Tobacco
+LVS,Las Vegas Sands Corp.,Consumer Cyclical,Resorts & Casinos,0.643,0.119,False,industry: Resorts & Casinos
+HRL,Hormel Foods Corporation,Consumer Defensive,Packaged Foods,0.242,0.074,False,pork products
+TSN,"Tyson Foods, Inc.",Consumer Defensive,Farm Products,0.396,0.037,False,pork products
+O,Realty Income Corporation,Real Estate,REIT - Retail,0.578,0.011,False,sector: Real Estate
+PLD,"Prologis, Inc.",Real Estate,REIT - Industrial,0.294,0.018,False,sector: Real Estate
