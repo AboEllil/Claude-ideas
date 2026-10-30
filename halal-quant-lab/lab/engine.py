@@ -76,7 +76,7 @@ def backtest_swing(F: Features, cfg, cost=0.0005):
         o = np.where(np.isnan(O[t]), C[t - 1] if t else C[t], O[t])
         for j in to_sell:
             cash += shares[j] * o[j] * (1 - cost)
-            trades.append(o[j] / entry_px[j] - 1)
+            trades.append(o[j] * (1 - cost) / (entry_px[j] * (1 + cost)) - 1)
             shares[j] = 0
         if to_buy:
             eq_open = cash + np.nansum(shares * o)
@@ -88,7 +88,8 @@ def backtest_swing(F: Features, cfg, cost=0.0005):
                 shares[j] = amt * (1 - cost) / o[j]
                 cash -= amt
                 entry_px[j] = high[j] = o[j]
-                stop[j] = o[j] - k * A[t - 1, j]
+                a0 = A[t - 1, j] if t and not np.isnan(A[t - 1, j]) else 0.05 * o[j]
+                stop[j] = o[j] - k * a0
                 held[j] = 0
         to_buy, to_sell = [], []
         equity[t] = cash + np.nansum(shares * C[t])

@@ -29,7 +29,7 @@ def stats(r: pd.Series, trades=None):
         "sharpe": r.mean() / r.std() * np.sqrt(YEAR),
         "sortino": r.mean() * YEAR / down if down else 0.0,
         "max_dd": dd, "calmar": cagr / -dd if dd < 0 else 0.0,
-        "exposure": float((r != 0).mean()),
+        "exposure": float((r != 0).mean()),   # share of days with a P&L, not capital invested
     }
     if trades is not None:
         out["trades"] = len(trades)
