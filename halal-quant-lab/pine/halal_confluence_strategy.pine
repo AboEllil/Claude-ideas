@@ -1,0 +1,193 @@
+//@version=6
+// Halal Confluence Strategy (daily) - long-only, no leverage.
+// Port of halal-quant-lab/lab/tv.py `confluence` + lab/risk_engine.py (variant A):
+//   regime : ML Adaptive SuperTrend (k-means on ATR, AlgoAlpha-style) is bullish
+//   entry  : SuperTrend flips bullish  OR  squeeze fires with positive rising momentum (LazyBear)
+//            OR  price retests an unmitigated bullish order block / FVG in bullish structure (SMC)
+//   size   : risk % of equity per trade / (k x ATR14), capped at max % of equity
+//   exits  : chandelier trailing stop (highest close since entry - k x ATR14),
+//            SuperTrend flips bearish, or bearish change of character (CHoCH)
+// Orders are placed at the bar close and fill at the next bar's open.
+// The Python version also uses a Lorentzian kNN veto; it is omitted here (ablation showed
+// no Sharpe benefit: 1.06 vs 1.05 on the top 20, daily).
+// Not financial advice. Verify Shariah compliance of the symbol with a screener.
+strategy("Halal Confluence (daily)", overlay = true, initial_capital = 100000,
+         commission_type = strategy.commission.percent, commission_value = 0.05,
+         pyramiding = 0, process_orders_on_close = false, calc_on_every_tick = false, max_bars_back = 5000)
+
+// ---------------- inputs
+grpR = "Risk"
+riskPct  = input.float(1.0, "Risk per trade (% of equity)", minval = 0.1, maxval = 5, group = grpR)
+atrMult  = input.float(3.0, "Chandelier stop (x ATR14)", minval = 1, group = grpR)
+maxPct   = input.float(20.0, "Max position (% of equity)", minval = 1, maxval = 100, group = grpR)
+grpS = "Adaptive SuperTrend"
+stAtrLen = input.int(10, "ATR length", group = grpS)
+stFactor = input.float(3.0, "Factor", group = grpS)
+train    = input.int(100, "K-means training bars", minval = 20, maxval = 300, group = grpS)
+grpQ = "Squeeze"
+sqLen    = input.int(20, "Length", group = grpQ)
+sqMult   = input.float(1.5, "KC multiplier", group = grpQ)
+grpM = "Smart Money Concepts"
+swingLen = input.int(10, "Swing pivot length", minval = 2, group = grpM)
+useSqz   = input.bool(true, "Use squeeze entries", group = "Entries")
+useSmc   = input.bool(true, "Use OB/FVG entries", group = "Entries")
+
+// ---------------- 1. ML Adaptive SuperTrend (k-means volatility clusters)
+atrv = ta.atr(stAtrLen)
+float hiV = ta.highest(atrv, train)
+float loV = ta.lowest(atrv, train)
+kmeansAtr() =>
+    float cA = loV + (hiV - loV) * 0.75
+    float cB = loV + (hiV - loV) * 0.50
+    float cC = loV + (hiV - loV) * 0.25
+    for it = 0 to 99
+        float sA = 0.0
+        float sB = 0.0
+        float sC = 0.0
+        int nA = 0
+        int nB = 0
+        int nC = 0
+        for i = 0 to train - 1
+            float v = atrv[i]
+            float dA = math.abs(v - cA)
+            float dB = math.abs(v - cB)
+            float dC = math.abs(v - cC)
+            if dA <= dB and dA <= dC
+                sA += v
+                nA += 1
+            else if dB <= dC
+                sB += v
+                nB += 1
+            else
+                sC += v
+                nC += 1
+        float nA2 = nA > 0 ? sA / nA : cA
+        float nB2 = nB > 0 ? sB / nB : cB
+        float nC2 = nC > 0 ? sC / nC : cC
+        bool done = math.abs(nA2 - cA) < 1e-12 and math.abs(nB2 - cB) < 1e-12 and math.abs(nC2 - cC) < 1e-12
+        cA := nA2
+        cB := nB2
+        cC := nC2
+        if done
+            break
+    float eA = math.abs(atrv - cA)
+    float eB = math.abs(atrv - cB)
+    float eC = math.abs(atrv - cC)
+    eA <= eB and eA <= eC ? cA : eB <= eC ? cB : cC
+
+float km = kmeansAtr()
+float assigned = bar_index >= train + stAtrLen ? km : na
+
+customSupertrend(float a, float f) =>
+    float src = hl2
+    float up = src + f * a
+    float lo = src - f * a
+    float prevLo = nz(lo[1])
+    float prevUp = nz(up[1])
+    lo := lo > prevLo or close[1] < prevLo ? lo : prevLo
+    up := up < prevUp or close[1] > prevUp ? up : prevUp
+    int dir = na
+    float st = na
+    float prevSt = st[1]
+    if na(a[1])
+        dir := 1
+    else if prevSt == prevUp
+        dir := close > up ? -1 : 1
+    else
+        dir := close < lo ? 1 : -1
+    st := dir == -1 ? lo : up
+    [st, dir]
+
+[stLine, stDir] = customSupertrend(assigned, stFactor)
+bool stBull = stDir == -1
+bool stFlipUp = stBull and not stBull[1]
+
+// ---------------- 2. Squeeze Momentum (LazyBear, original multiplier quirk kept)
+float basis = ta.sma(close, sqLen)
+float dev = sqMult * ta.stdev(close, sqLen)
+float rngMa = ta.sma(ta.tr(true), sqLen)
+bool sqzOn = (basis - dev > basis - rngMa * sqMult) and (basis + dev < basis + rngMa * sqMult)
+float mom = ta.linreg(close - math.avg(math.avg(ta.highest(high, sqLen), ta.lowest(low, sqLen)), basis), sqLen, 0)
+bool sqzFire = useSqz and sqzOn[1] and not sqzOn and mom > 0 and mom > mom[1]
+
+// ---------------- 3. Smart Money Concepts: structure, order block, FVG
+float ph = ta.pivothigh(high, swingLen, swingLen)
+float pl = ta.pivotlow(low, swingLen, swingLen)
+var float shP = na
+var int shI = na
+var bool shX = true
+var float slP = na
+var bool slX = true
+var int trend = 0
+var float zb = na
+var float zt = na
+var float cumMove = 0.0
+var int cnt = 0
+bool bearChoch = false
+if not na(ph)
+    shP := ph
+    shI := bar_index - swingLen
+    shX := false
+if not na(pl)
+    slP := pl
+    slX := false
+if not shX and not na(shP) and close > shP
+    shX := true
+    trend := 1
+    // Order block = candle with the lowest low between the broken swing high and now
+    int back = math.min(bar_index - shI, 4999)
+    float mn = low
+    int at = 0
+    for i = 0 to back
+        if low[i] < mn
+            mn := low[i]
+            at := i
+    zb := low[at]
+    zt := high[at]
+if not slX and not na(slP) and close < slP
+    slX := true
+    bearChoch := trend == 1
+    trend := -1
+    zb := na
+    zt := na
+if bar_index >= 2 and close[1] > 0
+    cumMove += math.abs(close / close[1] - 1)
+    cnt += 1
+    if trend == 1 and low > high[2] and close[1] > high[2] and (low - high[2]) / high[2] > 2 * cumMove / cnt
+        zb := high[2]
+        zt := low
+if not na(zb) and close < zb
+    zb := na
+    zt := na
+bool zoneTap = useSmc and trend == 1 and not na(zb) and low <= zt and close >= zb
+
+// ---------------- entries, sizing and exits
+float atr14 = ta.atr(14)
+bool flat = strategy.position_size == 0
+bool entrySignal = flat and stBull and (stFlipUp or sqzFire or zoneTap) and not na(atr14)
+var float trail = na
+var float hiClose = na
+if entrySignal
+    float eq = strategy.equity
+    float qtyRisk = eq * riskPct / 100 / (atrMult * atr14)
+    float qtyCap = eq * maxPct / 100 / close
+    float qty = math.floor(math.min(qtyRisk, qtyCap))
+    if qty >= 1
+        strategy.entry("Long", strategy.long, qty = qty)
+        hiClose := close
+        trail := close - atrMult * atr14
+if strategy.position_size > 0
+    hiClose := math.max(nz(hiClose, close), close)
+    trail := math.max(nz(trail, close - atrMult * atr14), hiClose - atrMult * atr14)
+    if close < trail or not stBull or bearChoch
+        strategy.close("Long", comment = close < trail ? "Trail stop" : not stBull ? "SuperTrend" : "CHoCH")
+if flat and not entrySignal
+    trail := na
+    hiClose := na
+
+// ---------------- plots
+plot(stLine, "Adaptive SuperTrend", color = stBull ? color.new(color.teal, 0) : color.new(color.red, 0), linewidth = 2)
+plot(strategy.position_size > 0 ? trail : na, "Chandelier stop", color = color.orange, style = plot.style_linebr)
+plotshape(sqzFire and stBull, "Squeeze fire", shape.triangleup, location.belowbar, color.lime, size = size.tiny)
+plotshape(zoneTap and stBull, "OB/FVG retest", shape.circle, location.belowbar, color.aqua, size = size.tiny)
+bgcolor(not na(zb) and trend == 1 ? color.new(color.aqua, 92) : na, title = "Active bullish OB/FVG")
