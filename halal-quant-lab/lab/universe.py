@@ -65,6 +65,9 @@ EXCLUDED_TICKERS = {
     "LMT": "weapons/defense", "NOC": "weapons/defense", "GD": "weapons/defense",
     "RTX": "weapons/defense", "LHX": "weapons/defense", "HII": "weapons/defense",
     "MSTR": "bitcoin treasury company",
+    "RCL": "cruise line (onboard casinos/alcohol)", "CCL": "cruise line (onboard casinos/alcohol)",
+    "NCLH": "cruise line (onboard casinos/alcohol)",
+    "CASY": "convenience stores (large beer/tobacco/lottery sales)",
 }
 FIELDS = ("shortName", "sector", "industry", "marketCap", "totalDebt", "totalCash",
           "returnOnEquity", "returnOnAssets", "profitMargins", "grossMargins",
