@@ -13,7 +13,8 @@ YEAR = 252
 _N = NormalDist()
 
 
-def stats(r: pd.Series, trades=None):
+def stats(r: pd.Series, trades=None, year=YEAR):
+    YEAR = year  # periods per year (252 daily, 52 weekly)
     r = r.dropna()
     if len(r) < 20 or r.std() == 0:
         return {"cagr": 0.0, "vol": 0.0, "sharpe": 0.0, "sortino": 0.0, "max_dd": 0.0,
