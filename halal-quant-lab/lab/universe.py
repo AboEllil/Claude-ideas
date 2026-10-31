@@ -57,20 +57,29 @@ EXCLUDED_SECTORS = {"Financial Services", "Real Estate"}
 EXCLUDED_INDUSTRY_WORDS = (
     "Bank", "Insurance", "Capital Markets", "Credit Services", "Mortgage",
     "Asset Management", "Brewers", "Wineries", "Distillers", "Tobacco",
-    "Gambling", "Casinos", "Entertainment",
+    "Gambling", "Casinos", "Entertainment", "Lodging",
 )
-EXCLUDED_TICKERS = {"HRL": "pork products", "TSN": "pork products"}
+EXCLUDED_TICKERS = {
+    "HRL": "pork products", "TSN": "pork products",
+    # Weapons makers - excluded by the Dow Jones Islamic Market index methodology.
+    "LMT": "weapons/defense", "NOC": "weapons/defense", "GD": "weapons/defense",
+    "RTX": "weapons/defense", "LHX": "weapons/defense", "HII": "weapons/defense",
+    "MSTR": "bitcoin treasury company",
+}
+FIELDS = ("shortName", "sector", "industry", "marketCap", "totalDebt", "totalCash",
+          "returnOnEquity", "returnOnAssets", "profitMargins", "grossMargins",
+          "revenueGrowth", "earningsGrowth", "freeCashflow", "trailingPE", "forwardPE")
 MAX_DEBT_TO_MCAP = 0.30
 MAX_CASH_TO_MCAP = 0.30
 
 
 def fetch_fundamentals(tickers, refresh=False):
-    """Sector, industry, market cap, debt and cash per ticker (cached)."""
+    """Sector, industry, market cap, debt, cash and quality metrics per ticker (cached)."""
     DATA.mkdir(exist_ok=True)
     cache_file = DATA / "fundamentals.json"
     cache = json.loads(cache_file.read_text()) if cache_file.exists() and not refresh else {}
     for t in tickers:
-        if t in cache:
+        if t in cache and all(k in cache[t] for k in FIELDS):
             continue
         info = {}
         for attempt in range(3):
@@ -81,9 +90,10 @@ def fetch_fundamentals(tickers, refresh=False):
             except Exception:
                 pass
             time.sleep(2 * (attempt + 1))
-        cache[t] = {k: info.get(k) for k in
-                    ("shortName", "sector", "industry", "marketCap", "totalDebt", "totalCash")}
+        cache[t] = {k: info.get(k) for k in FIELDS}
         time.sleep(0.2)
+        if len(cache) % 25 == 0:
+            cache_file.write_text(json.dumps(cache, indent=1))
     cache_file.write_text(json.dumps(cache, indent=1))
     return cache
 
