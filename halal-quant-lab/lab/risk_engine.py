@@ -13,7 +13,7 @@ import pandas as pd
 
 
 def run(O, H, L, C, V, SIG, risk=0.01, k=3.0, max_weight=0.20, cost=0.0005, rvol_min=0.0, risk_scale=None,
-        return_state=False):
+        return_state=False, entry_mask=None):
     """All inputs are DataFrames (dates x tickers) on the same index. Returns daily returns,
     invested fraction and trade list; with `return_state`, also the open positions and the
     orders decided at the last close (to execute at the next open) - used by monitor.py."""
@@ -24,7 +24,15 @@ def run(O, H, L, C, V, SIG, risk=0.01, k=3.0, max_weight=0.20, cost=0.0005, rvol
     rvol = (V / V.rolling(20, min_periods=20).mean().shift(1)).to_numpy()
     sig = SIG.reindex(idx).fillna(0).to_numpy() > 0.5
     # Optional per-day multiplier on the risk budget for NEW entries (e.g. market-volatility scaling).
-    scale = np.ones(len(idx)) if risk_scale is None else risk_scale.reindex(idx).ffill().fillna(1).to_numpy()
+    # risk_scale: Series (per day) or DataFrame (per day and stock); entry_mask: DataFrame of allowed entries.
+    if risk_scale is None:
+        scale = np.ones((len(idx), C.shape[1]))
+    elif isinstance(risk_scale, pd.DataFrame):
+        scale = risk_scale.reindex(index=idx, columns=C.columns).ffill().fillna(1).to_numpy(float)
+    else:
+        scale = np.repeat(risk_scale.reindex(idx).ffill().fillna(1).to_numpy()[:, None], C.shape[1], axis=1)
+    allow = (np.ones(C.shape, bool) if entry_mask is None
+             else entry_mask.reindex(index=idx, columns=C.columns).fillna(False).to_numpy(bool))
     T, N = c.shape
     cash, sh = 1.0, np.zeros(N)
     stop, hi, entry_px = np.zeros(N), np.zeros(N), np.zeros(N)
@@ -69,11 +77,11 @@ def run(O, H, L, C, V, SIG, risk=0.01, k=3.0, max_weight=0.20, cost=0.0005, rvol
                 sell.append(j)
                 why[j] = "trailing stop hit" if c[t, j] < stop[j] else "trend/structure turned bearish"
         new = [j for j in range(N) if sig[t, j] and sh[j] == 0 and t and not sig[t - 1, j]
-               and not np.isnan(atr[t, j]) and (rvol_min == 0 or rvol[t, j] >= rvol_min)]
+               and not np.isnan(atr[t, j]) and (rvol_min == 0 or rvol[t, j] >= rvol_min) and allow[t, j]]
         # Strongest setups first: smallest ATR% (= largest allowed size) is NOT a ranking of
         # quality, so keep the order deterministic by ticker and let cash be the limit.
         for j in new:
-            w = min(risk * scale[t] / (k * atr[t, j] / c[t, j]), max_weight)
+            w = min(risk * scale[t, j] / (k * atr[t, j] / c[t, j]), max_weight)
             buy.append((j, w))
     r = pd.Series(eq_out, index=idx).pct_change().fillna(0)
     if not return_state:
