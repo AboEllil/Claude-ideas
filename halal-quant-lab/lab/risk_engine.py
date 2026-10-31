@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 
-def run(O, H, L, C, V, SIG, risk=0.01, k=3.0, max_weight=0.20, cost=0.0005, rvol_min=0.0):
+def run(O, H, L, C, V, SIG, risk=0.01, k=3.0, max_weight=0.20, cost=0.0005, rvol_min=0.0, risk_scale=None):
     """All inputs are DataFrames (dates x tickers) on the same index. Returns daily returns,
     invested fraction and trade list."""
     idx = C.index
@@ -21,6 +21,8 @@ def run(O, H, L, C, V, SIG, risk=0.01, k=3.0, max_weight=0.20, cost=0.0005, rvol
     atr = tr.ewm(alpha=1 / 14, adjust=False, min_periods=14).mean().to_numpy()
     rvol = (V / V.rolling(20, min_periods=20).mean().shift(1)).to_numpy()
     sig = SIG.reindex(idx).fillna(0).to_numpy() > 0.5
+    # Optional per-day multiplier on the risk budget for NEW entries (e.g. market-volatility scaling).
+    scale = np.ones(len(idx)) if risk_scale is None else risk_scale.reindex(idx).ffill().fillna(1).to_numpy()
     T, N = c.shape
     cash, sh = 1.0, np.zeros(N)
     stop, hi, entry_px = np.zeros(N), np.zeros(N), np.zeros(N)
@@ -64,7 +66,7 @@ def run(O, H, L, C, V, SIG, risk=0.01, k=3.0, max_weight=0.20, cost=0.0005, rvol
         # Strongest setups first: smallest ATR% (= largest allowed size) is NOT a ranking of
         # quality, so keep the order deterministic by ticker and let cash be the limit.
         for j in new:
-            w = min(risk / (k * atr[t, j] / c[t, j]), max_weight)
+            w = min(risk * scale[t] / (k * atr[t, j] / c[t, j]), max_weight)
             buy.append((j, w))
     r = pd.Series(eq_out, index=idx).pct_change().fillna(0)
     return r, pd.Series(inv_out, index=idx), trades

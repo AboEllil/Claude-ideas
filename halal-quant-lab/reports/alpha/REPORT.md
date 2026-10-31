@@ -133,3 +133,57 @@ Each must be pre-registered and validated on ranks 21-100 and the 2010-2018 / 20
 Across 16 years and every variant, **0% of months reached +25%** (buy & hold of the hindsight top 20: 1%), the median
 month was +1.4% to +3.6%. Sustained 25% per month is about +1,355% per year; no long-only, unlevered halal strategy we
 can find or build approaches it. A realistic goal for this approach: **15-20% per year with drawdowns around -20%**.
+
+---
+
+# Improvement 1: volatility-scaled risk budget (pre-registered)
+
+Risk per new trade = 1% x min(1, 20% / SPY 42-day volatility). Open positions untouched. Pass = on ranks 21-100, max drawdown better AND Sharpe no more than 0.05 lower, in both halves.
+
+Average risk multiplier since 2010: 0.96 (below 1 on 17% of days; minimum 0.28 in Apr 2020).
+
+## Top 20
+
+| Strategy | 2010-2018 | 2019-today | 2010-today | Worst month | Avg invested |
+|---|---|---|---|---|---|
+| A  risk 1% (baseline) | 10.7% / 0.88 / -21% | 28.9% / 1.38 / -26% | 18.8% / 1.14 / -26% | -10.2% | 61% |
+| A + vol-scaled risk | 10.5% / 0.88 / -20% | 25.3% / 1.29 / -25% | 17.2% / 1.09 / -25% | -10.2% | 59% |
+
+Stress periods (total return / max drawdown inside the window):
+
+| Period | A  risk 1% (baseline) | A + vol-scaled risk |
+|---|---|---|
+| 2011 Aug-Oct | -1.6% / -4% | -1.9% / -3% |
+| 2015-16 selloff | -10.3% / -15% | -10.7% / -14% |
+| 2018 Q4 | -7.5% / -9% | -7.5% / -9% |
+| 2020 Covid crash | -5.3% / -10% | -7.2% / -10% |
+| 2022 bear | -19.6% / -22% | -18.8% / -21% |
+| 2025 Apr tariff shock | 1.5% / -13% | -4.4% / -12% |
+
+## Ranks 21-100
+
+| Strategy | 2010-2018 | 2019-today | 2010-today | Worst month | Avg invested |
+|---|---|---|---|---|---|
+| A  risk 1% (baseline) | 14.8% / 1.02 / -16% | 19.4% / 1.12 / -19% | 16.9% / 1.07 / -19% | -9.0% | 89% |
+| A + vol-scaled risk | 14.5% / 1.01 / -19% | 16.6% / 1.01 / -20% | 15.5% / 1.01 / -20% | -9.3% | 88% |
+
+Stress periods (total return / max drawdown inside the window):
+
+| Period | A  risk 1% (baseline) | A + vol-scaled risk |
+|---|---|---|
+| 2011 Aug-Oct | 2.6% / -7% | 1.2% / -8% |
+| 2015-16 selloff | -6.0% / -14% | -4.9% / -14% |
+| 2018 Q4 | -9.5% / -10% | -9.4% / -10% |
+| 2020 Covid crash | -0.9% / -17% | -8.5% / -16% |
+| 2022 bear | -2.5% / -15% | -6.3% / -16% |
+| 2025 Apr tariff shock | -6.5% / -17% | -5.5% / -16% |
+
+## Verdict: **FAIL**
+
+- 2010-2018: drawdown -15.9% -> -18.5%, Sharpe 1.02 -> 1.01 (fails)
+- 2019-today: drawdown -19.2% -> -20.4%, Sharpe 1.12 -> 1.01 (fails)
+
+**Why it failed:** volatility peaks just after a crash, exactly when the trend system re-enters for the rebound.
+Scaling down new entries then shrinks the recovery trades (2020: -0.9% -> -8.5% on ranks 21-100) while positions
+already held into the crash were never reduced, so the drawdown did not improve. Not adopted; variant A stays the
+baseline. (A version that also trims existing positions would be a new hypothesis and needs its own pre-registered test.)
