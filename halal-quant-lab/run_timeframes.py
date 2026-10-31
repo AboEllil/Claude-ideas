@@ -53,11 +53,10 @@ def hourly(tickers):
 
 def to_4h(df):
     """TradingView 4h session bars for US stocks: 09:30-13:30 and 13:30-16:00."""
-    key = df.index.normalize().astype("int64") // 10 ** 9 * 10 + (df.index.hour >= 13)
-    g = df.groupby(key)
+    g = df.groupby([df.index.normalize(), df.index.hour >= 13])
     out = pd.DataFrame({"Open": g.Open.first(), "High": g.High.max(), "Low": g.Low.min(), "Close": g.Close.last()})
-    out.index = g.apply(lambda x: x.index[0])
-    return out
+    out.index = pd.DatetimeIndex(g.apply(lambda x: x.index[0]).tolist())
+    return out.sort_index()
 
 
 def to_weekly(df):
