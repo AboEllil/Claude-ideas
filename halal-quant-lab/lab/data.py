@@ -11,10 +11,10 @@ FIELDS = ("Open", "High", "Low", "Close", "Volume")
 BENCHMARKS = ["SPY", "^VIX", "SPUS", "HLAL", "QQQ"]
 
 
-def load_prices(tickers, start="2005-01-01", refresh=False):
+def load_prices(tickers, start="2005-01-01", refresh=False, cache_name="prices.pkl"):
     """Split/dividend-adjusted OHLCV as {field: DataFrame(dates x tickers)}."""
     DATA.mkdir(exist_ok=True)
-    cache = DATA / "prices.pkl"
+    cache = DATA / cache_name
     want = sorted(set(tickers) | set(BENCHMARKS))
     if cache.exists() and not refresh:
         px = pd.read_pickle(cache)

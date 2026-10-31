@@ -10,6 +10,8 @@
 // Orders are placed at the bar close and fill at the next bar's open.
 // The Python version also uses a Lorentzian kNN veto; it is omitted here (ablation showed
 // no Sharpe benefit: 1.06 vs 1.05 on the top 20, daily).
+// Alerts: add an alert on this strategy with "alert() function calls only" to get BUY/SELL
+// notifications (app push, email or webhook) at each daily close.
 // Not financial advice. Verify Shariah compliance of the symbol with a screener.
 strategy("Halal Confluence (daily)", overlay = true, initial_capital = 100000,
          commission_type = strategy.commission.percent, commission_value = 0.05,
@@ -174,13 +176,16 @@ if entrySignal
     float qty = math.floor(math.min(qtyRisk, qtyCap))
     if qty >= 1
         strategy.entry("Long", strategy.long, qty = qty)
+        alert(str.format("BUY {0}: {1} shares at next open, initial stop {2}", syminfo.ticker, qty, str.tostring(close - atrMult * atr14, format.mintick)), alert.freq_once_per_bar_close)
         hiClose := close
         trail := close - atrMult * atr14
 if strategy.position_size > 0
     hiClose := math.max(nz(hiClose, close), close)
     trail := math.max(nz(trail, close - atrMult * atr14), hiClose - atrMult * atr14)
     if close < trail or not stBull or bearChoch
-        strategy.close("Long", comment = close < trail ? "Trail stop" : not stBull ? "SuperTrend" : "CHoCH")
+        string why = close < trail ? "Trail stop" : not stBull ? "SuperTrend" : "CHoCH"
+        strategy.close("Long", comment = why)
+        alert(str.format("SELL {0} at next open ({1})", syminfo.ticker, why), alert.freq_once_per_bar_close)
 if flat and not entrySignal
     trail := na
     hiClose := na

@@ -12,9 +12,11 @@ import numpy as np
 import pandas as pd
 
 
-def run(O, H, L, C, V, SIG, risk=0.01, k=3.0, max_weight=0.20, cost=0.0005, rvol_min=0.0, risk_scale=None):
+def run(O, H, L, C, V, SIG, risk=0.01, k=3.0, max_weight=0.20, cost=0.0005, rvol_min=0.0, risk_scale=None,
+        return_state=False):
     """All inputs are DataFrames (dates x tickers) on the same index. Returns daily returns,
-    invested fraction and trade list."""
+    invested fraction and trade list; with `return_state`, also the open positions and the
+    orders decided at the last close (to execute at the next open) - used by monitor.py."""
     idx = C.index
     o, c = O.to_numpy(float), C.to_numpy(float)
     tr = np.fmax(H - L, np.fmax((H - C.shift(1)).abs(), (L - C.shift(1)).abs()))
@@ -26,6 +28,8 @@ def run(O, H, L, C, V, SIG, risk=0.01, k=3.0, max_weight=0.20, cost=0.0005, rvol
     T, N = c.shape
     cash, sh = 1.0, np.zeros(N)
     stop, hi, entry_px = np.zeros(N), np.zeros(N), np.zeros(N)
+    entry_t = np.zeros(N, int)
+    why = {}
     buy, sell = [], []
     eq_out, inv_out, trades = np.ones(T), np.zeros(T), []
     lp = np.full(N, np.nan)                       # last known price (for missing bars)
@@ -46,13 +50,15 @@ def run(O, H, L, C, V, SIG, risk=0.01, k=3.0, max_weight=0.20, cost=0.0005, rvol
                 cash -= amt
                 entry_px[j] = hi[j] = op[j]
                 stop[j] = op[j] - k * atr[t - 1, j]
+                entry_t[j] = t
         buy, sell = [], []
         lp = np.where(np.isnan(c[t]), lp, c[t])
         val = np.nansum(sh * lp)
         eq_out[t] = cash + val
         inv_out[t] = val / eq_out[t] if eq_out[t] else 0
-        if t + 1 >= T:
+        if t + 1 >= T and not return_state:
             break
+        why = {}
         for j in np.where(sh > 0)[0]:
             if np.isnan(c[t, j]):
                 continue
@@ -61,6 +67,7 @@ def run(O, H, L, C, V, SIG, risk=0.01, k=3.0, max_weight=0.20, cost=0.0005, rvol
                 stop[j] = max(stop[j], hi[j] - k * atr[t, j])
             if c[t, j] < stop[j] or not sig[t, j]:
                 sell.append(j)
+                why[j] = "trailing stop hit" if c[t, j] < stop[j] else "trend/structure turned bearish"
         new = [j for j in range(N) if sig[t, j] and sh[j] == 0 and t and not sig[t - 1, j]
                and not np.isnan(atr[t, j]) and (rvol_min == 0 or rvol[t, j] >= rvol_min)]
         # Strongest setups first: smallest ATR% (= largest allowed size) is NOT a ranking of
@@ -69,7 +76,18 @@ def run(O, H, L, C, V, SIG, risk=0.01, k=3.0, max_weight=0.20, cost=0.0005, rvol
             w = min(risk * scale[t] / (k * atr[t, j] / c[t, j]), max_weight)
             buy.append((j, w))
     r = pd.Series(eq_out, index=idx).pct_change().fillna(0)
-    return r, pd.Series(inv_out, index=idx), trades
+    if not return_state:
+        return r, pd.Series(inv_out, index=idx), trades
+    cols = list(C.columns)
+    held = [{"ticker": cols[j], "entry_date": idx[entry_t[j]], "entry_price": entry_px[j],
+             "last_close": lp[j], "stop": stop[j], "weight": sh[j] * lp[j] / eq_out[-1],
+             "gain": lp[j] / entry_px[j] - 1} for j in np.where(sh > 0)[0]]
+    state = {"date": idx[-1], "holdings": held,
+             "sells": [{"ticker": cols[j], "last_close": lp[j], "reason": why[j]} for j in sell],
+             "buys": [{"ticker": cols[j], "last_close": c[-1, j], "weight": w, "atr": atr[-1, j],
+                       "stop": c[-1, j] - k * atr[-1, j]} for j, w in buy],
+             "equity": eq_out[-1]}
+    return r, pd.Series(inv_out, index=idx), trades, state
 
 
 def purification(tickers, fetch):

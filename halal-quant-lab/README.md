@@ -14,6 +14,14 @@ testing. Free data (Yahoo Finance), no paid platform needed.
 audit found its regime-to-cash switch whipsaws, its swing dip entries can collide with
 short-SMA exits, and its `exposure` stat counts days with P&L rather than capital invested.
 
+## Daily monitor (buy/sell alerts)
+```bash
+python monitor.py --capital 10000          # after the US close; orders are for the next open
+```
+Prints BUY (shares + stop), SELL (with reason) and HOLD (updated trailing stop) for the top 20 halal
+stocks and writes `reports/monitor/latest.md`. Copy `my_positions.example.json` to `my_positions.json`
+to track your real positions. TradingView alerts: `pine/halal_confluence_strategy.pine`.
+
 ## Quick start
 ```bash
 pip install -r requirements.txt
