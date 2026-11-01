@@ -60,7 +60,7 @@
 <div class="sb">
   <header class="sb-head">
     <h1 class="sb-title">Halal Signal Board</h1>
-    <p class="sb-take">Daily scan of <b data-draw="total" data-source="summary" data-field="total" data-row="0">—</b> halal US stocks, halal ETFs and crypto coins, latest data <b data-draw="asof" data-source="summary" data-field="as_of" data-row="0">—</b>. Each asset gets one verdict from your tested system: AlgoAlpha green arrow plus bright green Squeeze momentum to buy, red arrow to sell.</p>
+    <p class="sb-take">Daily scan of <b data-draw="total" data-source="summary" data-field="total" data-row="0">—</b> halal US stocks, halal ETFs, crypto coins and Egyptian stocks, latest data <b data-draw="asof" data-source="summary" data-field="as_of" data-row="0">—</b>. Each asset gets one verdict from your tested system: AlgoAlpha green arrow plus bright green Squeeze momentum to buy, red arrow to sell.</p>
   </header>
 
   <section class="sb-tiles" aria-label="Verdict counts">
@@ -86,6 +86,7 @@
         <button type="button" class="sb-seg-btn" id="sb-kind-us" data-kind="US stock" aria-pressed="false">US stocks</button>
         <button type="button" class="sb-seg-btn" id="sb-kind-etf" data-kind="Halal ETF" aria-pressed="false">Halal ETFs</button>
         <button type="button" class="sb-seg-btn" id="sb-kind-crypto" data-kind="Crypto" aria-pressed="false">Crypto</button>
+        <button type="button" class="sb-seg-btn" id="sb-kind-egx" data-kind="EGX stock" aria-pressed="false">Egypt (EGX)</button>
       </div>
       <div class="sb-seg" role="group" aria-label="Verdict">
         <button type="button" class="sb-seg-btn" id="sb-v-all" data-verdict="" aria-pressed="true">Any verdict</button>
@@ -103,9 +104,11 @@
             <th data-field="symbol"><button type="button" class="sb-sort" data-sort="symbol">Symbol</button></th>
             <th data-field="name" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="name">Name</button></th>
             <th data-field="kind" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="kind">Type</button></th>
+            <th data-field="size" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="size">Size</button></th>
             <th data-field="verdict"><button type="button" class="sb-sort" data-sort="verdict">Verdict</button></th>
             <th data-field="score"><button type="button" class="sb-sort" data-sort="score">Score</button></th>
             <th data-field="close" class="num"><button type="button" class="sb-sort" data-sort="close">Price</button></th>
+            <th data-field="currency" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="currency">Cur.</button></th>
             <th data-field="change_1d" class="num sb-hide-narrow"><button type="button" class="sb-sort" data-sort="change_1d">1 day</button></th>
             <th data-field="stop" class="num"><button type="button" class="sb-sort" data-sort="stop">Stop</button></th>
             <th data-field="stop_distance" class="num sb-hide-narrow"><button type="button" class="sb-sort" data-sort="stop_distance">To stop</button></th>
@@ -131,6 +134,7 @@
           <li>Momentum: Squeeze Momentum (LazyBear) 20 / 1.5. Bright green means positive and rising.</li>
           <li>Confirmation: Lorentzian Classification (jdehorty) green arrow in the last 5 days.</li>
           <li>Score out of 100: trend 40, squeeze 20, Lorentzian 20, market structure 20.</li>
+          <li>A buy signal on a thinly traded asset (under $5M a day, or EGP 1M on EGX) is shown as Hold and flagged.</li>
         </ul>
       </div>
       <div>
@@ -149,7 +153,7 @@
       </div>
       <div>
         <h3>Halal screen</h3>
-        <p>US stocks pass an AAOIFI-style screen: no interest-based finance, alcohol, tobacco, gambling, pork, weapons, hotels or entertainment; debt and cash each under 30% of market value. Check each stock with a Shariah screener before buying. Crypto is included as you asked; scholars differ on whether it is permissible.</p>
+        <p>US stocks worth over $2 billion pass an AAOIFI-style screen: no interest-based finance, alcohol, tobacco, gambling, pork, weapons, hotels or entertainment; debt and cash each under 30% of market value. Egyptian stocks are screened by business type only (no conventional banks, brokers, tobacco or hotels): check debt with the EGX33 Shariah index. Crypto leaves out stablecoins, wrapped tokens, meme coins, interest-bearing tokens and margin-exchange tokens; scholars differ on whether crypto is permissible. Check each asset with a Shariah screener before buying.</p>
       </div>
     </div>
   </section>
@@ -256,7 +260,7 @@ dash.draw('actions', (box) => {
       s.append(b);
       return s;
     };
-    line.append(item('Price', f.price(r.close), 'close'), item('Stop', f.price(r.stop), 'stop'),
+    line.append(item('Price ' + r.currency, f.price(r.close), 'close'), item('Stop', f.price(r.stop), 'stop'),
                 item('Score', String(r.score), 'score'), item('Squeeze', r.squeeze, 'squeeze'));
     const why = document.createElement('p');
     why.className = 'sb-act-why';
@@ -305,8 +309,8 @@ dash.draw('rows', (tbody) => {
     sc.append(bar);
     const ch = td(f.pct(r.change_1d), 'num sb-hide-narrow ' + (r.change_1d > 0 ? 'sb-up' : r.change_1d < 0 ? 'sb-down' : ''));
     tr.append(
-      td(r.symbol, 'sb-sym'), td(r.name, 'sb-name sb-hide-narrow'), td(r.kind, 'sb-hide-narrow'), v, sc,
-      td(f.price(r.close), 'num'), ch, td(f.price(r.stop), 'num'), td(f.pct(r.stop_distance), 'num sb-hide-narrow'),
+      td(r.symbol, 'sb-sym'), td(r.name, 'sb-name sb-hide-narrow'), td(r.kind, 'sb-hide-narrow'), td(r.size || '', 'sb-hide-narrow'), v, sc,
+      td(f.price(r.close), 'num'), td(r.currency, 'sb-hide-narrow'), ch, td(f.price(r.stop), 'num'), td(f.pct(r.stop_distance), 'num sb-hide-narrow'),
       td(String(r.days_in_trend), 'num sb-hide-narrow'), td(r.squeeze, 'sb-hide-narrow'), td(r.lorentzian, 'sb-hide-narrow'),
       td(f.pct0(r.system_cagr), 'num sb-hide-narrow'), td(f.pct0(r.hold_cagr), 'num sb-hide-narrow'));
     tbody.append(tr);

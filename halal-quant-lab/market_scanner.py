@@ -1,4 +1,4 @@
-"""Signal board: every halal US stock ($10B+), halal ETF and major crypto coin, with a verdict.
+"""Signal board: halal US stocks ($2B+), halal ETFs, top crypto coins and halal EGX stocks, with a verdict.
 
     python market_scanner.py      # writes reports/signal_board/signals.csv
 
@@ -13,18 +13,24 @@ Verdict (the user's tested system: green arrow + bright green squeeze, exit on t
   HOLD        uptrend (green) - keep if you own it, stop at the SuperTrend line
   SELL        red arrow in the last 3 days - exit if you own it
   AVOID       downtrend (red)
-Per asset it also reports how this system did on that asset's own history vs buy & hold.
+A buy signal on a thinly traded asset (20-day median traded value under $5M, or EGP 1M on EGX)
+is downgraded to HOLD and flagged. Per asset it also reports how this system did on that asset's own
+history vs buy & hold. Universe lists: reports/broad_screen.csv (large caps), reports/universe/
+midcap_screen.csv and crypto_list.json (refresh with `python -m lab.expand`), lab/egx.py (EGX).
 Not financial advice. Shariah status of crypto is debated; verify stocks with a Shariah screener.
 """
 import os
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
+import json
+
 import numpy as np
 import pandas as pd
 import yfinance as yf
 
 from lab import tv
+from lab.egx import halal_egx
 from lab.metrics import stats
 from lab.single import run_position
 
@@ -36,15 +42,18 @@ ETFS = {"SPUS": "SP Funds S&P 500 Sharia ETF", "HLAL": "Wahed FTSE USA Shariah E
         "UMMA": "Wahed Dow Jones Islamic World ex-US ETF", "SPRE": "SP Funds Global REIT Sharia ETF",
         "SPSK": "SP Funds Global Sukuk ETF", "SPTE": "SP Funds Global Technology ETF",
         "SPWO": "SP Funds World ex-US ETF"}
-CRYPTO = {"BTC-USD": "Bitcoin", "ETH-USD": "Ethereum", "SOL-USD": "Solana", "BNB-USD": "BNB",
-          "XRP-USD": "XRP", "ADA-USD": "Cardano", "AVAX-USD": "Avalanche", "DOT-USD": "Polkadot",
-          "LINK-USD": "Chainlink", "LTC-USD": "Litecoin", "TRX-USD": "TRON", "XLM-USD": "Stellar",
-          "ATOM-USD": "Cosmos", "NEAR-USD": "NEAR Protocol", "HBAR-USD": "Hedera"}
+UNIVERSE = ROOT / "reports" / "universe"
+COST = {"Crypto": 0.001, "EGX stock": 0.0025}
+MIN_VALUE = {"EGX stock": 1_000_000}          # local currency per day; everything else uses $5M
+CURRENCY = {"EGX stock": "EGP"}
 
 
 def analyse(args):
     tk, df, kind = args
+    vol_series = df["Volume"] if "Volume" in df else None
     df = df.dropna(subset=["Open", "High", "Low", "Close"])
+    if kind == "EGX stock":                                 # drop impossible daily moves (data errors)
+        df = df[~(df.Close.pct_change().abs() > 0.5)]
     if len(df) < 300:
         return None
     o, h, l, c = (df[k].to_numpy(float) for k in ("Open", "High", "Low", "Close"))
@@ -80,7 +89,12 @@ def analyse(args):
     fresh_dn = flip_dn[-3:].any() and st[-1] == 0
     entry_bright = bool(bright[-3:][flip_up[-3:]].any()) if fresh_up else False
     lor5 = bool(larrow[-6:].any())
-    if fresh_up and entry_bright and lor5:
+    value = float((df.Close * (vol_series.reindex(df.index).fillna(0) if vol_series is not None else 0))
+                  .rolling(20).median().iloc[-1]) if vol_series is not None else np.nan
+    liquid = not (value < MIN_VALUE.get(kind, 5_000_000))
+    if fresh_up and entry_bright and not liquid:
+        verdict = "HOLD"
+    elif fresh_up and entry_bright and lor5:
         verdict = "STRONG BUY"
     elif fresh_up and entry_bright:
         verdict = "BUY"
@@ -97,7 +111,9 @@ def analyse(args):
     reasons = {
         "STRONG BUY": "Fresh green arrow, bright green squeeze and a Lorentzian green arrow.",
         "BUY": "Fresh green arrow with bright green squeeze momentum.",
-        "HOLD": f"Uptrend for {run} days. Keep if you own it; sell on a close below the stop.",
+        "HOLD": (f"New buy signal, but thin trading (about {value / 1e6:.1f}M a day) makes it hard to buy and sell."
+                 if fresh_up and entry_bright and not liquid else
+                 f"Uptrend for {run} days. Keep if you own it; sell on a close below the stop."),
         "SELL": "Red arrow in the last 3 days. Exit if you own it.",
         "AVOID": f"Downtrend for {run} days. Wait for a green arrow with bright green squeeze.",
     }
@@ -106,7 +122,7 @@ def analyse(args):
     pos = np.zeros(len(c))
     for t in range(1, len(c)):
         pos[t] = (1 if st[t] == 1 else 0) if pos[t - 1] else (1 if flip_up[t] and bright[t] else 0)
-    cost = 0.001 if kind == "Crypto" else 0.0005
+    cost = COST.get(kind, 0.0005)
     r, p = run_position(o, c, pos, cost)
     rs = pd.Series(r, index=df.index).loc[HIST_START:]
     bh = df.Close.pct_change().loc[HIST_START:]
@@ -114,7 +130,8 @@ def analyse(args):
     s_sys, s_bh = stats(rs, year=year), stats(bh, year=year)
     n_tr = int(((p[1:] == 1) & (p[:-1] == 0))[df.index[1:] >= HIST_START].sum())
     return {
-        "symbol": tk.replace("-USD", ""), "kind": kind, "verdict": verdict, "score": int(score),
+        "symbol": tk, "kind": kind, "verdict": verdict, "score": int(score),
+        "currency": CURRENCY.get(kind, "USD"), "traded_value_m": round(value / 1e6, 2) if value == value else None,
         "close": round(float(c[-1]), 6), "change_1d": round(float(c[-1] / c[-2] - 1), 4),
         "trend": "up" if st[-1] == 1 else "down", "days_in_trend": int(run),
         "stop": round(float(line), 6), "stop_distance": round(float(c[-1] / line - 1), 4),
@@ -131,17 +148,30 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     scr = pd.read_csv(ROOT / "reports" / "broad_screen.csv")
     us = scr[scr.compliant & (scr.marketCap >= 10e9)]
-    names = dict(zip(us.ticker, us.name)) | ETFS | CRYPTO
-    sectors = dict(zip(us.ticker, us.sector))
-    kinds = {t: "US stock" for t in us.ticker} | {t: "Halal ETF" for t in ETFS} | {t: "Crypto" for t in CRYPTO}
+    mid = pd.read_csv(UNIVERSE / "midcap_screen.csv")
+    mid = mid[mid.compliant & ~mid.ticker.isin(us.ticker)]
+    crypto = {c["symbol"]: c["name"] for c in json.loads((UNIVERSE / "crypto_list.json").read_text())}
+    egx = [t + ".CA" for t in halal_egx()]
+    names = (dict(zip(us.ticker, us.name)) | dict(zip(mid.ticker, mid.name)) | ETFS | crypto
+             | {t: t[:-3] + " (EGX)" for t in egx})
+    sectors = dict(zip(us.ticker, us.sector)) | dict(zip(mid.ticker, mid.sector))
+    size = {t: "Large cap" for t in us.ticker} | {t: "Mid cap" for t in mid.ticker}
+    kinds = ({t: "US stock" for t in list(us.ticker) + list(mid.ticker)} | {t: "Halal ETF" for t in ETFS}
+             | {t: "Crypto" for t in crypto} | {t: "EGX stock" for t in egx})
     raw = yf.download(list(kinds), period="12y", auto_adjust=True, progress=False, threads=True, group_by="column")
-    jobs = [(t, pd.DataFrame({f: raw[f][t] for f in ("Open", "High", "Low", "Close")}), k)
+    jobs = [(t, pd.DataFrame({f: raw[f][t] for f in ("Open", "High", "Low", "Close", "Volume")}), k)
             for t, k in kinds.items() if t in raw["Close"]]
     with ProcessPoolExecutor(max_workers=os.cpu_count()) as ex:
         rows = [r for r in ex.map(analyse, jobs) if r]
     df = pd.DataFrame(rows)
-    df.insert(1, "name", [names.get(s if k != "Crypto" else s + "-USD", s) for s, k in zip(df.symbol, df.kind)])
-    df.insert(3, "sector", [sectors.get(s, "Crypto" if k == "Crypto" else "ETF") for s, k in zip(df.symbol, df.kind)])
+    df.insert(1, "name", [names.get(s, s) for s in df.symbol])
+    df.insert(3, "sector", [sectors.get(s, {"Crypto": "Crypto", "Halal ETF": "ETF", "EGX stock": "Egypt"}.get(k, ""))
+                            for s, k in zip(df.symbol, df.kind)])
+    df.insert(4, "size", [size.get(s, "") for s in df.symbol])
+    # Display symbols without Yahoo suffixes, keeping them unique
+    short = df.symbol.str.replace(r"\.CA$", "", regex=True).str.replace(r"\d*-USD$", "", regex=True)
+    dup = short.duplicated(keep=False)
+    df["symbol"] = np.where(dup, df.symbol, short)
     order = {"STRONG BUY": 0, "BUY": 1, "SELL": 2, "HOLD": 3, "AVOID": 4}
     df = df.sort_values(["verdict", "score"], key=lambda s: s.map(order) if s.name == "verdict" else -s)
     df.to_csv(OUT / "signals.csv", index=False)
