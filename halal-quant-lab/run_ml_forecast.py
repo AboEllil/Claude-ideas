@@ -180,7 +180,8 @@ def main():
     md += ["", "## What the model relies on (permutation importance, latest model)", "",
            "| Feature | AUC drop when shuffled |", "|---|---|"] + [f"| {n} | {v:.4f} |" for n, v in top]
 
-    latest = panel[panel.date == panel.date.max()].copy()
+    latest = panel.loc[panel.groupby("ticker")["date"].idxmax()].copy()          # each asset's latest week
+    latest = latest[latest.date >= panel.date.max() - pd.Timedelta(days=10)]
     latest = latest[latest.value >= latest.market.map(MIN_VALUE)]
     latest["p_beat_market"] = model.predict_proba(latest[X])[:, 1]
     latest.sort_values(["market", "p_beat_market"], ascending=[True, False])[

@@ -23,6 +23,7 @@ CRYPTO_EXCLUDE = {
     "AAVE", "ENA", "ONDO", "COMP", "MKR", "SKY", "CRV", "PENDLE", "JST", "SUSDE", "USDY", "BUIDL",
     "HYPE", "DYDX", "GMX", "JUP", "DEL", "RAIN", "CC", "GRAM", "M", "BTW", "XAUT", "PAXG",
     "PUMP", "ASTER", "MORPHO", "VVV", "U", "BTCT",
+    "RETH", "LBTC", "JLP", "LIT", "CTM", "DHN",   # staked / perp-LP / perp-exchange / unclear tokens
     # exchange tokens of platforms built around margin / futures trading
     "LEO", "OKB", "BGB", "GT", "KCS", "HTX", "WBT",
 }

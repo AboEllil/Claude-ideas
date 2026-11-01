@@ -116,14 +116,6 @@
   "name": "Kaspa"
  },
  {
-  "symbol": "CTM-USD",
-  "name": "c8ntinuum"
- },
- {
-  "symbol": "LBTC33652-USD",
-  "name": "Lombard BTC"
- },
- {
   "symbol": "PI35697-USD",
   "name": "Pi"
  },
@@ -132,16 +124,8 @@
   "name": "Algorand"
  },
  {
-  "symbol": "RETH-USD",
-  "name": "Rocket Pool ETH"
- },
- {
   "symbol": "RENDER-USD",
   "name": "Render"
- },
- {
-  "symbol": "JLP-USD",
-  "name": "Jupiter Perps LP"
  },
  {
   "symbol": "AERO29270-USD",
@@ -150,13 +134,5 @@
  {
   "symbol": "ATOM-USD",
   "name": "Cosmos"
- },
- {
-  "symbol": "LIT39125-USD",
-  "name": "Lighter"
- },
- {
-  "symbol": "DHN-USD",
-  "name": "Dohrnii"
  }
 ]
