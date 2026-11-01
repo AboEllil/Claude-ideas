@@ -1,0 +1,162 @@
+[
+ {
+  "symbol": "BTC-USD",
+  "name": "Bitcoin"
+ },
+ {
+  "symbol": "ETH-USD",
+  "name": "Ethereum"
+ },
+ {
+  "symbol": "BNB-USD",
+  "name": "BNB"
+ },
+ {
+  "symbol": "XRP-USD",
+  "name": "XRP"
+ },
+ {
+  "symbol": "SOL-USD",
+  "name": "Solana"
+ },
+ {
+  "symbol": "TRX-USD",
+  "name": "TRON"
+ },
+ {
+  "symbol": "ZEC-USD",
+  "name": "Zcash"
+ },
+ {
+  "symbol": "XMR-USD",
+  "name": "Monero"
+ },
+ {
+  "symbol": "LINK-USD",
+  "name": "Chainlink"
+ },
+ {
+  "symbol": "ADA-USD",
+  "name": "Cardano"
+ },
+ {
+  "symbol": "XLM-USD",
+  "name": "Stellar"
+ },
+ {
+  "symbol": "BCH-USD",
+  "name": "Bitcoin Cash"
+ },
+ {
+  "symbol": "NEAR-USD",
+  "name": "NEAR Protocol"
+ },
+ {
+  "symbol": "UNI7083-USD",
+  "name": "Uniswap"
+ },
+ {
+  "symbol": "TON11419-USD",
+  "name": "Toncoin"
+ },
+ {
+  "symbol": "LTC-USD",
+  "name": "Litecoin"
+ },
+ {
+  "symbol": "AVAX-USD",
+  "name": "Avalanche"
+ },
+ {
+  "symbol": "SUI20947-USD",
+  "name": "Sui"
+ },
+ {
+  "symbol": "HBAR-USD",
+  "name": "Hedera"
+ },
+ {
+  "symbol": "TAO22974-USD",
+  "name": "Bittensor"
+ },
+ {
+  "symbol": "CRO-USD",
+  "name": "Cronos"
+ },
+ {
+  "symbol": "QNT-USD",
+  "name": "Quant"
+ },
+ {
+  "symbol": "DOT-USD",
+  "name": "Polkadot"
+ },
+ {
+  "symbol": "MNT27075-USD",
+  "name": "Mantle"
+ },
+ {
+  "symbol": "ICP-USD",
+  "name": "Internet Computer"
+ },
+ {
+  "symbol": "ETC-USD",
+  "name": "Ethereum Classic"
+ },
+ {
+  "symbol": "ARB11841-USD",
+  "name": "Arbitrum"
+ },
+ {
+  "symbol": "POL28321-USD",
+  "name": "Polygon (prev. MATIC)"
+ },
+ {
+  "symbol": "KAS-USD",
+  "name": "Kaspa"
+ },
+ {
+  "symbol": "CTM-USD",
+  "name": "c8ntinuum"
+ },
+ {
+  "symbol": "LBTC33652-USD",
+  "name": "Lombard BTC"
+ },
+ {
+  "symbol": "PI35697-USD",
+  "name": "Pi"
+ },
+ {
+  "symbol": "ALGO-USD",
+  "name": "Algorand"
+ },
+ {
+  "symbol": "RETH-USD",
+  "name": "Rocket Pool ETH"
+ },
+ {
+  "symbol": "RENDER-USD",
+  "name": "Render"
+ },
+ {
+  "symbol": "JLP-USD",
+  "name": "Jupiter Perps LP"
+ },
+ {
+  "symbol": "AERO29270-USD",
+  "name": "Aerodrome Finance"
+ },
+ {
+  "symbol": "ATOM-USD",
+  "name": "Cosmos"
+ },
+ {
+  "symbol": "LIT39125-USD",
+  "name": "Lighter"
+ },
+ {
+  "symbol": "DHN-USD",
+  "name": "Dohrnii"
+ }
+]

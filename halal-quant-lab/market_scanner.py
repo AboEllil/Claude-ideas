@@ -43,6 +43,9 @@ ETFS = {"SPUS": "SP Funds S&P 500 Sharia ETF", "HLAL": "Wahed FTSE USA Shariah E
         "SPSK": "SP Funds Global Sukuk ETF", "SPTE": "SP Funds Global Technology ETF",
         "SPWO": "SP Funds World ex-US ETF"}
 UNIVERSE = ROOT / "reports" / "universe"
+# Restaurant / entertainment chains with large bar (alcohol) sales - excluded on top of the screen.
+ALCOHOL_HEAVY = {"EAT", "DRI", "TXRH", "CAKE", "BJRI", "BLMN", "DIN", "PLAY", "CHUY", "RRGB", "KRUS", "FWRG",
+                 "BH", "DENN", "CBRL", "STKS", "ARKR", "TAST", "NATH"}
 COST = {"Crypto": 0.001, "EGX stock": 0.0025}
 MIN_VALUE = {"EGX stock": 1_000_000}          # local currency per day; everything else uses $5M
 CURRENCY = {"EGX stock": "EGP"}
@@ -149,7 +152,10 @@ def main():
     scr = pd.read_csv(ROOT / "reports" / "broad_screen.csv")
     us = scr[scr.compliant & (scr.marketCap >= 10e9)]
     mid = pd.read_csv(UNIVERSE / "midcap_screen.csv")
-    mid = mid[mid.compliant & ~mid.ticker.isin(us.ticker)]
+    # Defense contractors are not screened out by name among mid caps, so drop the whole industry.
+    mid = mid[mid.compliant & ~mid.ticker.isin(us.ticker) & (mid.industry != "Aerospace & Defense")
+              & ~mid.ticker.isin(ALCOHOL_HEAVY)]
+    us = us[~us.ticker.isin(ALCOHOL_HEAVY)]
     crypto = {c["symbol"]: c["name"] for c in json.loads((UNIVERSE / "crypto_list.json").read_text())}
     egx = [t + ".CA" for t in halal_egx()]
     names = (dict(zip(us.ticker, us.name)) | dict(zip(mid.ticker, mid.name)) | ETFS | crypto
