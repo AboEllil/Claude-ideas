@@ -33,7 +33,8 @@ def scan(args):
     o, h, l, c = (df[k].to_numpy(float) for k in ("Open", "High", "Low", "Close"))
     st = tv.adaptive_supertrend(o, h, l, c)[0]
     _, mom = tv.squeeze(o, h, l, c)
-    pred = tv.lorentzian(o, h, l, c)[1]
+    lpos, pred = tv.lorentzian(o, h, l, c)
+    larrow = np.r_[False, (lpos[1:] == 1) & (lpos[:-1] == 0)]
     value = float((df.Close * df.Volume.fillna(0)).rolling(20).median().iloc[-1])
     run = 0
     for x in st[::-1]:
@@ -43,7 +44,9 @@ def scan(args):
     return {"ticker": tk.replace(".CA", ""), "date": df.index[-1], "close": c[-1],
             "trend": "green" if st[-1] == 1 else "red", "days_in_trend": run,
             "arrow_today": bool(st[-1] == 1 and st[-2] == 0), "red_today": bool(st[-1] == 0 and st[-2] == 1),
-            "squeeze_mom": float(mom[-1]), "lorentzian": float(pred[-1]), "value_egp": value}
+            "squeeze_mom": float(mom[-1]), "bright": bool(mom[-1] > 0 and mom[-1] > mom[-2]),
+            "dark_today": bool(mom[-1] > 0 and mom[-1] <= mom[-2] and mom[-2] > mom[-3]),
+            "lor_arrow5": bool(larrow[-6:].any()), "lorentzian": float(pred[-1]), "value_egp": value}
 
 
 def main():
@@ -58,9 +61,12 @@ def main():
     day = df.date.max()
     df = df[df.date == day]                                 # stocks that traded on the latest session
     liquid = df.value_egp >= MIN_VALUE
-    strong = df[df.arrow_today & liquid & (df.squeeze_mom > 0) & (df.lorentzian > 0)]
-    weak = df[df.arrow_today & ~df.index.isin(strong.index)]
+    buy = df[df.arrow_today & liquid & df.bright]                    # your rule: arrow + BRIGHT green squeeze
+    high = buy[buy.lor_arrow5]                                       # + Lorentzian arrow in the last 5 days
+    normal = buy[~buy.lor_arrow5]
+    weak = df[df.arrow_today & ~df.index.isin(buy.index)]
     red = df[df.red_today]
+    fading = df[(df.trend == "green") & df.dark_today & liquid]
     green = df[(df.trend == "green") & liquid].sort_values("days_in_trend")
 
     def table(d, cols):
@@ -69,23 +75,29 @@ def main():
         head = "| " + " | ".join(cols) + " |"
         out = [head, "|" + "---|" * len(cols)]
         for _, r in d.iterrows():
-            out.append(f"| **{r.ticker}** | {r.close:.2f} | {'+' if r.squeeze_mom > 0 else '-'} | "
-                       f"{'bullish' if r.lorentzian > 0 else 'bearish' if r.lorentzian < 0 else 'neutral'} | "
+            sq = "bright green" if r.bright else "dark green" if r.squeeze_mom > 0 else "red"
+            lo = "ARROW" if r.lor_arrow5 else "bullish" if r.lorentzian > 0 else "bearish" if r.lorentzian < 0 else "neutral"
+            out.append(f"| **{r.ticker}** | {r.close:.2f} | {sq} | {lo} | "
                        f"{r.value_egp / 1e6:.1f}M | {r.days_in_trend} |")
         return out
     cols = ["Stock", "Close (EGP)", "Squeeze", "Lorentzian", "Daily value", "Days in trend"]
     md = [f"# EGX halal scanner - session of {day:%A %d %b %Y}", "",
-          "Rule tested best on 2016-2026: buy the green arrow only when Squeeze momentum is green and Lorentzian is "
-          "bullish, then **hold until the SuperTrend turns red**.", "",
-          "## STRONG BUY - arrow + squeeze + Lorentzian (liquid)", *table(strong, cols), "",
-          "## Weaker arrows - missing a confirmation or illiquid", *table(weak, cols), "",
+          "Your rule: AlgoAlpha green arrow + Squeeze momentum BRIGHT green (rising); a Lorentzian green arrow in "
+          "the last 5 days = high confidence. Exits tested (reports/egx/REPORT.md): hold until red = most return; "
+          "sell when the squeeze turns dark green = smoother, smaller drawdowns.", "",
+          "## BUY - HIGH CONFIDENCE (arrow + bright green squeeze + Lorentzian arrow)", *table(high, cols), "",
+          "## BUY (arrow + bright green squeeze)", *table(normal, cols), "",
+          "## Arrows that fail your rule (squeeze not bright green, or illiquid)", *table(weak, cols), "",
           "## SELL if you hold them - SuperTrend turned red today", *table(red, cols), "",
+          "## Momentum fading - squeeze turned dark green today (exit here if you use the squeeze exit)",
+          *table(fading, cols), "",
           f"## Still green ({len(green)} liquid stocks, newest trends first)", *table(green.head(25), cols), "",
           "> Not financial advice. Verify Shariah compliance (EGX33 Shariah index) before buying."]
     (OUT / "scan_latest.md").write_text("\n".join(md) + "\n")
     print("\n".join(md))
-    s = ", ".join(strong.ticker) or "none"
-    print(f"\nEGX scan {day:%d %b}: STRONG BUY {s} | SELL (red today) {', '.join(red.ticker) or 'none'}")
+    print(f"\nEGX scan {day:%d %b}: HIGH-CONFIDENCE BUY {', '.join(high.ticker) or 'none'} | BUY "
+          f"{', '.join(normal.ticker) or 'none'} | SELL (red) {', '.join(red.ticker) or 'none'} | "
+          f"fading {', '.join(fading.ticker) or 'none'}")
 
 
 if __name__ == "__main__":

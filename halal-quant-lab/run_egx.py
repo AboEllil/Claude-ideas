@@ -27,9 +27,14 @@ ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "reports" / "egx"
 COST, CAP, MIN_VALUE = 0.0025, 0.10, 1_000_000
 PERIODS = {"2016-2020": ("2016", "2020"), "2021-today": ("2021", "2100"), "2016-today": ("2016", "2100")}
-ENTRIES = {"E0 arrow only": (False, False), "E1 arrow + squeeze": (True, False),
-           "E2 arrow + Lorentzian": (False, True), "E3 arrow + both": (True, True)}
-EXITS = {"X1 until red": None, "X2 3 days": 3, "X3 5 days": 5}
+# Entry filters on the green-arrow bar. "bright" = Squeeze momentum > 0 AND rising (lime, not dark green);
+# "larrow" = a Lorentzian green arrow (buy label) within the last 5 bars; "lpred" = Lorentzian prediction > 0.
+ENTRIES = {"E0 arrow only": (), "E1 arrow + squeeze > 0": ("sq",), "E3 arrow + squeeze > 0 + Lorentzian > 0": ("sq", "lpred"),
+           "U1 arrow + BRIGHT green squeeze (your rule)": ("bright",),
+           "U2 arrow + BRIGHT green + Lorentzian arrow (high confidence)": ("bright", "larrow")}
+# Exits: None = until the SuperTrend turns red; int = sell after N days; "dark" = when the squeeze
+# turns dark green (momentum falls) or the SuperTrend turns red.
+EXITS = {"X1 until red": None, "X3 5 days": 5, "X4 squeeze turns dark": "dark"}
 
 
 def clean(df):
@@ -47,16 +52,19 @@ def stock_signals(args):
     o, h, l, c = (df[k].to_numpy(float) for k in ("Open", "High", "Low", "Close"))
     st = tv.adaptive_supertrend(o, h, l, c)[0]
     _, mom = tv.squeeze(o, h, l, c)
-    pred = tv.lorentzian(o, h, l, c)[1]
+    lpos, pred = tv.lorentzian(o, h, l, c)
+    larrow = np.r_[False, (lpos[1:] == 1) & (lpos[:-1] == 0)]
+    larrow5 = pd.Series(larrow).rolling(6, min_periods=1).max().to_numpy() > 0
+    mom0 = np.nan_to_num(mom)
+    rising = np.r_[False, mom0[1:] > mom0[:-1]]
+    filt = {"sq": mom0 > 0, "lpred": pred > 0, "bright": (mom0 > 0) & rising, "larrow": larrow5}
     value = (df.Close * df.Volume.fillna(0)).rolling(20).median().to_numpy()
     flip = np.r_[False, (st[1:] == 1) & (st[:-1] == 0)]
     out = {}
-    for en, (use_sq, use_ml) in ENTRIES.items():
+    for en, need in ENTRIES.items():
         ok = flip & (value >= MIN_VALUE)
-        if use_sq:
-            ok &= np.nan_to_num(mom) > 0
-        if use_ml:
-            ok &= pred > 0
+        for k in need:
+            ok &= filt[k]
         for ex, n in EXITS.items():
             pos = np.zeros(len(c))
             left = 0
@@ -64,11 +72,13 @@ def stock_signals(args):
                 if pos[t - 1] if t else 0:
                     if n is None:
                         pos[t] = 1 if st[t] == 1 else 0
+                    elif n == "dark":
+                        pos[t] = 1 if (st[t] == 1 and rising[t]) else 0
                     else:
                         left -= 1
                         pos[t] = 1 if left > 0 else 0
                 if ok[t] and pos[t] == 0:
-                    pos[t], left = 1, (n or 0)
+                    pos[t], left = 1, (n if isinstance(n, int) else 0)
             out[f"{en} | {ex}"] = pos
     out["_liquid"] = (value >= MIN_VALUE).astype(float)
     return tk, pd.DataFrame(out, index=df.index)
@@ -133,7 +143,7 @@ def main():
           f"Generated {pd.Timestamp.now():%Y-%m-%d}. {len(tks)} halal EGX stocks on Yahoo, daily bars, "
           f"data to {rets.index[-1]:%Y-%m-%d}. Costs {COST:.2%} per side, max {CAP:.0%} per stock, "
           f"liquidity >= EGP {MIN_VALUE:,.0f}/day. Cells: CAGR / Sharpe / max drawdown.\n",
-          "> 12 rule combinations were tested; the best one is partly luck. Look for rules that work in BOTH periods.\n",
+          "> 15 rule combinations were tested; the best one is partly luck. Look for rules that work in BOTH periods.\n",
           "| Strategy | EGP 2016-2020 | EGP 2021-today | EGP 2016-today | USD 2016-today | Trades/yr |",
           "|---|---|---|---|---|---|"]
     for n, (r, ntr) in res.items():
