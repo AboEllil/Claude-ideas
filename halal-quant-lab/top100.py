@@ -21,7 +21,9 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
-from lab.universe import DATA, fetch_fundamentals, screen
+from lab.universe import DATA, fetch_fundamentals, screen  # noqa: F401
+
+ROOT = Path(__file__).resolve().parent
 
 OUT = Path(__file__).resolve().parent / "reports"
 
@@ -67,6 +69,10 @@ def main():
                     "earningsGrowth", "forwardPE"]].apply(pd.to_numeric, errors="coerce"))
     df.reset_index().to_csv(OUT / "broad_screen.csv", index=False)
     ok = df[df.compliant & (df.marketCap >= 10e9)].copy()
+    sh_path = ROOT / "reports" / "universe" / "shariah_check.csv"
+    if sh_path.exists():                       # full AAOIFI check (lab/shariah.py): only stocks that pass
+        sh = pd.read_csv(sh_path).set_index("ticker")
+        ok = ok[[t in sh.index and sh.loc[t, "status"] == "pass" for t in ok.index]]
     print(f"{df.compliant.sum()} pass the Shariah screen, {len(ok)} with market cap >= $10B")
 
     sh, tot = five_year_sharpe(list(ok.index))

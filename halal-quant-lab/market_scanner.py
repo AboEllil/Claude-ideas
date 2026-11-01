@@ -256,6 +256,24 @@ def main():
     size = {t: "Large cap" for t in us.ticker} | {t: "Mid cap" for t in mid.ticker}
     kinds = ({t: "US stock" for t in list(us.ticker) + list(mid.ticker)} | {t: "Halal ETF" for t in ETFS}
              | {t: "Crypto" for t in crypto} | {t: "EGX stock" for t in egx})
+    # Full AAOIFI check from financial statements (lab/shariah.py): keep only stocks that pass.
+    sh_path = UNIVERSE / "shariah_check.csv"
+    shariah = {}
+    if sh_path.exists():
+        sh = pd.read_csv(sh_path).set_index("ticker")
+        for t, k in list(kinds.items()):
+            if k in ("US stock", "EGX stock"):
+                if t not in sh.index or sh.loc[t, "status"] != "pass":
+                    kinds.pop(t)
+                    continue
+                row = sh.loc[t]
+                shariah[t] = (row.reason if row.reason != "pass" else
+                              f"pass: debt {row.debt_ratio:.0%}, cash {row.cash_ratio:.0%}, "
+                              f"interest income {row.income_ratio:.1%}")
+        print(f"Shariah check: {sum(1 for k in kinds.values() if k in ('US stock', 'EGX stock'))} stocks pass")
+    for t, k in kinds.items():
+        shariah.setdefault(t, {"Halal ETF": "certified Shariah fund", "Crypto": "debated among scholars"}.get(
+            k, "business screen only - check with Zoya"))
     raw = yf.download(list(kinds) + ["SPY"], period="12y", auto_adjust=True, progress=False, threads=True,
                       group_by="column")
     jobs = [(t, pd.DataFrame({f: raw[f][t] for f in ("Open", "High", "Low", "Close", "Volume")}), k)
@@ -272,6 +290,7 @@ def main():
     df.insert(3, "sector", [sectors.get(s, {"Crypto": "Crypto", "Halal ETF": "ETF", "EGX stock": "Egypt"}.get(k, ""))
                             for s, k in zip(df.symbol, df.kind)])
     df.insert(4, "size", [size.get(s, "") for s in df.symbol])
+    df.insert(5, "shariah", [shariah.get(s, "") for s in df.symbol])
     # Display symbols without Yahoo suffixes, keeping them unique
     short = df.symbol.str.replace(r"\.CA$", "", regex=True).str.replace(r"\d*-USD$", "", regex=True)
     dup = short.duplicated(keep=False)

@@ -105,6 +105,7 @@
             <th data-field="name" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="name">Name</button></th>
             <th data-field="kind" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="kind">Type</button></th>
             <th data-field="size" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="size">Size</button></th>
+            <th data-field="shariah" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="shariah">Shariah check</button></th>
             <th data-field="verdict"><button type="button" class="sb-sort" data-sort="verdict">Verdict</button></th>
             <th data-field="strategy" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="strategy">Rule</button></th>
             <th data-field="ml_rank" class="num"><button type="button" class="sb-sort" data-sort="ml_rank">ML rank</button></th>
@@ -154,7 +155,7 @@
       </div>
       <div>
         <h3>Halal screen</h3>
-        <p>US stocks worth over $2 billion pass an AAOIFI-style screen: no interest-based finance, alcohol, tobacco, gambling, pork, weapons, hotels or entertainment; debt and cash each under 30% of market value. Egyptian stocks are screened by business type only (no conventional banks, brokers, tobacco or hotels): check debt with the EGX33 Shariah index. Crypto leaves out stablecoins, wrapped and staked tokens, meme coins, interest-bearing tokens and margin-exchange tokens; scholars differ on whether crypto is permissible. Check each asset with a Shariah screener before buying. Past results do not guarantee future ones, and this is not financial advice.</p>
+        <p>Every US and Egyptian stock shown passed a full AAOIFI-style check from its latest financial statements: no interest-based finance, alcohol, tobacco, gambling, pork, weapons, hotels or entertainment; total debt under 30% and cash plus short-term investments under 30% of market value; interest income under 5% of revenue. Stocks that fail, or whose figures are missing, are left out. Islamic banks are accepted on their own Sharia board's certification. This automated check could not be compared with Zoya or Musaffa from here, so confirm each stock there before buying. Crypto leaves out stablecoins, wrapped and staked tokens, meme coins, interest-bearing tokens and margin-exchange tokens; scholars differ on whether crypto is permissible. Check each asset with a Shariah screener before buying. Past results do not guarantee future ones, and this is not financial advice.</p>
       </div>
     </div>
   </section>
@@ -250,7 +251,7 @@ dash.draw('actions', (box) => {
     top.append(sym, pill);
     const name = document.createElement('div');
     name.className = 'sb-act-name';
-    name.textContent = r.name + ' · ' + r.kind;
+    name.textContent = r.name + ' · ' + r.kind + (r.shariah ? ' · Shariah ' + r.shariah : '');
     const line = document.createElement('div');
     line.className = 'sb-act-row';
     const item = (label, value, fieldName) => {
@@ -305,7 +306,7 @@ dash.draw('rows', (tbody) => {
     v.append(window.sbPill(r.verdict));
     const ch = td(f.pct(r.change_1d), 'num sb-hide-narrow ' + (r.change_1d > 0 ? 'sb-up' : r.change_1d < 0 ? 'sb-down' : ''));
     tr.append(
-      td(r.symbol, 'sb-sym'), td(r.name, 'sb-name sb-hide-narrow'), td(r.kind, 'sb-hide-narrow'), td(r.size || '', 'sb-hide-narrow'), v, td(r.strategy, 'sb-hide-narrow'),
+      td(r.symbol, 'sb-sym'), td(r.name, 'sb-name sb-hide-narrow'), td(r.kind, 'sb-hide-narrow'), td(r.size || '', 'sb-hide-narrow'), td(r.shariah || '', 'sb-name sb-hide-narrow'), v, td(r.strategy, 'sb-hide-narrow'),
       td(Number.isFinite(r.ml_rank) ? String(r.ml_rank) : '', 'num'), td(r.weekly, 'sb-hide-narrow'),
       td(f.price(r.close), 'num'), td(r.currency, 'sb-hide-narrow'), ch, td(f.price(r.stop), 'num'), td(f.pct(r.stop_distance), 'num sb-hide-narrow'), td(Number.isFinite(r.take_profit) ? f.price(r.take_profit) : '', 'num sb-hide-narrow'),
       td(String(r.days_in_trend), 'num sb-hide-narrow'), td(r.squeeze, 'sb-hide-narrow'), td(r.lorentzian, 'sb-hide-narrow'),
@@ -339,7 +340,7 @@ dash.draw('rows', (tbody) => {
     btn.addEventListener('click', () => {
       const k = btn.dataset.sort;
       if (st.sort === k) st.dir = -st.dir;
-      else { st.sort = k; st.dir = ['symbol', 'name', 'kind', 'size', 'currency', 'verdict', 'strategy', 'weekly', 'squeeze', 'lorentzian'].includes(k) ? 1 : -1; }
+      else { st.sort = k; st.dir = ['symbol', 'name', 'kind', 'size', 'shariah', 'currency', 'verdict', 'strategy', 'weekly', 'squeeze', 'lorentzian'].includes(k) ? 1 : -1; }
       document.querySelectorAll('.sb-table th').forEach((th) => th.removeAttribute('aria-sort'));
       const th = btn.closest('th');
       if (th) th.setAttribute('aria-sort', st.dir === 1 ? 'ascending' : 'descending');
