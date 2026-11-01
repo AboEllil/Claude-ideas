@@ -1,0 +1,349 @@
+<meta name="dash-one-writer">
+<style>
+  .sb { display: grid; gap: var(--cds-gap-lg); font-family: var(--font-anthropic-sans); }
+  .sb-head { display: grid; gap: var(--cds-gap-xs); }
+  .sb-title { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+  .sb-take { margin: 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-body); max-width: 70ch; }
+  .sb .sb-take b { color: var(--color-fg); font-weight: 600; }
+  .sb-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); gap: var(--cds-gap-md); }
+  .sb-tile { display: grid; gap: var(--cds-gap-xs); align-content: start; padding: var(--cds-pad-md); background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); }
+  .sb-tile-label { font-size: var(--cds-font-size-caption); text-transform: uppercase; letter-spacing: .06em; color: var(--color-fg-muted); }
+  .sb-tile-num { font-family: var(--font-anthropic-serif); font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; line-height: 1.1; min-height: 1.1em; }
+  .sb-tile-note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .sb-tile--buy .sb-tile-num { color: var(--color-ok); }
+  .sb-tile--sell .sb-tile-num { color: var(--color-bad); }
+  .sb-card { display: grid; gap: var(--cds-gap-sm); padding: var(--cds-pad-lg); background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); min-width: 0; }
+  .sb-card h2 { margin: 0; font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); }
+  .sb-note { margin: 0; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); max-width: 75ch; }
+  .sb-actions { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: var(--cds-gap-md); min-height: 5rem; }
+  .sb-act { display: grid; gap: var(--cds-gap-xs); padding: var(--cds-pad-md); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); }
+  .sb-act-top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--cds-gap-sm); }
+  .sb-act-sym { font-weight: 600; font-size: var(--cds-font-size-heading); }
+  .sb-act-name { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); overflow-wrap: anywhere; }
+  .sb-act-row { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm) var(--cds-gap-md); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+  .sb-act-row span { color: var(--color-fg-muted); }
+  .sb .sb-act-row b { color: var(--color-fg); font-weight: 600; }
+  .sb-act-why { margin: 0; font-size: var(--cds-font-size-caption); }
+  .sb-empty { margin: 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+  .sb-pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: var(--cds-font-size-caption); font-weight: 600; white-space: nowrap; letter-spacing: .02em; }
+  .sb-pill--strong { color: var(--color-ok); background: color-mix(in srgb, var(--color-ok) 20%, transparent); }
+  .sb-pill--buy { color: var(--color-ok); background: color-mix(in srgb, var(--color-ok) 11%, transparent); }
+  .sb-pill--sell { color: var(--color-bad); background: color-mix(in srgb, var(--color-bad) 14%, transparent); }
+  .sb-pill--hold { color: var(--color-fg); background: color-mix(in srgb, var(--color-fg) 9%, transparent); }
+  .sb-pill--avoid { color: var(--color-fg-muted); background: color-mix(in srgb, var(--color-fg-muted) 9%, transparent); }
+  .sb-controls { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm) var(--cds-gap-md); align-items: center; }
+  .sb-seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; }
+  .sb-seg-btn { font: inherit; font-size: var(--cds-font-size-caption); padding: 6px 10px; border: 0; background: transparent; color: var(--color-fg-muted); cursor: pointer; }
+  .sb-seg-btn[aria-pressed="true"] { background: color-mix(in srgb, var(--color-fg) 10%, transparent); color: var(--color-fg); font-weight: 600; }
+  .sb-seg-btn:focus-visible, .sb-sort:focus-visible, .sb-search:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 1px; }
+  .sb-search { font: inherit; font-size: var(--cds-font-size-caption); padding: 6px 10px; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); min-width: 0; flex: 1 1 12rem; max-width: 22rem; }
+  .sb-table-wrap { overflow: auto; max-height: 38rem; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); }
+  .sb-table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+  .sb-table th { position: sticky; top: 0; background: var(--color-panel); text-align: left; font-weight: 600; border-bottom: 1px solid var(--color-border-line); padding: 0; white-space: nowrap; z-index: 1; }
+  .sb-sort { font: inherit; font-weight: 600; background: none; border: 0; color: var(--color-fg); padding: 8px 10px; cursor: pointer; width: 100%; text-align: inherit; }
+  .sb-table td { padding: 7px 10px; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+  .sb-table .num { text-align: right; }
+  .sb-table td.sb-sym { font-weight: 600; }
+  .sb-table td.sb-name { max-width: 16rem; overflow: hidden; text-overflow: ellipsis; color: var(--color-fg-muted); }
+  .sb-bar { display: inline-flex; align-items: center; gap: 6px; }
+  .sb-bar i { display: inline-block; height: 6px; border-radius: 3px; background: var(--color-fg-muted); opacity: .55; }
+  .sb-up { color: var(--color-ok); }
+  .sb-down { color: var(--color-bad); }
+  .sb-how { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--cds-gap-md); }
+  .sb-how h3 { margin: 0 0 4px; font-size: var(--cds-font-size-body); font-weight: 600; }
+  .sb-how p, .sb-how li { margin: 0; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .sb-how ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 3px; }
+  [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+  @media (max-width: 720px) { .sb-hide-narrow { display: none; } }
+</style>
+
+<div class="sb">
+  <header class="sb-head">
+    <h1 class="sb-title">Halal Signal Board</h1>
+    <p class="sb-take">Daily scan of <b data-draw="total" data-source="summary" data-field="total" data-row="0">—</b> halal US stocks, halal ETFs and crypto coins, latest data <b data-draw="asof" data-source="summary" data-field="as_of" data-row="0">—</b>. Each asset gets one verdict from your tested system: AlgoAlpha green arrow plus bright green Squeeze momentum to buy, red arrow to sell.</p>
+  </header>
+
+  <section class="sb-tiles" aria-label="Verdict counts">
+    <div class="sb-tile sb-tile--buy"><span class="sb-tile-label">Strong buy</span><span class="sb-tile-num" data-draw="n-strong" data-source="summary" data-field="strong_buy" data-row="0">—</span><span class="sb-tile-note">New green arrow, bright squeeze and a Lorentzian arrow</span></div>
+    <div class="sb-tile sb-tile--buy"><span class="sb-tile-label">Buy</span><span class="sb-tile-num" data-draw="n-buy" data-source="summary" data-field="buy" data-row="0">—</span><span class="sb-tile-note">New green arrow and bright squeeze</span></div>
+    <div class="sb-tile sb-tile--sell"><span class="sb-tile-label">Sell</span><span class="sb-tile-num" data-draw="n-sell" data-source="summary" data-field="sell" data-row="0">—</span><span class="sb-tile-note">Red arrow in the last 3 days</span></div>
+    <div class="sb-tile"><span class="sb-tile-label">Hold</span><span class="sb-tile-num" data-draw="n-hold" data-source="summary" data-field="hold" data-row="0">—</span><span class="sb-tile-note">In an uptrend, keep if you own it</span></div>
+    <div class="sb-tile"><span class="sb-tile-label">Avoid</span><span class="sb-tile-num" data-draw="n-avoid" data-source="summary" data-field="avoid" data-row="0">—</span><span class="sb-tile-note">In a downtrend, wait</span></div>
+  </section>
+
+  <section class="sb-card" id="actions">
+    <h2>Today's actions</h2>
+    <p class="sb-note">New buy and sell signals from the latest close. Orders are for the next session. The stop is the SuperTrend line: sell if the price closes below it.</p>
+    <div class="sb-actions" data-draw="actions" data-source="signals"></div>
+  </section>
+
+  <section class="sb-card" id="all">
+    <h2>All assets</h2>
+    <p class="sb-note">Click a column to sort. "System" and "Hold" are the yearly return of this system and of simply holding, on that asset's own history since 2016 (or since it started trading).</p>
+    <div class="sb-controls">
+      <div class="sb-seg" role="group" aria-label="Asset type">
+        <button type="button" class="sb-seg-btn" id="sb-kind-all" data-kind="" aria-pressed="true">All</button>
+        <button type="button" class="sb-seg-btn" id="sb-kind-us" data-kind="US stock" aria-pressed="false">US stocks</button>
+        <button type="button" class="sb-seg-btn" id="sb-kind-etf" data-kind="Halal ETF" aria-pressed="false">Halal ETFs</button>
+        <button type="button" class="sb-seg-btn" id="sb-kind-crypto" data-kind="Crypto" aria-pressed="false">Crypto</button>
+      </div>
+      <div class="sb-seg" role="group" aria-label="Verdict">
+        <button type="button" class="sb-seg-btn" id="sb-v-all" data-verdict="" aria-pressed="true">Any verdict</button>
+        <button type="button" class="sb-seg-btn" id="sb-v-buy" data-verdict="buy" aria-pressed="false">Buy</button>
+        <button type="button" class="sb-seg-btn" id="sb-v-sell" data-verdict="SELL" aria-pressed="false">Sell</button>
+        <button type="button" class="sb-seg-btn" id="sb-v-hold" data-verdict="HOLD" aria-pressed="false">Hold</button>
+        <button type="button" class="sb-seg-btn" id="sb-v-avoid" data-verdict="AVOID" aria-pressed="false">Avoid</button>
+      </div>
+      <input id="sb-search" class="sb-search" type="search" placeholder="Search symbol or name" aria-label="Search symbol or name">
+    </div>
+    <div class="sb-table-wrap">
+      <table class="sb-table" data-source="signals" data-row-key="symbol">
+        <thead>
+          <tr>
+            <th data-field="symbol"><button type="button" class="sb-sort" data-sort="symbol">Symbol</button></th>
+            <th data-field="name" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="name">Name</button></th>
+            <th data-field="kind" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="kind">Type</button></th>
+            <th data-field="verdict"><button type="button" class="sb-sort" data-sort="verdict">Verdict</button></th>
+            <th data-field="score"><button type="button" class="sb-sort" data-sort="score">Score</button></th>
+            <th data-field="close" class="num"><button type="button" class="sb-sort" data-sort="close">Price</button></th>
+            <th data-field="change_1d" class="num sb-hide-narrow"><button type="button" class="sb-sort" data-sort="change_1d">1 day</button></th>
+            <th data-field="stop" class="num"><button type="button" class="sb-sort" data-sort="stop">Stop</button></th>
+            <th data-field="stop_distance" class="num sb-hide-narrow"><button type="button" class="sb-sort" data-sort="stop_distance">To stop</button></th>
+            <th data-field="days_in_trend" class="num sb-hide-narrow"><button type="button" class="sb-sort" data-sort="days_in_trend">Trend days</button></th>
+            <th data-field="squeeze" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="squeeze">Squeeze</button></th>
+            <th data-field="lorentzian" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="lorentzian">Lorentzian</button></th>
+            <th data-field="system_cagr" class="num sb-hide-narrow"><button type="button" class="sb-sort" data-sort="system_cagr">System</button></th>
+            <th data-field="hold_cagr" class="num sb-hide-narrow"><button type="button" class="sb-sort" data-sort="hold_cagr">Hold</button></th>
+          </tr>
+        </thead>
+        <tbody data-draw="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="sb-card" id="how">
+    <h2>How the verdict is made</h2>
+    <div class="sb-how">
+      <div>
+        <h3>Indicators (daily bars)</h3>
+        <ul>
+          <li>Trend: ML Adaptive SuperTrend (AlgoAlpha), ATR 10, factor 3, 100-bar k-means.</li>
+          <li>Momentum: Squeeze Momentum (LazyBear) 20 / 1.5. Bright green means positive and rising.</li>
+          <li>Confirmation: Lorentzian Classification (jdehorty) green arrow in the last 5 days.</li>
+          <li>Score out of 100: trend 40, squeeze 20, Lorentzian 20, market structure 20.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Verdicts</h3>
+        <ul>
+          <li>Strong buy: green arrow in the last 3 days, bright green squeeze and a Lorentzian arrow.</li>
+          <li>Buy: green arrow in the last 3 days and bright green squeeze.</li>
+          <li>Hold: uptrend. Keep it with the stop at the SuperTrend line.</li>
+          <li>Sell: red arrow in the last 3 days.</li>
+          <li>Avoid: downtrend.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>What the tests showed</h3>
+        <p>On the Egyptian market this system beat buy and hold. On large US stocks it trailed buy and hold in return but roughly halved the worst drop. Exiting on the red arrow worked better than tighter stops. Past results do not guarantee future ones, and this is not financial advice.</p>
+      </div>
+      <div>
+        <h3>Halal screen</h3>
+        <p>US stocks pass an AAOIFI-style screen: no interest-based finance, alcohol, tobacco, gambling, pork, weapons, hotels or entertainment; debt and cash each under 30% of market value. Check each stock with a Shariah screener before buying. Crypto is included as you asked; scholars differ on whether it is permissible.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  const NUM = ['score', 'close', 'change_1d', 'stop', 'stop_distance', 'days_in_trend', 'system_cagr', 'hold_cagr', 'trades'];
+  const ORDER = { 'STRONG BUY': 0, 'BUY': 1, 'SELL': 2, 'HOLD': 3, 'AVOID': 4 };
+  window.sbState = window.sbState || { kind: '', verdict: '', q: '', sort: null, dir: 1 };
+  window.sbOrder = ORDER;
+  window.sbRows = function () {
+    const d = dash.data('signals');
+    if (d.status !== 'ok') return null;
+    return d.data.map((r, i) => {
+      const o = Object.assign({}, r, { _i: i });
+      NUM.forEach((k) => { o[k] = Number(r[k]); });
+      return o;
+    });
+  };
+  const price = (v) => (v >= 1000 ? d3.format(',.0f')(v) : v >= 1 ? d3.format(',.2f')(v) : d3.format('.4f')(v));
+  window.sbFmt = {
+    price: price,
+    pct: (v) => (Number.isFinite(v) ? d3.format('+.1%')(v) : '—'),
+    pct0: (v) => (Number.isFinite(v) ? d3.format('.0%')(v) : '—'),
+  };
+  window.sbPill = function (v) {
+    const cls = v === 'STRONG BUY' ? 'strong' : v === 'BUY' ? 'buy' : v === 'SELL' ? 'sell' : v === 'HOLD' ? 'hold' : 'avoid';
+    const s = document.createElement('span');
+    s.className = 'sb-pill sb-pill--' + cls;
+    s.textContent = v.charAt(0) + v.slice(1).toLowerCase();
+    return s;
+  };
+})();
+</script>
+
+<script>
+dash.calc('summary', {
+  inputs: ['signals'],
+  title: 'Verdict counts',
+  description: 'Number of assets with each verdict, and the latest data date in the scan.',
+  fn: (signals) => {
+    const count = (v) => signals.filter((r) => r.verdict === v).length;
+    const latest = signals.map((r) => r.as_of).sort().pop();
+    return [{ as_of: latest, total: signals.length, strong_buy: count('STRONG BUY'), buy: count('BUY'),
+              sell: count('SELL'), hold: count('HOLD'), avoid: count('AVOID') }];
+  },
+});
+
+(function () {
+  const field = (f, fmt) => (el) => {
+    const s = dash.data('summary');
+    el.textContent = s.status === 'ok' && s.data && s.data[0] ? fmt(s.data[0][f]) : '—';
+  };
+  const n = (v) => d3.format(',')(Number(v));
+  dash.draw('total', field('total', n));
+  dash.draw('asof', field('as_of', (v) => d3.utcFormat('%a %b %-d, %Y')(new Date(v + 'T00:00:00Z'))));
+  dash.draw('n-strong', field('strong_buy', n));
+  dash.draw('n-buy', field('buy', n));
+  dash.draw('n-sell', field('sell', n));
+  dash.draw('n-hold', field('hold', n));
+  dash.draw('n-avoid', field('avoid', n));
+})();
+</script>
+
+<script>
+dash.draw('actions', (box) => {
+  const rows = window.sbRows();
+  box.replaceChildren();
+  if (!rows) { box.textContent = '—'; return; }
+  const act = rows.filter((r) => ['STRONG BUY', 'BUY', 'SELL'].includes(r.verdict))
+    .sort((a, b) => window.sbOrder[a.verdict] - window.sbOrder[b.verdict] || b.score - a.score);
+  if (!act.length) {
+    const p = document.createElement('p');
+    p.className = 'sb-empty';
+    p.textContent = 'No new buy or sell signals at the latest close.';
+    box.append(p);
+    return;
+  }
+  const f = window.sbFmt;
+  act.forEach((r) => {
+    const where = 'symbol=' + encodeURIComponent(r.symbol);
+    const card = document.createElement('article');
+    card.className = 'sb-act';
+    const top = document.createElement('div');
+    top.className = 'sb-act-top';
+    const sym = document.createElement('span');
+    sym.className = 'sb-act-sym';
+    sym.textContent = r.symbol;
+    const pill = window.sbPill(r.verdict);
+    pill.dataset.source = 'signals'; pill.dataset.where = where; pill.dataset.field = 'verdict';
+    top.append(sym, pill);
+    const name = document.createElement('div');
+    name.className = 'sb-act-name';
+    name.textContent = r.name + ' · ' + r.kind;
+    const line = document.createElement('div');
+    line.className = 'sb-act-row';
+    const item = (label, value, fieldName) => {
+      const s = document.createElement('span');
+      s.append(label + ' ');
+      const b = document.createElement('b');
+      b.textContent = value;
+      b.dataset.source = 'signals'; b.dataset.where = where; b.dataset.field = fieldName;
+      s.append(b);
+      return s;
+    };
+    line.append(item('Price', f.price(r.close), 'close'), item('Stop', f.price(r.stop), 'stop'),
+                item('Score', String(r.score), 'score'), item('Squeeze', r.squeeze, 'squeeze'));
+    const why = document.createElement('p');
+    why.className = 'sb-act-why';
+    why.textContent = r.reason;
+    why.dataset.source = 'signals'; why.dataset.where = where; why.dataset.field = 'reason';
+    card.append(top, name, line, why);
+    box.append(card);
+  });
+});
+</script>
+
+<script>
+dash.draw('rows', (tbody) => {
+  const all = window.sbRows();
+  tbody.replaceChildren();
+  if (!all) return;
+  const st = window.sbState;
+  const q = st.q.trim().toLowerCase();
+  let rows = all.filter((r) =>
+    (!st.kind || r.kind === st.kind) &&
+    (!st.verdict || (st.verdict === 'buy' ? (r.verdict === 'BUY' || r.verdict === 'STRONG BUY') : r.verdict === st.verdict)) &&
+    (!q || r.symbol.toLowerCase().includes(q) || String(r.name).toLowerCase().includes(q)));
+  if (st.sort) {
+    const k = st.sort;
+    const key = k === 'verdict' ? (r) => window.sbOrder[r.verdict] : (r) => r[k];
+    rows = rows.slice().sort((a, b) => {
+      const x = key(a), y = key(b);
+      if (typeof x === 'number' || typeof y === 'number') return ((Number.isFinite(x) ? x : -Infinity) - (Number.isFinite(y) ? y : -Infinity)) * st.dir;
+      return String(x).localeCompare(String(y)) * st.dir;
+    });
+  }
+  const f = window.sbFmt;
+  const td = (text, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = text; return c; };
+  rows.forEach((r) => {
+    const tr = document.createElement('tr');
+    const v = document.createElement('td');
+    v.append(window.sbPill(r.verdict));
+    const sc = document.createElement('td');
+    const bar = document.createElement('span');
+    bar.className = 'sb-bar';
+    const i = document.createElement('i');
+    i.style.width = Math.max(2, r.score * 0.5) + 'px';
+    const t = document.createElement('span');
+    t.textContent = String(r.score);
+    bar.append(i, t);
+    sc.append(bar);
+    const ch = td(f.pct(r.change_1d), 'num sb-hide-narrow ' + (r.change_1d > 0 ? 'sb-up' : r.change_1d < 0 ? 'sb-down' : ''));
+    tr.append(
+      td(r.symbol, 'sb-sym'), td(r.name, 'sb-name sb-hide-narrow'), td(r.kind, 'sb-hide-narrow'), v, sc,
+      td(f.price(r.close), 'num'), ch, td(f.price(r.stop), 'num'), td(f.pct(r.stop_distance), 'num sb-hide-narrow'),
+      td(String(r.days_in_trend), 'num sb-hide-narrow'), td(r.squeeze, 'sb-hide-narrow'), td(r.lorentzian, 'sb-hide-narrow'),
+      td(f.pct0(r.system_cagr), 'num sb-hide-narrow'), td(f.pct0(r.hold_cagr), 'num sb-hide-narrow'));
+    tbody.append(tr);
+  });
+});
+</script>
+
+<script>
+(function () {
+  const st = window.sbState;
+  document.querySelectorAll('.sb-seg-btn[data-kind]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      st.kind = btn.dataset.kind;
+      document.querySelectorAll('.sb-seg-btn[data-kind]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      dash.draw('rows');
+    });
+  });
+  document.querySelectorAll('.sb-seg-btn[data-verdict]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      st.verdict = btn.dataset.verdict;
+      document.querySelectorAll('.sb-seg-btn[data-verdict]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      dash.draw('rows');
+    });
+  });
+  document.querySelectorAll('.sb-search').forEach((inp) => {
+    inp.addEventListener('input', () => { st.q = inp.value; dash.draw('rows'); });
+  });
+  document.querySelectorAll('.sb-sort').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const k = btn.dataset.sort;
+      if (st.sort === k) st.dir = -st.dir;
+      else { st.sort = k; st.dir = ['symbol', 'name', 'kind', 'verdict', 'squeeze', 'lorentzian'].includes(k) ? 1 : -1; }
+      document.querySelectorAll('.sb-table th').forEach((th) => th.removeAttribute('aria-sort'));
+      const th = btn.closest('th');
+      if (th) th.setAttribute('aria-sort', st.dir === 1 ? 'ascending' : 'descending');
+      dash.draw('rows');
+    });
+  });
+})();
+</script>
