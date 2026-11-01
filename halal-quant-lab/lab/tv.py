@@ -333,7 +333,7 @@ def squeeze_strategy(o, h, l, c):
 
 # ---------------------------------------------------------------- 4. Smart Money Concepts
 @njit(cache=True)
-def smc_state(h, l, c, length):
+def smc_state(h, l, c, length, use_fvg=True):
     """Structure, order blocks and FVGs, all confirmed without look-ahead.
     Returns per bar: trend (+1/-1), last swing high/low, active bullish zone (bottom, top),
     zone type (1 = OB, 2 = FVG), bullish break flag, bearish break flag."""
@@ -373,7 +373,7 @@ def smc_state(h, l, c, length):
             tr_ = -1.0
             zb_, zt_ = np.nan, np.nan
         # Bullish fair value gap in a bullish structure becomes the active zone.
-        if t >= 2 and c[t - 1] > 0:
+        if use_fvg and t >= 2 and c[t - 1] > 0:
             cum += abs(c[t] / c[t - 1] - 1)
             cnt += 1
             if tr_ == 1 and l[t] > h[t - 2] and c[t - 1] > h[t - 2] and (l[t] - h[t - 2]) / h[t - 2] > 2 * cum / cnt:
