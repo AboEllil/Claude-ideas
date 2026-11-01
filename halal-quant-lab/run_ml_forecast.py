@@ -1,6 +1,7 @@
 """Walk-forward machine-learning forecaster: which assets beat their market over the next 20 trading days?
 
-    python run_ml_forecast.py
+    python run_ml_forecast.py            # walk-forward test + report
+    python run_ml_forecast.py --final    # only train on all data and save reports/ml/model.pkl
 
 Every Friday close, for every asset (US halal stocks, halal EGX stocks, halal crypto), 30 features
 describe trend, momentum, volatility, volume, the user's indicators and the market regime. The label is
@@ -13,6 +14,8 @@ without seeing its future. The portfolio holds, each week, the top-K predicted a
 Writes reports/ml/REPORT.md and reports/ml/latest_predictions.csv (this week's ranking).
 """
 import os
+import pickle
+import sys
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
@@ -85,20 +88,15 @@ def features(args):
     return f.loc[weekly_idx.values], pd.Series(c, index=idx)
 
 
-def main():
-    OUT.mkdir(parents=True, exist_ok=True)
-    jobs = load()
-    bench = {}
-    for _, _, mk, b in jobs:
-        bench.setdefault(mk, b)
-    with ProcessPoolExecutor(max_workers=os.cpu_count()) as ex:
-        out = [r for r in ex.map(features, jobs, chunksize=4) if r]
+def finish_panel(out, bench):
+    """Add market-level features, cross-sectional ranks, market flags and the label to the weekly rows."""
     panel = pd.concat([f for f, _ in out]).reset_index().rename(columns={"index": "date", "Date": "date"})
     closes = {mk: pd.DataFrame({f.ticker.iloc[0]: c for f, c in out if f.market.iloc[0] == mk}).sort_index()
               for mk in TOPK}
-    # market-level features and the label (beat the market's equal-weight forward return)
     panel["date"] = pd.to_datetime(panel["date"])
     for mk in TOPK:
+        if closes[mk].empty:
+            continue
         b = bench[mk].reindex(closes[mk].index).ffill()
         mf = pd.DataFrame({"mkt_ret20": b / b.shift(20) - 1, "mkt_up200": (b > b.rolling(200).mean()).astype(float),
                            "breadth50": (closes[mk] > closes[mk].rolling(50).mean()).where(closes[mk].notna()).mean(axis=1)})
@@ -111,7 +109,31 @@ def main():
     for mk in TOPK:
         panel[f"is_{mk}"] = (panel.market == mk).astype(float)
     X = [c for c in panel.columns if c not in ("date", "ticker", "market", "fwd", "fwd_mkt", "y", "value")]
-    panel = panel.sort_values("date").reset_index(drop=True)
+    return panel.sort_values("date").reset_index(drop=True), closes, X
+
+
+def save_final(panel, X):
+    """Train on every labelled week and save the model the daily scanner uses (retrain monthly)."""
+    lab = panel[panel.y.notna()]
+    model = HistGradientBoostingClassifier(max_depth=4, learning_rate=0.05, max_iter=300, min_samples_leaf=200,
+                                           l2_regularization=1.0, random_state=0).fit(lab[X], lab.y)
+    with open(OUT / "model.pkl", "wb") as f:
+        pickle.dump({"model": model, "X": X, "trained_to": str(lab.date.max().date())}, f)
+    print(f"saved model trained on {len(lab):,} rows up to {lab.date.max():%Y-%m-%d}")
+
+
+def main():
+    OUT.mkdir(parents=True, exist_ok=True)
+    jobs = load()
+    bench = {}
+    for _, _, mk, b in jobs:
+        bench.setdefault(mk, b)
+    with ProcessPoolExecutor(max_workers=os.cpu_count()) as ex:
+        out = [r for r in ex.map(features, jobs, chunksize=4) if r]
+    panel, closes, X = finish_panel(out, bench)
+    if "--final" in sys.argv:
+        save_final(panel, X)
+        return
 
     preds, aucs = [], []
     years = range(FIRST_TEST_YEAR, panel.date.dt.year.max() + 1)

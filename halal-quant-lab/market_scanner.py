@@ -7,12 +7,16 @@ Indicators (the ones that tested best, see reports/tv/INDICATORS.md and reports/
   momentum   Squeeze Momentum (LazyBear) - bright green / dark green / red / maroon
   ML         Lorentzian Classification (jdehorty) - green arrow in the last 5 days, or bias
   structure  Market structure (last break of structure up or down, 5-bar swings)
-Verdict (the user's tested system: green arrow + bright green squeeze, exit on the red arrow):
-  STRONG BUY  green arrow in the last 3 days + bright green squeeze + Lorentzian arrow (last 5 days)
-  BUY         green arrow in the last 3 days + bright green squeeze
-  HOLD        uptrend (green) - keep if you own it, stop at the SuperTrend line
-  SELL        red arrow in the last 3 days - exit if you own it
-  AVOID       downtrend (red)
+Verdict - one rule per market, the best ones in reports/evidence, signal_lab and winrate:
+  US stocks / ETFs  200-day trend: in while close > 200-day SMA (stop = the SMA)
+  EGX               swing trend stack: EMA50 > EMA200, ADX > 20, close above the 20-day high; exit on a
+                    3 x ATR trail from the highest close or a close below EMA50
+  Crypto            the user's arrow + bright squeeze, only with the weekly SuperTrend green; exit red arrow
+  STRONG BUY  new entry (last 3 days) confirmed by the weekly trend and the user's arrow / volume / Lorentzian
+  BUY         new entry, or the user's arrow + bright squeeze + weekly green inside an existing uptrend
+  HOLD        in the rule's uptrend - keep it, stop as shown; at +2 ATR from entry: sell half, stop to entry
+  SELL        the rule exited in the last 3 days        AVOID   no uptrend
+ML score: walk-forward-tested model's probability of beating the market over 20 days (tie-breaker only).
 A buy signal on a thinly traded asset (20-day median traded value under $5M, or EGP 1M on EGX)
 is downgraded to HOLD and flagged. Per asset it also reports how this system did on that asset's own
 history vs buy & hold. Universe lists: reports/broad_screen.csv (large caps), reports/universe/
@@ -51,6 +55,14 @@ MIN_VALUE = {"EGX stock": 1_000_000}          # local currency per day; everythi
 CURRENCY = {"EGX stock": "EGP"}
 
 
+RULE = {"US stock": "200-day trend", "Halal ETF": "200-day trend", "EGX stock": "Swing trend stack",
+        "Crypto": "Arrow + squeeze + weekly"}
+
+
+def _ema(x, n):
+    return pd.Series(x).ewm(span=n, adjust=False, min_periods=n).mean().to_numpy()
+
+
 def analyse(args):
     tk, df, kind = args
     vol_series = df["Volume"] if "Volume" in df else None
@@ -60,71 +72,124 @@ def analyse(args):
     if len(df) < 300:
         return None
     o, h, l, c = (df[k].to_numpy(float) for k in ("Open", "High", "Low", "Close"))
+    T = len(c)
     vol = tv.atr(h, l, c, 10)
     a = tv._kmeans_atr(vol, 100, 0.75, 0.5, 0.25)
     st = (tv.supertrend(h, l, c, a, 3.0) == 1).astype(float)
     _, mom = tv.squeeze(o, h, l, c)
     lpos, pred = tv.lorentzian(o, h, l, c)
     trend_s = tv.smc_state(h, l, c, 5)[0]
+    a14 = tv.atr(h, l, c, 14)
     m = np.nan_to_num(mom)
     bright = (m > 0) & np.r_[False, m[1:] > m[:-1]]
     flip_up = np.r_[False, (st[1:] == 1) & (st[:-1] == 0)]
     flip_dn = np.r_[False, (st[1:] == 0) & (st[:-1] == 1)]
     larrow = np.r_[False, (lpos[1:] == 1) & (lpos[:-1] == 0)]
+    v = vol_series.reindex(df.index).fillna(0).to_numpy(float) if vol_series is not None else np.zeros(T)
+    vol_ratio = v / pd.Series(v).rolling(20).mean().shift(1).to_numpy()
+    wk = df.resample("W-FRI").agg({"Open": "first", "High": "max", "Low": "min", "Close": "last"}).dropna()
+    weekly = (pd.Series(tv.adaptive_supertrend(*(wk[k].to_numpy(float) for k in ("Open", "High", "Low", "Close")))[0],
+                        index=wk.index).shift(1).reindex(df.index, method="ffill").fillna(0).to_numpy() > 0.5
+              if len(wk) > 120 else np.zeros(T, bool))
 
-    # SuperTrend line (stop level) for the latest bar
+    # SuperTrend line (stop level)
     src = (h + l) / 2
     lo, up = src - 3 * a, src + 3 * a
     plo = pup = np.nan
-    for t in range(len(c)):
+    for t in range(T):
         if np.isnan(a[t]):
             continue
         if not np.isnan(plo):
             lo[t] = lo[t] if (lo[t] > plo or c[t - 1] < plo) else plo
             up[t] = up[t] if (up[t] < pup or c[t - 1] > pup) else pup
         plo, pup = lo[t], up[t]
-    line = lo[-1] if st[-1] == 1 else up[-1]
-
+    st_line = np.where(st == 1, lo, up)
     run = 1
-    while run < len(st) and st[-1 - run] == st[-1]:
+    while run < T and st[-1 - run] == st[-1]:
         run += 1
-    fresh_up = flip_up[-3:].any() and st[-1] == 1
-    fresh_dn = flip_dn[-3:].any() and st[-1] == 0
-    entry_bright = bool(bright[-3:][flip_up[-3:]].any()) if fresh_up else False
-    lor5 = bool(larrow[-6:].any())
-    value = float((df.Close * (vol_series.reindex(df.index).fillna(0) if vol_series is not None else 0))
-                  .rolling(20).median().iloc[-1]) if vol_series is not None else np.nan
+    value = float((df.Close * pd.Series(v, index=df.index)).rolling(20).median().iloc[-1])
     liquid = not (value < MIN_VALUE.get(kind, 5_000_000))
-    if fresh_up and entry_bright and not liquid:
+    user_sig = flip_up & bright                                         # the user's green-arrow rule
+    user_recent = bool(user_sig[-3:].any()) and st[-1] == 1
+    lor5 = bool(larrow[-6:].any())
+
+    # ---- position history of this market's rule (decided at each close) ----
+    pos = np.zeros(T)
+    entry_t = np.full(T, -1)
+    if kind in ("US stock", "Halal ETF"):                               # 200-day rule
+        sma200 = pd.Series(c).rolling(200).mean().to_numpy()
+        pos = np.nan_to_num((c > sma200).astype(float))
+        stop_now = sma200[-1]
+    elif kind == "EGX stock":                                           # swing trend stack
+        e50, e200 = _ema(c, 50), _ema(c, 200)
+        up_, dn_ = np.diff(h, prepend=np.nan), -np.diff(l, prepend=np.nan)
+        pdm = np.where((up_ > dn_) & (up_ > 0), up_, 0.0)
+        mdm = np.where((dn_ > up_) & (dn_ > 0), dn_, 0.0)
+        adx = tv.rma(100 * np.abs(tv.rma(pdm, 14) - tv.rma(mdm, 14)) / (tv.rma(pdm, 14) + tv.rma(mdm, 14)), 14)
+        don = pd.Series(h).rolling(20).max().shift(1).to_numpy()
+        hi = 0.0
+        trail = np.full(T, np.nan)
+        for t in range(1, T):
+            if pos[t - 1]:
+                hi = max(hi, c[t])
+                trail[t] = max(hi - 3 * a14[t], e50[t])
+                pos[t] = 0 if (c[t] < hi - 3 * a14[t] or c[t] < e50[t]) else 1
+            elif e50[t] > e200[t] and adx[t] > 20 and c[t] > don[t]:
+                pos[t], hi = 1, c[t]
+                trail[t] = max(hi - 3 * a14[t], e50[t])
+        stop_now = trail[-1] if pos[-1] else st_line[-1]
+    else:                                                               # crypto: arrow + squeeze + weekly
+        for t in range(1, T):
+            pos[t] = (1 if st[t] == 1 else 0) if pos[t - 1] else (1 if user_sig[t] and weekly[t] else 0)
+        stop_now = st_line[-1]
+    for t in range(1, T):
+        entry_t[t] = (t if not pos[t - 1] else entry_t[t - 1]) if pos[t] else -1
+    entered = pos[-1] == 1 and entry_t[-1] >= T - 3
+    exited = pos[-1] == 0 and pos[-4:-1].any()
+
+    if entered and not liquid:
         verdict = "HOLD"
-    elif fresh_up and entry_bright and lor5:
-        verdict = "STRONG BUY"
-    elif fresh_up and entry_bright:
-        verdict = "BUY"
-    elif st[-1] == 1:
+    elif entered:
+        confirm = weekly[-1] and (user_recent or (kind == "EGX stock" and np.nan_to_num(vol_ratio[-1]) >= 1.5)
+                                  or (kind == "Crypto" and lor5))
+        verdict = "STRONG BUY" if confirm else "BUY"
+    elif pos[-1] == 1:
         verdict = "HOLD"
-    elif fresh_dn:
+    elif exited:
         verdict = "SELL"
     else:
         verdict = "AVOID"
+    # The user's own green-arrow signal while this market's rule is already in an uptrend: still a buy
+    if verdict == "HOLD" and user_recent and weekly[-1] and liquid and kind != "Crypto":
+        verdict = "BUY"
+
+    # Take-profit (+2 ATR: sell half) and breakeven (move the stop to entry) only for fresh positions
+    if verdict in ("BUY", "STRONG BUY"):
+        e_px, e_atr = c[-1], a14[-1]
+    elif pos[-1] == 1 and entry_t[-1] >= T - 126:
+        e_px, e_atr = c[entry_t[-1]], a14[entry_t[-1]]
+    else:
+        e_px, e_atr = np.nan, np.nan
+    tp = e_px + 2 * e_atr
+    tp_hit = bool(pos[-1] == 1 and np.isfinite(tp) and c[-1] >= tp)
     sq = "bright green" if bright[-1] else "dark green" if m[-1] > 0 else "red" if m[-1] < m[-2] else "maroon"
     lor = "green arrow" if lor5 else "bullish" if pred[-1] > 0 else "bearish" if pred[-1] < 0 else "neutral"
     score = (40 * st[-1] + (20 if bright[-1] else 10 if m[-1] > 0 else 0)
              + (20 if lor5 else 10 if pred[-1] > 0 else 0) + (20 if trend_s[-1] == 1 else 0))
+    rule = RULE[kind]
     reasons = {
-        "STRONG BUY": "Fresh green arrow, bright green squeeze and a Lorentzian green arrow.",
-        "BUY": "Fresh green arrow with bright green squeeze momentum.",
+        "STRONG BUY": f"New {rule} buy, confirmed by the weekly trend"
+                      + (" and your green arrow + bright squeeze." if user_recent else "."),
+        "BUY": (f"Your green arrow + bright squeeze with the weekly trend green." if pos[-1] == 1 and not entered
+                else f"New {rule} buy signal."),
         "HOLD": (f"New buy signal, but thin trading (about {value / 1e6:.1f}M a day) makes it hard to buy and sell."
-                 if fresh_up and entry_bright and not liquid else
-                 f"Uptrend for {run} days. Keep if you own it; sell on a close below the stop."),
-        "SELL": "Red arrow in the last 3 days. Exit if you own it.",
-        "AVOID": f"Downtrend for {run} days. Wait for a green arrow with bright green squeeze.",
+                 if entered and not liquid else
+                 ("Take-profit level reached: sell half and move the stop to your entry price."
+                  if tp_hit else f"In an uptrend ({rule}). Keep it; sell on a close below the stop.")),
+        "SELL": f"{rule} exit in the last 3 days. Sell if you own it.",
+        "AVOID": f"No {rule} uptrend. Wait.",
     }
 
-    # This system on the asset's own history (enter: arrow + bright squeeze; exit: red arrow)
-    pos = np.zeros(len(c))
-    for t in range(1, len(c)):
-        pos[t] = (1 if st[t] == 1 else 0) if pos[t - 1] else (1 if flip_up[t] and bright[t] else 0)
     cost = COST.get(kind, 0.0005)
     r, p = run_position(o, c, pos, cost)
     rs = pd.Series(r, index=df.index).loc[HIST_START:]
@@ -133,11 +198,14 @@ def analyse(args):
     s_sys, s_bh = stats(rs, year=year), stats(bh, year=year)
     n_tr = int(((p[1:] == 1) & (p[:-1] == 0))[df.index[1:] >= HIST_START].sum())
     return {
-        "symbol": tk, "kind": kind, "verdict": verdict, "score": int(score),
+        "symbol": tk, "kind": kind, "strategy": rule, "verdict": verdict, "score": int(score),
         "currency": CURRENCY.get(kind, "USD"), "traded_value_m": round(value / 1e6, 2) if value == value else None,
         "close": round(float(c[-1]), 6), "change_1d": round(float(c[-1] / c[-2] - 1), 4),
         "trend": "up" if st[-1] == 1 else "down", "days_in_trend": int(run),
-        "stop": round(float(line), 6), "stop_distance": round(float(c[-1] / line - 1), 4),
+        "weekly": "green" if weekly[-1] else "red",
+        "stop": round(float(stop_now), 6), "stop_distance": round(float(c[-1] / stop_now - 1), 4),
+        "take_profit": round(float(tp), 6) if np.isfinite(tp) else None,
+        "breakeven": round(float(e_px), 6) if np.isfinite(e_px) else None,
         "squeeze": sq, "lorentzian": lor, "structure": "bullish" if trend_s[-1] == 1 else "bearish",
         "reason": reasons[verdict],
         "hist_from": str(max(df.index[0], pd.Timestamp(HIST_START)).date()),
@@ -145,6 +213,30 @@ def analyse(args):
         "hold_cagr": round(float(s_bh["cagr"]), 4), "hold_max_dd": round(float(s_bh["max_dd"]), 4),
         "trades": n_tr, "as_of": str(df.index[-1].date()),
     }
+
+
+def ml_scores(raw, kinds):
+    """Probability (0-1) that each asset beats its market over the next 20 trading days, from the model
+    saved by `python run_ml_forecast.py --final` (walk-forward tested; see reports/ml/REPORT.md)."""
+    import pickle
+    from run_ml_forecast import features, finish_panel
+    path = ROOT / "reports" / "ml" / "model.pkl"
+    if not path.exists():
+        return {}
+    saved = pickle.loads(path.read_bytes())
+    mk = {"US stock": "US", "Halal ETF": "US", "EGX stock": "EGX", "Crypto": "Crypto"}
+    close = raw["Close"]
+    egx_cols = [t for t, k in kinds.items() if k == "EGX stock" and t in close]
+    bench = {"US": close["SPY"].ffill(), "Crypto": close["BTC-USD"].ffill(),
+             "EGX": (1 + close[egx_cols].pct_change(fill_method=None).clip(-0.5, 0.5).mean(axis=1).fillna(0)).cumprod()}
+    jobs = [(t, pd.DataFrame({f: raw[f][t] for f in ("Open", "High", "Low", "Close", "Volume")}), mk[k], bench[mk[k]])
+            for t, k in kinds.items() if t in close]
+    with ProcessPoolExecutor(max_workers=os.cpu_count()) as ex:
+        out = [r for r in ex.map(features, jobs, chunksize=8) if r]
+    panel, _, _ = finish_panel(out, bench)
+    latest = panel.loc[panel.groupby("ticker")["date"].idxmax()]
+    p = saved["model"].predict_proba(latest[saved["X"]])[:, 1]
+    return dict(zip(latest.ticker, p))
 
 
 def main():
@@ -164,12 +256,18 @@ def main():
     size = {t: "Large cap" for t in us.ticker} | {t: "Mid cap" for t in mid.ticker}
     kinds = ({t: "US stock" for t in list(us.ticker) + list(mid.ticker)} | {t: "Halal ETF" for t in ETFS}
              | {t: "Crypto" for t in crypto} | {t: "EGX stock" for t in egx})
-    raw = yf.download(list(kinds), period="12y", auto_adjust=True, progress=False, threads=True, group_by="column")
+    raw = yf.download(list(kinds) + ["SPY"], period="12y", auto_adjust=True, progress=False, threads=True,
+                      group_by="column")
     jobs = [(t, pd.DataFrame({f: raw[f][t] for f in ("Open", "High", "Low", "Close", "Volume")}), k)
             for t, k in kinds.items() if t in raw["Close"]]
     with ProcessPoolExecutor(max_workers=os.cpu_count()) as ex:
         rows = [r for r in ex.map(analyse, jobs) if r]
     df = pd.DataFrame(rows)
+    ml = ml_scores(raw, kinds)
+    df.insert(df.columns.get_loc("score") + 1, "ml_score", [round(float(ml[t]), 3) if t in ml else None for t in df.symbol])
+    grp = df.kind.replace({"Halal ETF": "US stock"})
+    df.insert(df.columns.get_loc("ml_score") + 1, "ml_rank",
+              (df.groupby(grp)["ml_score"].rank(pct=True) * 100).round(0))
     df.insert(1, "name", [names.get(s, s) for s in df.symbol])
     df.insert(3, "sector", [sectors.get(s, {"Crypto": "Crypto", "Halal ETF": "ETF", "EGX stock": "Egypt"}.get(k, ""))
                             for s, k in zip(df.symbol, df.kind)])
@@ -182,7 +280,7 @@ def main():
     df = df.sort_values(["verdict", "score"], key=lambda s: s.map(order) if s.name == "verdict" else -s)
     df.to_csv(OUT / "signals.csv", index=False)
     print(df.verdict.value_counts().to_string())
-    print(df.head(12)[["symbol", "kind", "verdict", "score", "close", "stop", "squeeze", "lorentzian"]].to_string())
+    print(df.head(15)[["symbol", "kind", "strategy", "verdict", "ml_rank", "close", "stop", "take_profit", "weekly"]].to_string())
 
 
 if __name__ == "__main__":

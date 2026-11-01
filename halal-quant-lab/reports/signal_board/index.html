@@ -60,20 +60,20 @@
 <div class="sb">
   <header class="sb-head">
     <h1 class="sb-title">Halal Signal Board</h1>
-    <p class="sb-take">Daily scan of <b data-draw="total" data-source="summary" data-field="total" data-row="0">—</b> halal US stocks, halal ETFs, crypto coins and Egyptian stocks, latest data <b data-draw="asof" data-source="summary" data-field="as_of" data-row="0">—</b>. Each asset gets one verdict from your tested system: AlgoAlpha green arrow plus bright green Squeeze momentum to buy, red arrow to sell.</p>
+    <p class="sb-take">Daily scan of <b data-draw="total" data-source="summary" data-field="total" data-row="0">—</b> halal US stocks, halal ETFs, crypto coins and Egyptian stocks, latest data <b data-draw="asof" data-source="summary" data-field="as_of" data-row="0">—</b>. Each market uses the rule that tested best on 2016–2020 and again on 2021–today: the 200-day trend for US stocks, the swing trend stack for Egypt, and your green arrow + bright squeeze with the weekly trend for crypto.</p>
   </header>
 
   <section class="sb-tiles" aria-label="Verdict counts">
-    <div class="sb-tile sb-tile--buy"><span class="sb-tile-label">Strong buy</span><span class="sb-tile-num" data-draw="n-strong" data-source="summary" data-field="strong_buy" data-row="0">—</span><span class="sb-tile-note">New green arrow, bright squeeze and a Lorentzian arrow</span></div>
-    <div class="sb-tile sb-tile--buy"><span class="sb-tile-label">Buy</span><span class="sb-tile-num" data-draw="n-buy" data-source="summary" data-field="buy" data-row="0">—</span><span class="sb-tile-note">New green arrow and bright squeeze</span></div>
-    <div class="sb-tile sb-tile--sell"><span class="sb-tile-label">Sell</span><span class="sb-tile-num" data-draw="n-sell" data-source="summary" data-field="sell" data-row="0">—</span><span class="sb-tile-note">Red arrow in the last 3 days</span></div>
+    <div class="sb-tile sb-tile--buy"><span class="sb-tile-label">Strong buy</span><span class="sb-tile-num" data-draw="n-strong" data-source="summary" data-field="strong_buy" data-row="0">—</span><span class="sb-tile-note">New entry confirmed by the weekly trend and your signals</span></div>
+    <div class="sb-tile sb-tile--buy"><span class="sb-tile-label">Buy</span><span class="sb-tile-num" data-draw="n-buy" data-source="summary" data-field="buy" data-row="0">—</span><span class="sb-tile-note">New entry, or your arrow inside an uptrend</span></div>
+    <div class="sb-tile sb-tile--sell"><span class="sb-tile-label">Sell</span><span class="sb-tile-num" data-draw="n-sell" data-source="summary" data-field="sell" data-row="0">—</span><span class="sb-tile-note">The market's rule exited in the last 3 days</span></div>
     <div class="sb-tile"><span class="sb-tile-label">Hold</span><span class="sb-tile-num" data-draw="n-hold" data-source="summary" data-field="hold" data-row="0">—</span><span class="sb-tile-note">In an uptrend, keep if you own it</span></div>
     <div class="sb-tile"><span class="sb-tile-label">Avoid</span><span class="sb-tile-num" data-draw="n-avoid" data-source="summary" data-field="avoid" data-row="0">—</span><span class="sb-tile-note">In a downtrend, wait</span></div>
   </section>
 
   <section class="sb-card" id="actions">
     <h2>Today's actions</h2>
-    <p class="sb-note">New buy and sell signals from the latest close. Orders are for the next session. The stop is the SuperTrend line: sell if the price closes below it.</p>
+    <p class="sb-note">New buy and sell signals from the latest close. Orders are for the next session. Sell if the price closes below the stop. At the take-profit price, sell half and move the stop to your entry price (breakeven): in tests this raised the win rate from about 45% to 55–63%.</p>
     <div class="sb-actions" data-draw="actions" data-source="signals"></div>
   </section>
 
@@ -106,12 +106,15 @@
             <th data-field="kind" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="kind">Type</button></th>
             <th data-field="size" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="size">Size</button></th>
             <th data-field="verdict"><button type="button" class="sb-sort" data-sort="verdict">Verdict</button></th>
-            <th data-field="score"><button type="button" class="sb-sort" data-sort="score">Score</button></th>
+            <th data-field="strategy" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="strategy">Rule</button></th>
+            <th data-field="ml_rank" class="num"><button type="button" class="sb-sort" data-sort="ml_rank">ML rank</button></th>
+            <th data-field="weekly" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="weekly">Weekly</button></th>
             <th data-field="close" class="num"><button type="button" class="sb-sort" data-sort="close">Price</button></th>
             <th data-field="currency" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="currency">Cur.</button></th>
             <th data-field="change_1d" class="num sb-hide-narrow"><button type="button" class="sb-sort" data-sort="change_1d">1 day</button></th>
             <th data-field="stop" class="num"><button type="button" class="sb-sort" data-sort="stop">Stop</button></th>
             <th data-field="stop_distance" class="num sb-hide-narrow"><button type="button" class="sb-sort" data-sort="stop_distance">To stop</button></th>
+            <th data-field="take_profit" class="num sb-hide-narrow"><button type="button" class="sb-sort" data-sort="take_profit">Take profit</button></th>
             <th data-field="days_in_trend" class="num sb-hide-narrow"><button type="button" class="sb-sort" data-sort="days_in_trend">Trend days</button></th>
             <th data-field="squeeze" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="squeeze">Squeeze</button></th>
             <th data-field="lorentzian" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="lorentzian">Lorentzian</button></th>
@@ -128,32 +131,30 @@
     <h2>How the verdict is made</h2>
     <div class="sb-how">
       <div>
-        <h3>Indicators (daily bars)</h3>
+        <h3>Rule for each market</h3>
         <ul>
-          <li>Trend: ML Adaptive SuperTrend (AlgoAlpha), ATR 10, factor 3, 100-bar k-means.</li>
-          <li>Momentum: Squeeze Momentum (LazyBear) 20 / 1.5. Bright green means positive and rising.</li>
-          <li>Confirmation: Lorentzian Classification (jdehorty) green arrow in the last 5 days.</li>
-          <li>Score out of 100: trend 40, squeeze 20, Lorentzian 20, market structure 20.</li>
-          <li>A buy signal on a thinly traded asset (under $5M a day, or EGP 1M on EGX) is shown as Hold and flagged.</li>
+          <li>US stocks and ETFs: hold while the price is above its 200-day average. Sell when it closes below. Tested 2021–today: 28% a year, Sharpe 1.37, worst drop −24% (your arrow system: 14%, 0.76, −27%).</li>
+          <li>Egypt: swing trend stack. Buy when the 50-day EMA is above the 200-day, ADX is above 20 and the price closes above its 20-day high. Sell on a 3 × ATR trailing stop or a close below the 50-day EMA. 2021–today: 40% a year, Sharpe 1.61, worst drop −30%; also best in 2016–2020.</li>
+          <li>Crypto: your AlgoAlpha green arrow + bright green squeeze, only when the weekly AlgoAlpha trend is green. Sell on the red arrow. It halved the worst drop (−30% vs −60%) at a lower return.</li>
         </ul>
       </div>
       <div>
         <h3>Verdicts</h3>
         <ul>
-          <li>Strong buy: green arrow in the last 3 days, bright green squeeze and a Lorentzian arrow.</li>
-          <li>Buy: green arrow in the last 3 days and bright green squeeze.</li>
-          <li>Hold: uptrend. Keep it with the stop at the SuperTrend line.</li>
-          <li>Sell: red arrow in the last 3 days.</li>
-          <li>Avoid: downtrend.</li>
+          <li>Strong buy: new entry in the last 3 days, confirmed by the weekly trend and by your arrow, a volume surge (Egypt) or a Lorentzian arrow (crypto).</li>
+          <li>Buy: new entry, or your arrow + bright squeeze with the weekly trend green inside an uptrend.</li>
+          <li>Hold: in an uptrend. Keep it with the stop shown. At the take-profit price, sell half and move the stop to your entry.</li>
+          <li>Sell: the rule exited in the last 3 days. Avoid: no uptrend.</li>
+          <li>A buy on a thinly traded asset (under $5M a day, or EGP 1M) is shown as Hold.</li>
         </ul>
       </div>
       <div>
-        <h3>What the tests showed</h3>
-        <p>On the Egyptian market this system beat buy and hold. On large US stocks it trailed buy and hold in return but roughly halved the worst drop. Exiting on the red arrow worked better than tighter stops. Past results do not guarantee future ones, and this is not financial advice.</p>
+        <h3>ML rank</h3>
+        <p>0–100 within each market: how likely the model thinks the asset is to beat its market over the next 20 trading days. It was retrained each year on past data only and tested on 2019–today: a small but steady edge (AUC 0.53–0.55). Use it to choose between signals on the same day, not as a signal on its own.</p>
       </div>
       <div>
         <h3>Halal screen</h3>
-        <p>US stocks worth over $2 billion pass an AAOIFI-style screen: no interest-based finance, alcohol, tobacco, gambling, pork, weapons, hotels or entertainment; debt and cash each under 30% of market value. Egyptian stocks are screened by business type only (no conventional banks, brokers, tobacco or hotels): check debt with the EGX33 Shariah index. Crypto leaves out stablecoins, wrapped tokens, meme coins, interest-bearing tokens and margin-exchange tokens; scholars differ on whether crypto is permissible. Check each asset with a Shariah screener before buying.</p>
+        <p>US stocks worth over $2 billion pass an AAOIFI-style screen: no interest-based finance, alcohol, tobacco, gambling, pork, weapons, hotels or entertainment; debt and cash each under 30% of market value. Egyptian stocks are screened by business type only (no conventional banks, brokers, tobacco or hotels): check debt with the EGX33 Shariah index. Crypto leaves out stablecoins, wrapped and staked tokens, meme coins, interest-bearing tokens and margin-exchange tokens; scholars differ on whether crypto is permissible. Check each asset with a Shariah screener before buying. Past results do not guarantee future ones, and this is not financial advice.</p>
       </div>
     </div>
   </section>
@@ -161,7 +162,8 @@
 
 <script>
 (function () {
-  const NUM = ['score', 'close', 'change_1d', 'stop', 'stop_distance', 'days_in_trend', 'system_cagr', 'hold_cagr', 'trades'];
+  const NUM = ['score', 'ml_score', 'ml_rank', 'close', 'change_1d', 'stop', 'stop_distance', 'take_profit', 'breakeven',
+               'days_in_trend', 'system_cagr', 'hold_cagr', 'trades'];
   const ORDER = { 'STRONG BUY': 0, 'BUY': 1, 'SELL': 2, 'HOLD': 3, 'AVOID': 4 };
   window.sbState = window.sbState || { kind: '', verdict: '', q: '', sort: null, dir: 1 };
   window.sbOrder = ORDER;
@@ -225,7 +227,7 @@ dash.draw('actions', (box) => {
   box.replaceChildren();
   if (!rows) { box.textContent = '—'; return; }
   const act = rows.filter((r) => ['STRONG BUY', 'BUY', 'SELL'].includes(r.verdict))
-    .sort((a, b) => window.sbOrder[a.verdict] - window.sbOrder[b.verdict] || b.score - a.score);
+    .sort((a, b) => window.sbOrder[a.verdict] - window.sbOrder[b.verdict] || (b.ml_rank || 0) - (a.ml_rank || 0));
   if (!act.length) {
     const p = document.createElement('p');
     p.className = 'sb-empty';
@@ -260,8 +262,11 @@ dash.draw('actions', (box) => {
       s.append(b);
       return s;
     };
-    line.append(item('Price ' + r.currency, f.price(r.close), 'close'), item('Stop', f.price(r.stop), 'stop'),
-                item('Score', String(r.score), 'score'), item('Squeeze', r.squeeze, 'squeeze'));
+    line.append(item('Price ' + r.currency, f.price(r.close), 'close'), item('Stop', f.price(r.stop), 'stop'));
+    if (Number.isFinite(r.take_profit)) line.append(item('Take half at', f.price(r.take_profit), 'take_profit'));
+    line.append(item('Weekly', r.weekly, 'weekly'));
+    if (Number.isFinite(r.ml_rank)) line.append(item('ML rank', String(r.ml_rank), 'ml_rank'));
+    line.append(item('Rule', r.strategy, 'strategy'));
     const why = document.createElement('p');
     why.className = 'sb-act-why';
     why.textContent = r.reason;
@@ -298,19 +303,11 @@ dash.draw('rows', (tbody) => {
     const tr = document.createElement('tr');
     const v = document.createElement('td');
     v.append(window.sbPill(r.verdict));
-    const sc = document.createElement('td');
-    const bar = document.createElement('span');
-    bar.className = 'sb-bar';
-    const i = document.createElement('i');
-    i.style.width = Math.max(2, r.score * 0.5) + 'px';
-    const t = document.createElement('span');
-    t.textContent = String(r.score);
-    bar.append(i, t);
-    sc.append(bar);
     const ch = td(f.pct(r.change_1d), 'num sb-hide-narrow ' + (r.change_1d > 0 ? 'sb-up' : r.change_1d < 0 ? 'sb-down' : ''));
     tr.append(
-      td(r.symbol, 'sb-sym'), td(r.name, 'sb-name sb-hide-narrow'), td(r.kind, 'sb-hide-narrow'), td(r.size || '', 'sb-hide-narrow'), v, sc,
-      td(f.price(r.close), 'num'), td(r.currency, 'sb-hide-narrow'), ch, td(f.price(r.stop), 'num'), td(f.pct(r.stop_distance), 'num sb-hide-narrow'),
+      td(r.symbol, 'sb-sym'), td(r.name, 'sb-name sb-hide-narrow'), td(r.kind, 'sb-hide-narrow'), td(r.size || '', 'sb-hide-narrow'), v, td(r.strategy, 'sb-hide-narrow'),
+      td(Number.isFinite(r.ml_rank) ? String(r.ml_rank) : '', 'num'), td(r.weekly, 'sb-hide-narrow'),
+      td(f.price(r.close), 'num'), td(r.currency, 'sb-hide-narrow'), ch, td(f.price(r.stop), 'num'), td(f.pct(r.stop_distance), 'num sb-hide-narrow'), td(Number.isFinite(r.take_profit) ? f.price(r.take_profit) : '', 'num sb-hide-narrow'),
       td(String(r.days_in_trend), 'num sb-hide-narrow'), td(r.squeeze, 'sb-hide-narrow'), td(r.lorentzian, 'sb-hide-narrow'),
       td(f.pct0(r.system_cagr), 'num sb-hide-narrow'), td(f.pct0(r.hold_cagr), 'num sb-hide-narrow'));
     tbody.append(tr);
@@ -342,7 +339,7 @@ dash.draw('rows', (tbody) => {
     btn.addEventListener('click', () => {
       const k = btn.dataset.sort;
       if (st.sort === k) st.dir = -st.dir;
-      else { st.sort = k; st.dir = ['symbol', 'name', 'kind', 'verdict', 'squeeze', 'lorentzian'].includes(k) ? 1 : -1; }
+      else { st.sort = k; st.dir = ['symbol', 'name', 'kind', 'size', 'currency', 'verdict', 'strategy', 'weekly', 'squeeze', 'lorentzian'].includes(k) ? 1 : -1; }
       document.querySelectorAll('.sb-table th').forEach((th) => th.removeAttribute('aria-sort'));
       const th = btn.closest('th');
       if (th) th.setAttribute('aria-sort', st.dir === 1 ? 'ascending' : 'descending');
