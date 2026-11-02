@@ -212,6 +212,10 @@ def analyse(args):
         "system_cagr": round(float(s_sys["cagr"]), 4), "system_max_dd": round(float(s_sys["max_dd"]), 4),
         "hold_cagr": round(float(s_bh["cagr"]), 4), "hold_max_dd": round(float(s_bh["max_dd"]), 4),
         "trades": n_tr, "as_of": str(df.index[-1].date()),
+        # confirmations for the buy explanation (see build_signal_evidence.py)
+        "chk_weekly": bool(weekly[-1]), "chk_trend": bool(st[-1] == 1), "chk_squeeze": bool(bright[-1]),
+        "chk_lor": lor5,
+        "signal_rule": ("Dashboard rule" if entered else "Your rule") if verdict in ("BUY", "STRONG BUY") else "",
     }
 
 
@@ -237,6 +241,80 @@ def ml_scores(raw, kinds):
     latest = panel.loc[panel.groupby("ticker")["date"].idxmax()]
     p = saved["model"].predict_proba(latest[saved["X"]])[:, 1]
     return dict(zip(latest.ticker, p))
+
+
+RULE_WHY = {
+    "US stock": "{s} closed back above its 200-day average: the buy signal of the 200-day trend rule, the rule that "
+                "tested best for US stocks (it rides long uptrends and steps aside in downtrends).",
+    "Halal ETF": "{s} closed back above its 200-day average: the buy signal of the 200-day trend rule.",
+    "EGX stock": "{s} broke above its 20-day high while its 50-day average is above its 200-day and the trend is "
+                 "strong (ADX above 20): the buy signal of the swing trend stack, the rule that tested best on EGX.",
+    "Crypto": "{s} gave your AlgoAlpha green arrow with the squeeze momentum bright green, and the weekly trend is "
+              "green: the crypto rule that tested best.",
+}
+USER_WHY = ("{s} is already in an uptrend and just gave your AlgoAlpha green arrow with the squeeze momentum bright "
+            "green, with the weekly trend green: a fresh push inside an existing trend.")
+
+
+def explain_buys(df, raw, kinds):
+    """For every BUY / STRONG BUY: why buy, a 5-point strength meter, how past signals like it did, and the plan."""
+    for c in ("strength", "strength_label", "why_buy", "checks", "evidence", "plan"):
+        df[c] = None if c == "strength" else ""
+    path = ROOT / "reports" / "signal_board" / "signal_evidence.csv"
+    ev = pd.read_csv(path) if path.exists() else pd.DataFrame()
+    close = raw["Close"]
+    spy = close["SPY"].dropna()
+    egx_cols = [t for t, k in kinds.items() if k == "EGX stock" and t in close]
+    egx = (1 + close[egx_cols].pct_change(fill_method=None).clip(-0.5, 0.5).mean(axis=1).fillna(0)).cumprod()
+    up200 = lambda x: bool(x.iloc[-1] > x.rolling(200).mean().iloc[-1])
+    backdrop = {"US": up200(spy), "EGX": up200(egx)}
+    market_of = {"US stock": "US", "Halal ETF": "US", "EGX stock": "EGX", "Crypto": "Crypto"}
+    for i in df.index[df.verdict.isin(["BUY", "STRONG BUY"])]:
+        r = df.loc[i]
+        mk = market_of[r.kind]
+        sym = r.symbol
+        if mk == "Crypto":
+            b_ok = r.get("liquidity") == "Rising"
+            b_txt = ("Fed liquidity is rising" if b_ok else "Fed liquidity is falling" if r.get("liquidity") else
+                     "Fed liquidity unknown")
+        else:
+            b_ok = backdrop[mk]
+            b_txt = ("The " + ("US market (S&P 500)" if mk == "US" else "Egyptian market") +
+                     (" is above its 200-day average" if b_ok else " is below its 200-day average"))
+        checks = [(bool(r.chk_weekly), "Weekly trend green" if r.chk_weekly else "Weekly trend red"),
+                  (bool(r.chk_trend), "Daily AlgoAlpha trend green" if r.chk_trend else "Daily AlgoAlpha trend red"),
+                  (bool(r.chk_squeeze), "Squeeze momentum bright green" if r.chk_squeeze else "Squeeze momentum not bright green"),
+                  (bool(r.chk_lor), "Lorentzian green arrow in the last 5 days" if r.chk_lor else "No Lorentzian green arrow in the last 5 days"),
+                  (bool(b_ok), b_txt)]
+        n = sum(ok for ok, _ in checks)
+        label = "Strong" if n >= 4 else "Medium" if n == 3 else "Weak"
+        rule_key = r.signal_rule or "Dashboard rule"
+        why = (USER_WHY if rule_key == "Your rule" else RULE_WHY[r.kind]).format(s=sym)
+        e = ev[(ev.market == mk) & (ev.rule == rule_key) & (ev.strength == label)] if len(ev) else ev
+        if len(e):
+            e = e.iloc[0]
+            evid = (f"Since 2016, {int(e.trades):,} past {mk} signals like this ({label.lower()}) won "
+                    f"{e.win_rate:.0%} of the time, average trade {e.avg_trade:+.1%}.")
+            if int(e.trades) < 30:
+                evid += " Few past cases, so treat this number with caution."
+            if mk == "US":
+                evid += " In US tests the strength meter did not change the win rate, so treat every US buy the same and follow the stop."
+            else:
+                evid += " In tests, stronger signals won more often in both 2016-2020 and 2021-today."
+        else:
+            evid = ""
+        risk = 1 - r.stop / r.close if r.close and r.stop == r.stop else np.nan   # share of price at risk
+        plan = f"Buy at the next session. Sell if it closes below {r.stop:,.2f}"
+        plan += f" ({risk:.0%} below today's price)." if np.isfinite(risk) else "."
+        if r.take_profit == r.take_profit and r.take_profit:
+            plan += (f" At {r.take_profit:,.2f} (+{r.take_profit / r.close - 1:.0%}) sell half and move the stop to "
+                     "your entry price.")
+        if np.isfinite(risk) and risk > 0.12:
+            plan += (f" The stop is far away ({risk:.0%}): use a smaller position so that being stopped out costs no "
+                     "more than 1-2% of your account.")
+        df.loc[i, ["strength", "strength_label", "why_buy", "evidence", "plan"]] = [n, label, why, evid, plan]
+        df.loc[i, "checks"] = ";".join(("yes|" if ok else "no|") + t for ok, t in checks)
+    df.drop(columns=["chk_weekly", "chk_trend", "chk_squeeze", "chk_lor", "signal_rule"], inplace=True)
 
 
 def main():
@@ -318,6 +396,7 @@ def main():
               f"Bitcoin on-chain {'rising' if liq.chain_rising.iloc[-1] == 'yes' else 'falling'}")
     except Exception as e:                                                # never block the daily scan
         print(f"warning: liquidity data unavailable ({e})")
+    explain_buys(df, raw, kinds)
     order = {"STRONG BUY": 0, "BUY": 1, "SELL": 2, "HOLD": 3, "AVOID": 4}
     df = df.sort_values(["verdict", "score"], key=lambda s: s.map(order) if s.name == "verdict" else -s)
     df.to_csv(OUT / "signals.csv", index=False)

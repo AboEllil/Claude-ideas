@@ -1,0 +1,18 @@
+market,rule,strength,trades,win_rate,avg_trade,win_2016_2020,trades_2016_2020,win_2021_today,trades_2021_today
+Crypto,Dashboard rule,Medium,13,0.3077,-0.0658,0.0,1,0.3333,12
+Crypto,Dashboard rule,Strong,95,0.6316,0.2556,0.8125,16,0.5949,79
+Crypto,Your rule,Medium,276,0.5326,0.0389,0.5932,59,0.5161,217
+Crypto,Your rule,Strong,216,0.6435,0.218,0.7391,46,0.6176,170
+Crypto,Your rule,Weak,94,0.4681,0.0733,0.5417,24,0.4429,70
+EGX,Dashboard rule,Medium,391,0.5038,0.0368,0.4746,59,0.509,332
+EGX,Dashboard rule,Strong,914,0.5492,0.0553,0.515,200,0.5588,714
+EGX,Dashboard rule,Weak,43,0.3953,-0.019,0.3333,15,0.4286,28
+EGX,Your rule,Medium,342,0.5731,0.0263,0.5229,109,0.5966,233
+EGX,Your rule,Strong,873,0.6128,0.0612,0.5635,181,0.6257,692
+EGX,Your rule,Weak,62,0.4677,-0.0,0.4651,43,0.4737,19
+US,Dashboard rule,Medium,1965,0.4107,0.0212,0.4313,793,0.3968,1172
+US,Dashboard rule,Strong,940,0.4223,0.0202,0.4252,381,0.4204,559
+US,Dashboard rule,Weak,4704,0.4179,0.0176,0.4632,1805,0.3898,2899
+US,Your rule,Medium,1062,0.581,0.0276,0.6441,413,0.5408,649
+US,Your rule,Strong,3042,0.5309,0.0121,0.5529,1201,0.5166,1841
+US,Your rule,Weak,298,0.6779,0.0553,0.8174,115,0.5902,183

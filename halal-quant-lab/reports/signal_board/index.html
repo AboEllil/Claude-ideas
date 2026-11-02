@@ -24,6 +24,22 @@
   .sb-act-row span { color: var(--color-fg-muted); }
   .sb .sb-act-row b { color: var(--color-fg); font-weight: 600; }
   .sb-act-why { margin: 0; font-size: var(--cds-font-size-caption); }
+  .sb-str { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .sb-str-dots { display: inline-flex; gap: 3px; }
+  .sb-str-dots i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid currentColor; box-sizing: border-box; }
+  .sb-str-dots i.on { background: currentColor; }
+  .sb-str-label { font-weight: 600; }
+  .sb-str--strong .sb-str-dots, .sb-str--strong .sb-str-label { color: var(--color-ok); }
+  .sb-str--medium .sb-str-dots, .sb-str--medium .sb-str-label { color: var(--color-warn); }
+  .sb-str--weak .sb-str-dots, .sb-str--weak .sb-str-label { color: var(--color-fg-muted); }
+  .sb-checks { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; font-size: var(--cds-font-size-caption); }
+  .sb-checks li { display: flex; gap: 6px; align-items: baseline; }
+  .sb-checks .ok { color: var(--color-ok); font-weight: 600; }
+  .sb-checks .no { color: var(--color-fg-muted); font-weight: 600; }
+  .sb-checks li.is-no { color: var(--color-fg-muted); }
+  .sb-act-h { margin: 4px 0 0; font-size: var(--cds-font-size-caption); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--color-fg-muted); }
+  .sb-act-ev, .sb-act-plan { margin: 0; font-size: var(--cds-font-size-caption); }
+  .sb-act-plan { padding: var(--cds-pad-xs) var(--cds-pad-sm); border-radius: var(--cds-radius); background: color-mix(in srgb, var(--color-fg) 5%, transparent); }
   .sb-empty { margin: 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
   .sb-pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: var(--cds-font-size-caption); font-weight: 600; white-space: nowrap; letter-spacing: .02em; }
   .sb-pill--strong { color: var(--color-ok); background: color-mix(in srgb, var(--color-ok) 20%, transparent); }
@@ -135,7 +151,7 @@
 
   <section class="sb-card" id="actions">
     <h2>Today's actions</h2>
-    <p class="sb-note">New buy and sell signals from the latest close. Orders are for the next session. Sell if the price closes below the stop. At the take-profit price, sell half and move the stop to your entry price (breakeven): in tests this raised the win rate from about 45% to 55–63%.</p>
+    <p class="sb-note">New buy and sell signals from the latest close. Every buy explains why, shows its strength (how many of 5 confirmations agree) and how often past signals like it won. Orders are for the next session. Sell if the price closes below the stop. At the take-profit price, sell half and move the stop to your entry price (breakeven): in tests this raised the win rate from about 45% to 55–63%.</p>
     <div class="sb-actions" data-draw="actions" data-source="signals"></div>
   </section>
 
@@ -170,6 +186,7 @@
             <th data-field="shariah" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="shariah">Shariah check</button></th>
             <th data-field="verdict"><button type="button" class="sb-sort" data-sort="verdict">Verdict</button></th>
             <th data-field="strategy" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="strategy">Rule</button></th>
+            <th data-field="strength_label" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="strength">Strength</button></th>
             <th data-field="ml_rank" class="num"><button type="button" class="sb-sort" data-sort="ml_rank">ML rank</button></th>
             <th data-field="weekly" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="weekly">Weekly</button></th>
             <th data-field="liquidity" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="liquidity">Liquidity</button></th>
@@ -213,6 +230,10 @@
         </ul>
       </div>
       <div>
+        <h3>Strength of a buy</h3>
+        <p>Each buy counts 5 confirmations: weekly trend green, daily AlgoAlpha trend green, squeeze momentum bright green, a Lorentzian green arrow in the last 5 days, and a supportive backdrop (the market above its 200-day average for US and Egypt, Fed liquidity rising for crypto). Strong = 4–5, Medium = 3, Weak = 0–2. On Egyptian stocks and crypto, stronger signals won more often in both 2016–2020 and 2021–today. On US stocks they did not, so there the strength is shown for information and every buy is treated the same. "Past signals like this" is how often signals of the same market, rule and strength won since 2016, with the same exits (half at +2 ATR, then stop at entry) and costs.</p>
+      </div>
+      <div>
         <h3>ML rank</h3>
         <p>0–100 within each market: how likely the model thinks the asset is to beat its market over the next 20 trading days. It was retrained each year on past data only and tested on 2019–today: a small but steady edge (AUC 0.53–0.55). Use it to choose between signals on the same day, not as a signal on its own.</p>
       </div>
@@ -230,7 +251,7 @@
 
 <script>
 (function () {
-  const NUM = ['score', 'ml_score', 'ml_rank', 'close', 'change_1d', 'stop', 'stop_distance', 'take_profit', 'breakeven',
+  const NUM = ['score', 'strength', 'ml_score', 'ml_rank', 'close', 'change_1d', 'stop', 'stop_distance', 'take_profit', 'breakeven',
                'days_in_trend', 'system_cagr', 'hold_cagr', 'trades'];
   const ORDER = { 'STRONG BUY': 0, 'BUY': 1, 'SELL': 2, 'HOLD': 3, 'AVOID': 4 };
   window.sbState = window.sbState || { kind: '', verdict: '', q: '', sort: null, dir: 1 };
@@ -336,11 +357,54 @@ dash.draw('actions', (box) => {
     if (r.liquidity) line.append(item('Fed liquidity', r.liquidity, 'liquidity'));
     if (Number.isFinite(r.ml_rank)) line.append(item('ML rank', String(r.ml_rank), 'ml_rank'));
     line.append(item('Rule', r.strategy, 'strategy'));
-    const why = document.createElement('p');
-    why.className = 'sb-act-why';
-    why.textContent = r.reason;
-    why.dataset.source = 'signals'; why.dataset.where = where; why.dataset.field = 'reason';
-    card.append(top, name, line, why);
+    const para = (cls, text, fieldName) => {
+      const p = document.createElement('p');
+      p.className = cls;
+      p.textContent = text;
+      p.dataset.source = 'signals'; p.dataset.where = where; p.dataset.field = fieldName;
+      return p;
+    };
+    const head = (text) => { const h = document.createElement('p'); h.className = 'sb-act-h'; h.textContent = text; return h; };
+    card.append(top, name, line);
+    if (r.why_buy) {
+      const n = Number(r.strength);
+      const lab = String(r.strength_label || '');
+      const str = document.createElement('div');
+      str.className = 'sb-str sb-str--' + lab.toLowerCase();
+      const dots = document.createElement('span');
+      dots.className = 'sb-str-dots';
+      dots.setAttribute('aria-hidden', 'true');
+      for (let k = 0; k < 5; k++) { const i = document.createElement('i'); if (k < n) i.className = 'on'; dots.append(i); }
+      const sl = document.createElement('span');
+      sl.className = 'sb-str-label';
+      sl.textContent = lab;
+      sl.dataset.source = 'signals'; sl.dataset.where = where; sl.dataset.field = 'strength_label';
+      const cnt = document.createElement('span');
+      cnt.textContent = (Number.isFinite(n) ? n : 0) + ' of 5 confirmations';
+      str.append(dots, sl, cnt);
+      card.append(str, head('Why buy'), para('sb-act-why', r.why_buy, 'why_buy'));
+      const ul = document.createElement('ul');
+      ul.className = 'sb-checks';
+      String(r.checks || '').split(';').filter(Boolean).forEach((c) => {
+        const [ok, text] = c.split('|');
+        const li = document.createElement('li');
+        if (ok !== 'yes') li.className = 'is-no';
+        const mark = document.createElement('span');
+        mark.className = ok === 'yes' ? 'ok' : 'no';
+        mark.textContent = ok === 'yes' ? '✓' : '✗';
+        mark.setAttribute('aria-label', ok === 'yes' ? 'yes' : 'no');
+        const t = document.createElement('span');
+        t.textContent = text;
+        li.append(mark, t);
+        ul.append(li);
+      });
+      card.append(head('Confirmations'), ul);
+      if (r.evidence) card.append(head('Past signals like this'), para('sb-act-ev', r.evidence, 'evidence'));
+      if (r.plan) card.append(head('Plan'), para('sb-act-plan', r.plan, 'plan'));
+      if (r.liquidity === 'Falling' && r.kind === 'Crypto') card.append(para('sb-act-why', r.reason, 'reason'));
+    } else {
+      card.append(para('sb-act-why', r.reason, 'reason'));
+    }
     box.append(card);
   });
 });
@@ -374,7 +438,7 @@ dash.draw('rows', (tbody) => {
     v.append(window.sbPill(r.verdict));
     const ch = td(f.pct(r.change_1d), 'num sb-hide-narrow ' + (r.change_1d > 0 ? 'sb-up' : r.change_1d < 0 ? 'sb-down' : ''));
     tr.append(
-      td(r.symbol, 'sb-sym'), td(r.name, 'sb-name sb-hide-narrow'), td(r.kind, 'sb-hide-narrow'), td(r.size || '', 'sb-hide-narrow'), td(r.shariah || '', 'sb-name sb-hide-narrow'), v, td(r.strategy, 'sb-hide-narrow'),
+      td(r.symbol, 'sb-sym'), td(r.name, 'sb-name sb-hide-narrow'), td(r.kind, 'sb-hide-narrow'), td(r.size || '', 'sb-hide-narrow'), td(r.shariah || '', 'sb-name sb-hide-narrow'), v, td(r.strategy, 'sb-hide-narrow'), td(r.strength_label || '', 'sb-hide-narrow'),
       td(Number.isFinite(r.ml_rank) ? String(r.ml_rank) : '', 'num'), td(r.weekly, 'sb-hide-narrow'), td(r.liquidity || '', 'sb-hide-narrow'),
       td(f.price(r.close), 'num'), td(r.currency, 'sb-hide-narrow'), ch, td(f.price(r.stop), 'num'), td(f.pct(r.stop_distance), 'num sb-hide-narrow'), td(Number.isFinite(r.take_profit) ? f.price(r.take_profit) : '', 'num sb-hide-narrow'),
       td(String(r.days_in_trend), 'num sb-hide-narrow'), td(r.squeeze, 'sb-hide-narrow'), td(r.lorentzian, 'sb-hide-narrow'),

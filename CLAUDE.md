@@ -44,6 +44,11 @@ Squeeze 20 / 1.5) are best - tuning settings overfits.
   stablecoin supply, BTC on-chain volume as filters/timing: all FAILED except BTC timing on stablecoin growth
   (2021+ only, weak). Crypto signals while Fed liquidity rising: 73%/63% win vs 54%/46% falling (both periods)
   but Sharpe not higher -> forward-track only. Whale exchange-flow data is paid.
+- Buy strength meter (build_signal_evidence.py -> reports/signal_board/signal_evidence.csv): 5 confirmations
+  (weekly green, daily AlgoAlpha green, bright squeeze, Lorentzian arrow 5d, backdrop = market > 200d / crypto Fed
+  liquidity rising); Strong 4-5 / Medium 3 / Weak 0-2. Stronger won more often in BOTH periods on EGX and crypto
+  (e.g. crypto your-rule Strong 74%/62% vs Weak 54%/44%), NOT on US (flat or reversed). Every BUY on the
+  dashboard shows why_buy, checks, evidence, plan (columns in signals.csv).
 - ML forecaster (gradient boosting, walk-forward, yearly retrain, 30-day embargo): AUC 0.53-0.55
   every year - small steady edge; used only as a **0-100 ranking** (tie-breaker), not a signal.
 - Buy & hold of halal stocks beat every signal on raw return in 2021-2026 (bull market).
