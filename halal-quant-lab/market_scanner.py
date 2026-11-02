@@ -298,6 +298,26 @@ def main():
     short = df.symbol.str.replace(r"\.CA$", "", regex=True).str.replace(r"\d*-USD$", "", regex=True)
     dup = short.duplicated(keep=False)
     df["symbol"] = np.where(dup, df.symbol, short)
+    # Liquidity tag for crypto (forward-tracked, information only - see reports/liquidity2/REPORT.md)
+    df["liquidity"] = ""
+    try:
+        from lab.liquidity import export_csv
+        liq = export_csv()
+        fed = liq.fed_rising.replace("", np.nan).dropna().iloc[-1]
+        word = "Rising" if fed == "yes" else "Falling"
+        crypto_rows = df.kind == "Crypto"
+        df.loc[crypto_rows, "liquidity"] = word
+        ev = pd.read_csv(ROOT / "reports" / "signal_board" / "liquidity_evidence.csv")
+        ev = ev[ev.period == "2021-today"].set_index("liquidity").win_rate
+        if word == "Falling":
+            note = (f" Fed liquidity is falling: in tests crypto signals won {ev['Falling']:.0%} of the time then, vs "
+                    f"{ev['Rising']:.0%} when rising - consider a smaller position.")
+            buys = crypto_rows & df.verdict.isin(["BUY", "STRONG BUY"])
+            df.loc[buys, "reason"] = df.loc[buys, "reason"] + note
+        print(f"Liquidity: Fed {word.lower()}, stablecoins {'rising' if liq.stable_rising.iloc[-1] == 'yes' else 'falling'}, "
+              f"Bitcoin on-chain {'rising' if liq.chain_rising.iloc[-1] == 'yes' else 'falling'}")
+    except Exception as e:                                                # never block the daily scan
+        print(f"warning: liquidity data unavailable ({e})")
     order = {"STRONG BUY": 0, "BUY": 1, "SELL": 2, "HOLD": 3, "AVOID": 4}
     df = df.sort_values(["verdict", "score"], key=lambda s: s.map(order) if s.name == "verdict" else -s)
     df.to_csv(OUT / "signals.csv", index=False)

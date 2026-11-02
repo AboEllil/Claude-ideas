@@ -26,13 +26,11 @@ PRE-REGISTERED PASS RULES
   universe, crypto = Bitcoin. Passes if Sharpe is higher AND max drawdown smaller than buy & hold in
   every judged period (same periods as above). Shown next to the 200-day rule for comparison.
 """
-import io
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import requests
-
+from lab.liquidity import regimes
 from lab.metrics import stats
 from lab.universe import DATA
 from run_ml_signals import MARKETS, trade_stats
@@ -46,36 +44,6 @@ PERIODS = dict(PERIODS, **{"2020 (info)": ("2020-01-01", "2020-12-31")})
 def pstats(r, market, period):
     a, b = PERIODS[period]
     return stats(r.loc[a:b], year=365 if market == "Crypto" else 252)
-
-
-def fred(series):
-    d = pd.read_csv(io.StringIO(requests.get(f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}", timeout=60).text))
-    d.columns = ["date", "v"]
-    return pd.Series(pd.to_numeric(d.v, errors="coerce").to_numpy(), index=pd.to_datetime(d.date)).dropna()
-
-
-def regimes():
-    bd = pd.bdate_range("2012-01-01", pd.Timestamp.today())
-    walcl, tga = fred("WALCL"), fred("WTREGEN")
-    walcl.index, tga.index = walcl.index + pd.Timedelta(days=2), tga.index + pd.Timedelta(days=2)   # usable Friday
-    rrp = fred("RRPONTSYD") * 1000
-    rrp.index = rrp.index + pd.offsets.BDay(1)
-    al = lambda s: s.reindex(s.index.union(bd)).ffill().reindex(bd)
-    nl = al(walcl) - al(tga) - al(rrp).fillna(0)
-    fed_on = (nl > nl.rolling(65).mean()).where(nl.rolling(65).mean().notna())
-
-    js = requests.get("https://stablecoins.llama.fi/stablecoincharts/all", timeout=60).json()
-    sc = pd.Series({pd.to_datetime(int(x["date"]), unit="s"): x["totalCirculatingUSD"].get("peggedUSD", np.nan)
-                    for x in js}).sort_index()
-    sc.index = sc.index + pd.Timedelta(days=1)                                   # day's total known next day
-    stable_on = (sc > sc.shift(30)).where(sc.shift(30).notna() & (sc.index >= "2020-01-01"))
-
-    js = requests.get("https://api.blockchain.info/charts/estimated-transaction-volume-usd?timespan=all&format=json"
-                      "&sampled=false", timeout=120).json()
-    ch = pd.Series({pd.to_datetime(p["x"], unit="s"): p["y"] for p in js["values"]}).sort_index()
-    ch.index = ch.index + pd.Timedelta(days=1)
-    chain_on = (ch.rolling(30).mean() > ch.rolling(90).mean()).where(ch.rolling(90).mean().notna())
-    return {"FED": fed_on, "STABLE": stable_on, "CHAIN": chain_on}, nl, sc, ch
 
 
 def at(series, dates):
@@ -102,6 +70,7 @@ def main():
     names = {"FED": "Fed net liquidity above its 13-week average", "STABLE": "Stablecoin supply up over 30 days",
              "CHAIN": "Bitcoin on-chain volume: 30-day avg above 90-day avg"}
     verdicts = {}
+    evidence = []
     for k, (judged, pers, info) in plan.items():
         md += [f"## Filter: {names[k]}", "",
                "| Market | Period | Signals | Trades | Win rate | Avg trade | Profit factor | CAGR | Sharpe | Max DD |",
@@ -117,6 +86,9 @@ def main():
                 for nm, x in (("All", d), ("Regime ON", d[d[k] > 0.5]), ("Regime OFF", d[d[k] <= 0.5])):
                     t, s = trade_stats(x), pstats(returns(x, idx_map, closes[mk], mk), mk, per)
                     out[nm] = (t, s)
+                    evidence.append({"measure": k, "market": mk, "period": per, "group": nm, "trades": t["n"],
+                                     "win_rate": round(t["win"], 4) if t["n"] else None,
+                                     "avg_trade": round(t["avg"], 4) if t["n"] else None})
                     md.append(f"| {mk} | {per} | {nm} | {t['n']} | {t['win']:.0%} | {t['avg']:+.1%} | {t['pf']:.2f} | "
                               f"{s['cagr']:.1%} | {s['sharpe']:.2f} | {s['max_dd']:.0%} |")
                 if per in pers:
@@ -166,6 +138,7 @@ def main():
                f"({'ON' if reg['FED'].dropna().iloc[-1] else 'OFF'}); stablecoins ${sc.dropna().iloc[-1] / 1e9:.0f} billion "
                f"({'ON' if reg['STABLE'].dropna().iloc[-1] else 'OFF'}); Bitcoin on-chain "
                f"{'ON' if reg['CHAIN'].dropna().iloc[-1] else 'OFF'}."]
+    pd.DataFrame(evidence).to_csv(OUT / "evidence.csv", index=False)
     (OUT / "REPORT.md").write_text("\n".join(md) + "\n")
     print("\n".join(md))
 

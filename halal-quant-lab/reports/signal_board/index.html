@@ -53,6 +53,33 @@
   .sb-how h3 { margin: 0 0 4px; font-size: var(--cds-font-size-body); font-weight: 600; }
   .sb-how p, .sb-how li { margin: 0; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .sb-how ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 3px; }
+  .lq-verdict { margin: 0; display: flex; gap: var(--cds-gap-sm); align-items: baseline; font-size: var(--cds-font-size-body); max-width: 75ch; }
+  .lq-verdict-icon { font-size: var(--cds-font-size-heading); line-height: 1; }
+  .lq-verdict--on .lq-verdict-icon { color: var(--color-ok); }
+  .lq-verdict--off .lq-verdict-icon { color: var(--color-bad); }
+  .sb .lq-verdict b { font-weight: 600; }
+  .lq-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: var(--cds-gap-md); }
+  .lq-card { display: grid; gap: var(--cds-gap-xs); align-content: start; padding: var(--cds-pad-md); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); min-width: 0; }
+  .lq-top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--cds-gap-sm); }
+  .lq-card h3, .lq-evidence h3 { margin: 0; font-size: var(--cds-font-size-body); font-weight: 600; }
+  .lq-status { display: inline-flex; align-items: baseline; gap: 4px; padding: 1px 8px; border-radius: 999px; font-size: var(--cds-font-size-caption); font-weight: 600; white-space: nowrap; color: var(--color-fg-muted); background: color-mix(in srgb, var(--color-fg-muted) 10%, transparent); }
+  .lq-status.lq-up { color: var(--color-ok); background: color-mix(in srgb, var(--color-ok) 14%, transparent); }
+  .lq-status.lq-down { color: var(--color-bad); background: color-mix(in srgb, var(--color-bad) 14%, transparent); }
+  .lq-big { margin: 0; font-family: var(--font-anthropic-serif); font-size: var(--cds-font-size-title); font-weight: 400; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .lq-big small { font-family: var(--font-anthropic-sans); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .sb .lq-big b { font-weight: 400; }
+  .lq-chart, .lq-ev-chart { position: relative; min-height: 150px; }
+  .lq-ev-chart { min-height: 120px; }
+  .lq-chart svg, .lq-ev-chart svg { display: block; overflow: visible; }
+  .lq-tip { position: absolute; top: 0; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; white-space: nowrap; z-index: 2; }
+  .lq-tip .lq-tip-date { color: var(--cds-text-secondary); }
+  .lq-key { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm) var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .lq-key span { display: inline-flex; align-items: center; gap: 6px; }
+  .lq-key i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
+  .lq-key .lq-key-band { background: color-mix(in srgb, var(--color-ok) 16%, transparent); }
+  .lq-key .lq-key-ref { width: 16px; height: 0; border-top: 2px dashed var(--cds-chart-reference); border-radius: 0; }
+  .lq-evidence { display: grid; gap: var(--cds-gap-xs); padding: var(--cds-pad-md); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); min-width: 0; }
+  [data-dash-source-state=empty] { color: transparent; }
   [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
   @media (max-width: 720px) { .sb-hide-narrow { display: none; } }
 </style>
@@ -69,6 +96,41 @@
     <div class="sb-tile sb-tile--sell"><span class="sb-tile-label">Sell</span><span class="sb-tile-num" data-draw="n-sell" data-source="summary" data-field="sell" data-row="0">—</span><span class="sb-tile-note">The market's rule exited in the last 3 days</span></div>
     <div class="sb-tile"><span class="sb-tile-label">Hold</span><span class="sb-tile-num" data-draw="n-hold" data-source="summary" data-field="hold" data-row="0">—</span><span class="sb-tile-note">In an uptrend, keep if you own it</span></div>
     <div class="sb-tile"><span class="sb-tile-label">Avoid</span><span class="sb-tile-num" data-draw="n-avoid" data-source="summary" data-field="avoid" data-row="0">—</span><span class="sb-tile-note">In a downtrend, wait</span></div>
+  </section>
+
+  <section class="sb-card" id="liquidity">
+    <h2>Market liquidity</h2>
+    <p class="sb-note">Is money flowing into markets or out of them? Three free public measures, updated every day, as of <b data-draw="lq-date" data-source="liquidity_now" data-field="date" data-row="0">—</b>. Green shading on a chart marks the periods when that measure was rising.</p>
+    <p class="lq-verdict lq-verdict--on" data-lq-verdict="on" hidden><span class="lq-verdict-icon" aria-hidden="true">▲</span><span><b>Liquidity is supportive.</b> Fed liquidity is rising. Crypto buy signals have won more often in conditions like this.</span></p>
+    <p class="lq-verdict lq-verdict--off" data-lq-verdict="off" hidden><span class="lq-verdict-icon" aria-hidden="true">▼</span><span><b>Liquidity is tight.</b> Fed liquidity is falling. Crypto buy signals have won less often in conditions like this, so consider smaller positions on new crypto buys.</span></p>
+    <span data-draw="lq-verdict" data-source="liquidity_now"></span>
+    <div class="lq-grid">
+      <div class="lq-card">
+        <div class="lq-top"><h3>Fed liquidity</h3><span class="lq-status" data-lq-status="fed"><span data-draw="lq-icon-fed" aria-hidden="true"></span><span data-draw="lq-state-fed" data-source="liquidity_now" data-field="fed_state" data-row="0">—</span></span></div>
+        <p class="lq-big">$<b data-draw="lq-val-fed" data-source="liquidity_now" data-field="fed_value" data-row="0">—</b> <small>trillion</small></p>
+        <p class="sb-note">The Fed's balance sheet minus the Treasury's cash account minus reverse repo: the money actually in the system. Rising = above its 13-week average (dashed line). This is the measure that mattered most in the crypto tests.</p>
+        <div class="lq-chart" data-draw="lq-chart-fed" data-source="liquidity"></div>
+      </div>
+      <div class="lq-card">
+        <div class="lq-top"><h3>Stablecoin money</h3><span class="lq-status" data-lq-status="stable"><span data-draw="lq-icon-stable" aria-hidden="true"></span><span data-draw="lq-state-stable" data-source="liquidity_now" data-field="stable_state" data-row="0">—</span></span></div>
+        <p class="lq-big">$<b data-draw="lq-val-stable" data-source="liquidity_now" data-field="stable_value" data-row="0">—</b> <small>billion</small></p>
+        <p class="sb-note">All dollar stablecoins in circulation: the cash waiting inside crypto. Rising = more than 30 days earlier (dashed line).</p>
+        <div class="lq-chart" data-draw="lq-chart-stable" data-source="liquidity"></div>
+      </div>
+      <div class="lq-card">
+        <div class="lq-top"><h3>Bitcoin on-chain activity</h3><span class="lq-status" data-lq-status="chain"><span data-draw="lq-icon-chain" aria-hidden="true"></span><span data-draw="lq-state-chain" data-source="liquidity_now" data-field="chain_state" data-row="0">—</span></span></div>
+        <p class="lq-big">$<b data-draw="lq-val-chain" data-source="liquidity_now" data-field="chain_value" data-row="0">—</b> <small>billion a day</small></p>
+        <p class="sb-note">Dollar value moved on the Bitcoin network, 30-day average: a free stand-in for whale activity. Rising = above its 90-day average (dashed line).</p>
+        <div class="lq-chart" data-draw="lq-chart-chain" data-source="liquidity"></div>
+      </div>
+    </div>
+    <div class="lq-key" aria-hidden="true"><span><i class="lq-key-band"></i>Rising period</span><span><i class="lq-key-ref"></i>Comparison line</span></div>
+    <div class="lq-evidence">
+      <h3>Does it matter? Crypto buy signals by Fed liquidity</h3>
+      <p class="sb-note">Share of crypto buy signals that made money (sell half at +2 ATR, then stop at entry), with the average trade. The gap held in both test periods, but a strict pre-set test did not pass, so it is shown as information and tracked forward from November 2026. It is not a buy or sell rule.</p>
+      <div class="lq-key"><span><i data-lq-swatch="0"></i>Liquidity rising</span><span><i data-lq-swatch="1"></i>Liquidity falling</span></div>
+      <div class="lq-ev-chart" data-draw="lq-evidence" data-source="liquidity_evidence"></div>
+    </div>
   </section>
 
   <section class="sb-card" id="actions">
@@ -110,6 +172,7 @@
             <th data-field="strategy" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="strategy">Rule</button></th>
             <th data-field="ml_rank" class="num"><button type="button" class="sb-sort" data-sort="ml_rank">ML rank</button></th>
             <th data-field="weekly" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="weekly">Weekly</button></th>
+            <th data-field="liquidity" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="liquidity">Liquidity</button></th>
             <th data-field="close" class="num"><button type="button" class="sb-sort" data-sort="close">Price</button></th>
             <th data-field="currency" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="currency">Cur.</button></th>
             <th data-field="change_1d" class="num sb-hide-narrow"><button type="button" class="sb-sort" data-sort="change_1d">1 day</button></th>
@@ -152,6 +215,10 @@
       <div>
         <h3>ML rank</h3>
         <p>0–100 within each market: how likely the model thinks the asset is to beat its market over the next 20 trading days. It was retrained each year on past data only and tested on 2019–today: a small but steady edge (AUC 0.53–0.55). Use it to choose between signals on the same day, not as a signal on its own.</p>
+      </div>
+      <div>
+        <h3>Market liquidity</h3>
+        <p>Fed liquidity, stablecoin money and Bitcoin on-chain activity, from FRED, DefiLlama and blockchain.info. Crypto signals taken while Fed liquidity was rising won far more often in both test periods (2016–2020 and 2021–today), but a strict pre-set test did not pass, so this is a confidence label, not a rule. Crypto rows show "Rising" or "Falling"; on a falling reading, consider a smaller position.</p>
       </div>
       <div>
         <h3>Halal screen</h3>
@@ -266,6 +333,7 @@ dash.draw('actions', (box) => {
     line.append(item('Price ' + r.currency, f.price(r.close), 'close'), item('Stop', f.price(r.stop), 'stop'));
     if (Number.isFinite(r.take_profit)) line.append(item('Take half at', f.price(r.take_profit), 'take_profit'));
     line.append(item('Weekly', r.weekly, 'weekly'));
+    if (r.liquidity) line.append(item('Fed liquidity', r.liquidity, 'liquidity'));
     if (Number.isFinite(r.ml_rank)) line.append(item('ML rank', String(r.ml_rank), 'ml_rank'));
     line.append(item('Rule', r.strategy, 'strategy'));
     const why = document.createElement('p');
@@ -307,7 +375,7 @@ dash.draw('rows', (tbody) => {
     const ch = td(f.pct(r.change_1d), 'num sb-hide-narrow ' + (r.change_1d > 0 ? 'sb-up' : r.change_1d < 0 ? 'sb-down' : ''));
     tr.append(
       td(r.symbol, 'sb-sym'), td(r.name, 'sb-name sb-hide-narrow'), td(r.kind, 'sb-hide-narrow'), td(r.size || '', 'sb-hide-narrow'), td(r.shariah || '', 'sb-name sb-hide-narrow'), v, td(r.strategy, 'sb-hide-narrow'),
-      td(Number.isFinite(r.ml_rank) ? String(r.ml_rank) : '', 'num'), td(r.weekly, 'sb-hide-narrow'),
+      td(Number.isFinite(r.ml_rank) ? String(r.ml_rank) : '', 'num'), td(r.weekly, 'sb-hide-narrow'), td(r.liquidity || '', 'sb-hide-narrow'),
       td(f.price(r.close), 'num'), td(r.currency, 'sb-hide-narrow'), ch, td(f.price(r.stop), 'num'), td(f.pct(r.stop_distance), 'num sb-hide-narrow'), td(Number.isFinite(r.take_profit) ? f.price(r.take_profit) : '', 'num sb-hide-narrow'),
       td(String(r.days_in_trend), 'num sb-hide-narrow'), td(r.squeeze, 'sb-hide-narrow'), td(r.lorentzian, 'sb-hide-narrow'),
       td(f.pct0(r.system_cagr), 'num sb-hide-narrow'), td(f.pct0(r.hold_cagr), 'num sb-hide-narrow'));
@@ -340,7 +408,7 @@ dash.draw('rows', (tbody) => {
     btn.addEventListener('click', () => {
       const k = btn.dataset.sort;
       if (st.sort === k) st.dir = -st.dir;
-      else { st.sort = k; st.dir = ['symbol', 'name', 'kind', 'size', 'shariah', 'currency', 'verdict', 'strategy', 'weekly', 'squeeze', 'lorentzian'].includes(k) ? 1 : -1; }
+      else { st.sort = k; st.dir = ['symbol', 'name', 'kind', 'size', 'shariah', 'currency', 'verdict', 'strategy', 'weekly', 'liquidity', 'squeeze', 'lorentzian'].includes(k) ? 1 : -1; }
       document.querySelectorAll('.sb-table th').forEach((th) => th.removeAttribute('aria-sort'));
       const th = btn.closest('th');
       if (th) th.setAttribute('aria-sort', st.dir === 1 ? 'ascending' : 'descending');
@@ -348,4 +416,186 @@ dash.draw('rows', (tbody) => {
     });
   });
 })();
+</script>
+
+<script>
+dash.calc('liquidity_now', {
+  inputs: ['liquidity'],
+  title: 'Latest liquidity readings',
+  description: 'The most recent row of the liquidity data, each measure shown as Rising or Falling.',
+  fn: (liquidity) => {
+    const r = liquidity[liquidity.length - 1];
+    const word = (v) => (v === 'yes' ? 'Rising' : v === 'no' ? 'Falling' : 'Unknown');
+    return [{ date: r.date, fed_value: Number(Number(r.fed_value).toFixed(2)), fed_state: word(r.fed_rising),
+              stable_value: Math.round(Number(r.stable_value)), stable_state: word(r.stable_rising),
+              chain_value: Number(Number(r.chain_value).toFixed(1)), chain_state: word(r.chain_rising) }];
+  },
+});
+
+(function () {
+  const now = () => { const s = dash.data('liquidity_now'); return s.status === 'ok' && s.data && s.data[0] ? s.data[0] : null; };
+  document.querySelectorAll('[data-lq-swatch]').forEach((el) => {
+    el.style.background = el.dataset.lqSwatch === '0' ? dash.colors[0] : 'var(--cds-chart-muted)';
+  });
+  dash.draw('lq-date', (el) => { const r = now(); el.textContent = r ? d3.utcFormat('%b %-d, %Y')(new Date(r.date + 'T00:00:00Z')) : '—'; });
+  dash.draw('lq-verdict', () => {
+    const r = now();
+    const want = r ? (r.fed_state === 'Rising' ? 'on' : r.fed_state === 'Falling' ? 'off' : '') : '';
+    document.querySelectorAll('[data-lq-verdict]').forEach((p) => { p.hidden = p.dataset.lqVerdict !== want; });
+  });
+  ['fed', 'stable', 'chain'].forEach((k) => {
+    dash.draw('lq-state-' + k, (el) => {
+      const r = now();
+      const st = r ? r[k + '_state'] : '';
+      el.textContent = r ? st : '—';
+      document.querySelectorAll('[data-lq-status="' + k + '"]').forEach((b) => {
+        b.classList.toggle('lq-up', st === 'Rising');
+        b.classList.toggle('lq-down', st === 'Falling');
+      });
+    });
+    dash.draw('lq-icon-' + k, (el) => { const r = now(); const st = r ? r[k + '_state'] : ''; el.textContent = st === 'Rising' ? '▲' : st === 'Falling' ? '▼' : ''; });
+    dash.draw('lq-val-' + k, (el) => {
+      const r = now();
+      el.textContent = r ? d3.format(k === 'stable' ? ',.0f' : k === 'fed' ? '.2f' : '.1f')(r[k + '_value']) : '—';
+    });
+  });
+})();
+</script>
+
+<script>
+(function () {
+  const OPTS = {
+    fed: { unit: (v) => '$' + d3.format('.2f')(v) + 'T', ref: '13-week average', label: 'Fed net liquidity, last 3 years' },
+    stable: { unit: (v) => '$' + d3.format(',.0f')(v) + 'B', ref: '30 days earlier', label: 'Stablecoins in circulation, last 3 years' },
+    chain: { unit: (v) => '$' + d3.format('.1f')(v) + 'B', ref: '90-day average', label: 'Bitcoin on-chain value moved, last 3 years' },
+  };
+  const H = 150;
+  function draw(el, k) {
+    const d = dash.data('liquidity');
+    el.replaceChildren();
+    if (d.status !== 'ok') { el.textContent = '—'; return; }
+    const o = OPTS[k];
+    const num = (x) => (x === '' || x == null ? NaN : Number(x));
+    const rows = d.data.map((r) => ({ date: new Date(r.date + 'T00:00:00Z'), v: num(r[k + '_value']), ref: num(r[k + '_ref']), on: r[k + '_rising'] }))
+      .filter((r) => Number.isFinite(r.v));
+    if (rows.length < 2) { el.textContent = '—'; return; }
+    const W = Math.max(220, el.clientWidth);
+    const vals = rows.flatMap((r) => [r.v, r.ref]).filter(Number.isFinite);
+    const y = d3.scaleLinear(d3.extent(vals), [H - 22, 8]).nice(4);
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`)
+      .attr('role', 'img').attr('aria-label', o.label);
+    const yt = y.ticks(4);
+    const probe = svg.append('g').style('font-size', 'var(--cds-font-size-caption)');
+    let wmax = 0;
+    yt.forEach((t) => { const n = probe.append('text').text(o.unit(t)); wmax = Math.max(wmax, n.node().getComputedTextLength()); });
+    probe.remove();
+    const m = { l: Math.ceil(wmax) + 10, r: 10, t: 8, b: 22 };
+    const x = d3.scaleUtc(d3.extent(rows, (r) => r.date), [m.l, W - m.r]);
+    // rising periods
+    const bands = [];
+    let start = null;
+    rows.forEach((r, i) => {
+      if (r.on === 'yes' && start === null) start = r.date;
+      const end = r.on !== 'yes' || i === rows.length - 1;
+      if (start !== null && end) { bands.push([start, r.date]); start = null; }
+    });
+    svg.append('g').selectAll('rect').data(bands).join('rect')
+      .attr('x', (b) => x(b[0])).attr('width', (b) => Math.max(1, x(b[1]) - x(b[0])))
+      .attr('y', m.t).attr('height', H - m.b - m.t)
+      .style('fill', 'color-mix(in srgb, var(--color-ok) 16%, transparent)');
+    const g = svg.append('g');
+    g.selectAll('line').data(yt).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y)
+      .style('stroke', 'var(--cds-chart-grid)').attr('stroke-width', 1);
+    g.selectAll('text').data(yt).join('text').attr('x', m.l - 6).attr('y', y).attr('dy', '0.32em').attr('text-anchor', 'end')
+      .style('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)').text(o.unit);
+    const xt = x.ticks(W < 360 ? 3 : 5);
+    svg.append('g').selectAll('text').data(xt).join('text').attr('x', x).attr('y', H - 6).attr('text-anchor', 'middle')
+      .style('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)').text(d3.utcFormat(W < 360 ? '%Y' : '%b %Y'));
+    svg.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', H - m.b).attr('y2', H - m.b).style('stroke', 'var(--cds-chart-axis)');
+    const lineRef = d3.line().defined((r) => Number.isFinite(r.ref)).x((r) => x(r.date)).y((r) => y(r.ref));
+    const lineV = d3.line().x((r) => x(r.date)).y((r) => y(r.v));
+    svg.append('path').attr('d', lineRef(rows)).attr('fill', 'none').style('stroke', 'var(--cds-chart-reference)')
+      .attr('stroke-width', 1.5).attr('stroke-dasharray', '4 3');
+    svg.append('path').attr('d', lineV(rows)).attr('fill', 'none').style('stroke', dash.colors[0])
+      .attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
+    const last = rows[rows.length - 1];
+    svg.append('circle').attr('cx', x(last.date)).attr('cy', y(last.v)).attr('r', 4)
+      .style('fill', dash.colors[0]).style('stroke', 'var(--color-bg)').attr('stroke-width', 2);
+    // hover: crosshair + tooltip
+    const rule = svg.append('line').attr('y1', m.t).attr('y2', H - m.b).style('stroke', 'var(--cds-chart-axis)').attr('opacity', 0);
+    const dot = svg.append('circle').attr('r', 4).style('fill', dash.colors[0]).style('stroke', 'var(--color-bg)').attr('stroke-width', 2).attr('opacity', 0);
+    const tip = d3.select(el).append('div').attr('class', 'lq-tip').style('display', 'none');
+    const bis = d3.bisector((r) => r.date).center;
+    svg.append('rect').attr('x', m.l).attr('y', 0).attr('width', W - m.l - m.r).attr('height', H).attr('fill', 'transparent')
+      .on('pointermove', (ev) => {
+        const [px] = d3.pointer(ev, svg.node());
+        const r = rows[bis(rows, x.invert(px))];
+        rule.attr('x1', x(r.date)).attr('x2', x(r.date)).attr('opacity', 1);
+        dot.attr('cx', x(r.date)).attr('cy', y(r.v)).attr('opacity', 1);
+        tip.style('display', null).selectAll('*').remove();
+        tip.append('div').attr('class', 'lq-tip-date').text(d3.utcFormat('%b %-d, %Y')(r.date));
+        tip.append('div').text('Value ' + o.unit(r.v));
+        if (Number.isFinite(r.ref)) tip.append('div').text(o.ref + ' ' + o.unit(r.ref));
+        tip.append('div').text(r.on === 'yes' ? '▲ Rising' : r.on === 'no' ? '▼ Falling' : '');
+        const scale = el.clientWidth / W;
+        const tw = tip.node().offsetWidth;
+        const left = Math.min(Math.max(0, x(r.date) * scale + 10), el.clientWidth - tw);
+        tip.style('left', (x(r.date) * scale + 10 + tw > el.clientWidth ? Math.max(0, x(r.date) * scale - tw - 10) : left) + 'px');
+      })
+      .on('pointerleave', () => { rule.attr('opacity', 0); dot.attr('opacity', 0); tip.style('display', 'none'); });
+  }
+  ['fed', 'stable', 'chain'].forEach((k) => dash.draw('lq-chart-' + k, (el) => draw(el, k)));
+})();
+</script>
+
+<script>
+dash.draw('lq-evidence', (el) => {
+  const d = dash.data('liquidity_evidence');
+  el.replaceChildren();
+  if (d.status !== 'ok') { el.textContent = '—'; return; }
+  const rows = d.data.map((r) => ({ period: r.period, liq: r.liquidity, n: Number(r.trades), win: Number(r.win_rate), avg: Number(r.avg_trade) }));
+  const periods = [...new Set(rows.map((r) => r.period))];
+  const order = ['Rising', 'Falling'];
+  const W = Math.max(260, el.clientWidth);
+  const bar = 18, gap = 6, ggap = 16;
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('role', 'img')
+    .attr('aria-label', 'Win rate of crypto buy signals when Fed liquidity was rising or falling, by test period');
+  const probe = svg.append('g').style('font-size', 'var(--cds-font-size-caption)');
+  let lw = 0;
+  periods.forEach((p) => { lw = Math.max(lw, probe.append('text').text(p).node().getComputedTextLength()); });
+  const lab = (r) => d3.format('.0%')(r.win) + ' won · avg ' + d3.format('+.0%')(r.avg);
+  let ew = 0;
+  rows.forEach((r) => { ew = Math.max(ew, probe.append('text').text(lab(r)).node().getComputedTextLength()); });
+  probe.remove();
+  const m = { l: Math.ceil(lw) + 12, r: Math.ceil(ew) + 10 };
+  const x = d3.scaleLinear([0, 1], [m.l, Math.max(m.l + 40, W - m.r)]);
+  let yy = 4;
+  const H = periods.length * (2 * bar + gap + ggap) - ggap + 8;
+  svg.attr('viewBox', `0 0 ${W} ${H}`);
+  const tip = d3.select(el).append('div').attr('class', 'lq-tip').style('display', 'none');
+  periods.forEach((p) => {
+    svg.append('text').attr('x', m.l - 8).attr('y', yy + bar + gap / 2).attr('dy', '0.32em').attr('text-anchor', 'end')
+      .style('fill', 'var(--color-fg)').style('font-size', 'var(--cds-font-size-caption)').text(p);
+    order.forEach((liq, i) => {
+      const r = rows.find((q) => q.period === p && q.liq === liq);
+      if (!r) return;
+      const top = yy + i * (bar + gap);
+      const rect = svg.append('rect').attr('x', x(0)).attr('y', top).attr('height', bar).attr('width', Math.max(2, x(r.win) - x(0)))
+        .attr('rx', 4).style('fill', i === 0 ? dash.colors[0] : 'var(--cds-chart-muted)');
+      svg.append('text').attr('x', x(r.win) + 6).attr('y', top + bar / 2).attr('dy', '0.32em')
+        .style('fill', 'var(--color-fg)').style('font-size', 'var(--cds-font-size-caption)').style('font-variant-numeric', 'tabular-nums').text(lab(r));
+      rect.on('pointermove', (ev) => {
+        const [px, py] = d3.pointer(ev, el);
+        tip.style('display', null).selectAll('*').remove();
+        tip.append('div').attr('class', 'lq-tip-date').text(p + ' · liquidity ' + liq.toLowerCase());
+        tip.append('div').text(d3.format(',')(r.n) + ' signals');
+        tip.append('div').text('Won ' + d3.format('.0%')(r.win) + ' · average trade ' + d3.format('+.1%')(r.avg));
+        const tw = tip.node().offsetWidth;
+        tip.style('left', Math.min(px + 12, el.clientWidth - tw) + 'px').style('top', (py + 12) + 'px');
+      }).on('pointerleave', () => tip.style('display', 'none'));
+    });
+    yy += 2 * bar + gap + ggap;
+  });
+  svg.append('line').attr('x1', x(0)).attr('x2', x(0)).attr('y1', 0).attr('y2', H - 4).style('stroke', 'var(--cds-chart-axis)');
+});
 </script>

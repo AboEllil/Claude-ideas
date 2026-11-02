@@ -73,6 +73,10 @@ Squeeze 20 / 1.5) are best - tuning settings overfits.
 - Dashboard "Halal Signal Board": https://claude.ai/artifact/Rc4NV26bDuMgsScydDX8op (Dashboard type;
   page = store doc files/index.html, data = dataset "signals" pointing at an uploaded signals.csv blob).
   Source copy: halal-quant-lab/reports/signal_board/index.html. Private until shared.
+- Liquidity panel (added 2 Nov 2026): datasets "liquidity" (reports/signal_board/liquidity.csv from
+  lab/liquidity.py, refreshed by the daily task) and "liquidity_evidence" (fixed, from run_liquidity2.py).
+  Crypto rows carry a `liquidity` tag (Fed Rising/Falling). FORWARD TEST starts 2026-11-03: in 6-12 months
+  re-run run_liquidity2.py logic on signals dated after 2026-11-02 only (rules unchanged) - no log needed.
 - Scheduled tasks (fresh session each run, push notifications):
   - `trig_01KT4kmZohrrgTnorC6Mwcut` Halal Signal Board daily refresh - Mon-Fri 17:23 New York
     (retrains ML model in the first 7 days of each month)

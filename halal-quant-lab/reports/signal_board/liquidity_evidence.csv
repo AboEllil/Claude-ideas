@@ -1,0 +1,5 @@
+period,liquidity,trades,win_rate,avg_trade
+2016-2020,Rising,85,0.7294,0.463
+2016-2020,Falling,61,0.541,0.1038
+2021-today,Rising,265,0.634,0.1348
+2021-today,Falling,283,0.4629,0.0238
