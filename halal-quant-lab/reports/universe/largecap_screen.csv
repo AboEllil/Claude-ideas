@@ -1,0 +1,959 @@
+ticker,name,sector,industry,debt_to_mcap,cash_to_mcap,compliant,reason
+A,"Agilent Technologies, Inc.",Healthcare,Diagnostics & Research,0.084,0.036,True,pass
+AA,Alcoa Corporation,Basic Materials,Aluminum,0.466,0.426,False,debt/mcap 47%
+AAPL,Apple Inc.,Technology,Consumer Electronics,0.017,0.012,True,pass
+ABBV,AbbVie Inc.,Healthcare,Drug Manufacturers - General,0.136,0.013,True,pass
+ABEV,Ambev S.A.,Consumer Defensive,Beverages - Brewers,0.066,0.534,False,industry: Beverages - Brewers
+ABNB,"Airbnb, Inc.",Consumer Cyclical,Travel Services,0.025,0.123,True,pass
+ABT,Abbott Laboratories,Healthcare,Medical Devices,0.178,0.03,True,pass
+ACGL,Arch Capital Group Ltd.,Financial Services,Insurance - Diversified,0.123,0.129,False,sector: Financial Services
+ACGLO,Arch Capital Group Ltd. - Depos,Financial Services,Insurance - Diversified,,,False,no fundamental data
+ACN,Accenture plc,Technology,Information Technology Services,0.085,0.081,True,pass
+ADBE,Adobe Inc.,Technology,Software - Application,0.07,0.058,True,pass
+ADI,"Analog Devices, Inc.",Technology,Semiconductors,0.045,0.012,True,pass
+ADM,Archer-Daniels-Midland Company,Consumer Defensive,Farm Products,0.252,0.029,True,pass
+ADP,"Automatic Data Processing, Inc.",Technology,Software - Application,0.048,0.029,True,pass
+ADSK,"Autodesk, Inc.",Technology,Software - Application,0.071,0.08,True,pass
+AEE,Ameren Corporation,Utilities,Utilities - Regulated Electric,0.713,0.0,False,debt/mcap 71%
+AEG,Aegon Ltd. New York Registry Sh,Financial Services,Insurance - Diversified,0.322,0.295,False,sector: Financial Services
+AEM,Agnico Eagle Mines Limited,Basic Materials,Gold,0.004,0.043,True,pass
+AEP,American Electric Power Company,Utilities,Utilities - Regulated Electric,0.777,0.009,False,debt/mcap 78%
+AER,AerCap Holdings N.V.,Industrials,Rental & Leasing Services,1.799,0.11,False,debt/mcap 180%
+AES,The AES Corporation,Utilities,Utilities - Diversified,3.114,0.175,False,debt/mcap 311%
+AFG,"American Financial Group, Inc.",Financial Services,Insurance - Property & Casualty,0.16,0.119,False,sector: Financial Services
+AFL,AFLAC Incorporated,Financial Services,Insurance - Life,0.26,0.144,False,sector: Financial Services
+AFRM,"Affirm Holdings, Inc.",Financial Services,Credit Services,0.404,0.069,False,sector: Financial Services
+AGI,Alamos Gold Inc.,Basic Materials,Gold,0.02,0.056,True,pass
+AGNC,AGNC Investment Corp.,Real Estate,REIT - Mortgage,8.837,2.282,False,sector: Real Estate
+AHR,"American Healthcare REIT, Inc.",Real Estate,REIT - Healthcare Facilities,0.134,0.014,False,sector: Real Estate
+AIG,"American International Group, I",Financial Services,Insurance - Diversified,0.213,0.245,False,sector: Financial Services
+AIT,Applied Industrial Technologies,Industrials,Industrial Distribution,0.026,0.01,True,pass
+AIZ,"Assurant, Inc.",Financial Services,Insurance - Property & Casualty,0.153,0.141,False,sector: Financial Services
+AJG,Arthur J. Gallagher & Co.,Financial Services,Insurance Brokers,0.191,0.017,False,sector: Financial Services
+AKAM,"Akamai Technologies, Inc.",Technology,Software - Infrastructure,0.701,0.252,False,debt/mcap 70%
+ALAB,"Astera Labs, Inc.",Technology,Semiconductors,0.001,0.028,True,pass
+ALB,Albemarle Corporation,Basic Materials,Specialty Chemicals,0.186,0.152,True,pass
+ALC,Alcon Inc.,Healthcare,Medical Instruments & Supplies,0.153,0.042,True,pass
+ALGN,"Align Technology, Inc.",Healthcare,Medical Instruments & Supplies,0.011,0.108,True,pass
+ALL,Allstate Corporation (The),Financial Services,Insurance - Property & Casualty,0.114,0.087,False,sector: Financial Services
+ALL-PB,Allstate Corporation (The) 5.10,,,,,False,no fundamental data
+ALL-PH,Allstate Corporation (The) Depo,Financial Services,Insurance - Property & Casualty,0.278,0.212,False,sector: Financial Services
+ALLE,Allegion plc,Industrials,Security & Protection Services,0.14,0.024,True,pass
+ALLY,Ally Financial Inc.,Financial Services,Credit Services,2.156,0.675,False,sector: Financial Services
+ALNY,"Alnylam Pharmaceuticals, Inc.",Healthcare,Biotechnology,0.136,0.162,True,pass
+AM,Antero Midstream Corporation,Energy,Oil & Gas Midstream,0.316,0.0,False,debt/mcap 32%
+AMAT,"Applied Materials, Inc.",Technology,Semiconductor Equipment & Materials,0.024,0.03,True,pass
+AMCR,Amcor plc,Consumer Cyclical,Packaging & Containers,0.692,0.051,False,debt/mcap 69%
+AMD,"Advanced Micro Devices, Inc.",Technology,Semiconductors,0.005,0.016,True,pass
+AME,"AMETEK, Inc.",Industrials,Specialty Industrial Machinery,0.042,0.009,True,pass
+AMGN,Amgen Inc.,Healthcare,Drug Manufacturers - General,0.227,0.056,True,pass
+AMH,American Homes 4 Rent,Real Estate,REIT - Residential,0.397,0.006,False,sector: Real Estate
+AMP,"Ameriprise Financial, Inc.",Financial Services,Asset Management,0.092,0.22,False,sector: Financial Services
+AMRZ,Amrize Ltd,Basic Materials,Building Materials,0.317,0.014,False,debt/mcap 32%
+AMT,American Tower Corporation (REI,Real Estate,REIT - Specialty,0.52,0.021,False,sector: Real Estate
+AMX,"America Movil, S.A.B. de C.V.",Communication Services,Telecom Services,9.617,1.17,False,debt/mcap 962%
+AMZN,"Amazon.com, Inc.",Consumer Cyclical,Internet Retail,0.117,0.044,True,pass
+ANET,"Arista Networks, Inc.",Technology,Computer Hardware,0.0,0.063,True,pass
+AON,Aon plc,Financial Services,Insurance Brokers,0.424,0.222,False,sector: Financial Services
+APA,APA Corporation,Energy,Oil & Gas E&P,0.21,0.024,True,pass
+APD,"Air Products and Chemicals, Inc",Basic Materials,Specialty Chemicals,0.259,0.014,True,pass
+APG,APi Group Corporation,Industrials,Engineering & Construction,0.206,0.02,True,pass
+APH,Amphenol Corporation,Technology,Electronic Components,0.091,0.027,True,pass
+APO,"Apollo Global Management, Inc. ",Financial Services,Asset Management,0.612,0.696,False,sector: Financial Services
+APP,Applovin Corporation,Communication Services,Advertising Agencies,0.046,0.04,True,pass
+AR,Antero Resources Corporation,Energy,Oil & Gas E&P,0.36,0.0,False,debt/mcap 36%
+ARCC,Ares Capital Corporation,Financial Services,Asset Management,1.096,0.052,False,sector: Financial Services
+ARES,Ares Management Corporation,Financial Services,Asset Management,0.35,0.044,False,sector: Financial Services
+ARGX,argenx SE,Healthcare,Biotechnology,0.001,0.092,True,pass
+ARM,Arm Holdings plc,Technology,Semiconductors,0.002,0.018,True,pass
+ARMK,Aramark,Industrials,Specialty Business Services,0.455,0.037,False,debt/mcap 45%
+ARW,"Arrow Electronics, Inc.",Technology,Electronics & Computer Distribution,0.205,0.023,True,pass
+ARXS,"Arxis, Inc.",Industrials,Aerospace & Defense,0.082,0.023,True,pass
+AS,"Amer Sports, Inc.",Consumer Cyclical,Leisure,0.064,0.042,True,pass
+ASML,ASML Holding N.V. - New York Re,Technology,Semiconductor Equipment & Materials,0.003,0.021,True,pass
+ASND,Ascendis Pharma A/S,Healthcare,Biotechnology,0.027,0.049,True,pass
+ASTS,"AST SpaceMobile, Inc.",Technology,Communication Equipment,0.188,0.144,True,pass
+ASX,"ASE Technology Holding Co., Ltd",Technology,Semiconductors,4.523,1.014,False,debt/mcap 452%
+ATI,ATI Inc.,Industrials,Metal Fabrication,0.083,0.02,True,pass
+ATO,Atmos Energy Corporation,Utilities,Utilities - Regulated Gas,0.354,0.018,False,debt/mcap 35%
+AU,AngloGold Ashanti PLC,Basic Materials,Gold,0.044,0.069,True,pass
+AVGO,Broadcom Inc.,Technology,Semiconductors,0.038,0.015,True,pass
+AVTR,"Avantor, Inc.",Healthcare,Medical Instruments & Supplies,0.339,0.043,False,debt/mcap 34%
+AVY,Avery Dennison Corporation,Consumer Cyclical,Packaging & Containers,0.261,0.02,True,pass
+AWK,"American Water Works Company, I",Utilities,Utilities - Regulated Water,0.571,0.005,False,debt/mcap 57%
+AXON,"Axon Enterprise, Inc.",Industrials,Aerospace & Defense,0.053,0.02,True,pass
+AXP,American Express Company,Financial Services,Credit Services,0.28,0.203,False,sector: Financial Services
+AZN,AstraZeneca PLC,Healthcare,Drug Manufacturers - General,0.119,0.028,True,pass
+AZO,"AutoZone, Inc.",Consumer Cyclical,Auto Parts,0.258,0.007,True,pass
+B,Barrick Mining Corporation,Basic Materials,Gold,0.077,0.097,True,pass
+BA,Boeing Company (The),Industrials,Aerospace & Defense,0.356,0.152,False,debt/mcap 36%
+BABA,Alibaba Group Holding Limited,Consumer Cyclical,Internet Retail,1.093,1.581,False,debt/mcap 109%
+BAC,Bank of America Corporation,Financial Services,Banks - Diversified,2.2,2.378,False,sector: Financial Services
+BAC-PB,Bank of America Corporation Dep,Financial Services,Banks - Diversified,,,False,no fundamental data
+BAC-PE,Bank of America Corporation Dep,Financial Services,Banks - Diversified,,,False,no fundamental data
+BAC-PK,Bank of America Corporation Dep,Financial Services,Banks - Diversified,,,False,no fundamental data
+BAH,Booz Allen Hamilton Holding Cor,Industrials,Consulting Services,0.447,0.032,False,debt/mcap 45%
+BALL,Ball Corporation,Consumer Cyclical,Packaging & Containers,0.431,0.028,False,debt/mcap 43%
+BAM,Brookfield Asset Management Inc,Financial Services,Asset Management,0.053,0.019,False,sector: Financial Services
+BAP,Credicorp Ltd.,Financial Services,Banks - Regional,1.002,1.407,False,sector: Financial Services
+BAX,Baxter International Inc.,Healthcare,Medical Instruments & Supplies,0.74,0.166,False,debt/mcap 74%
+BBD,Banco Bradesco Sa,Financial Services,Banks - Regional,30.666,11.932,False,sector: Financial Services
+BBDO,Banco Bradesco Sa,Financial Services,Banks - Regional,32.313,12.573,False,sector: Financial Services
+BBIO,"BridgeBio Pharma, Inc.",Healthcare,Biotechnology,0.231,0.105,True,pass
+BBVA,Banco Bilbao Vizcaya Argentaria,Financial Services,Banks - Diversified,1.568,1.334,False,sector: Financial Services
+BBY,"Best Buy Co., Inc.",Consumer Cyclical,Specialty Retail,0.206,0.12,True,pass
+BCE,"BCE, Inc.",Communication Services,Telecom Services,2.198,0.025,False,debt/mcap 220%
+BCH,Banco De Chile,Financial Services,Banks - Regional,0.0,0.0,False,sector: Financial Services
+BCS,Barclays PLC,Financial Services,Banks - Diversified,10.582,10.659,False,sector: Financial Services
+BDX,"Becton, Dickinson and Company",Healthcare,Medical Instruments & Supplies,0.312,0.013,False,debt/mcap 31%
+BE,Bloom Energy Corporation,Industrials,Electrical Equipment & Parts,0.046,0.041,True,pass
+BEKE,KE Holdings Inc,Real Estate,Real Estate Services,0.741,2.419,False,sector: Real Estate
+BEN,"Franklin Templeton, Inc.",Financial Services,Asset Management,0.222,0.166,False,sector: Financial Services
+BF-A,Brown Forman Inc,Consumer Defensive,Beverages - Wineries & Distilleries,0.181,0.022,False,industry: Beverages - Wineries & Distilleries
+BF-B,Brown Forman Inc,Consumer Defensive,Beverages - Wineries & Distilleries,0.185,0.023,False,industry: Beverages - Wineries & Distilleries
+BG,Bunge Limited,Consumer Defensive,Farm Products,1.009,0.048,False,debt/mcap 101%
+BHP,BHP Group Limited,Basic Materials,Other Industrial Metals & Mining,0.141,0.092,True,pass
+BIDU,"Baidu, Inc.",Communication Services,Internet Content & Information,4.34,6.391,False,debt/mcap 434%
+BIIB,Biogen Inc.,Healthcare,Drug Manufacturers - General,0.208,0.035,True,pass
+BIO-B,"Bio-Rad Laboratories, Inc.",Healthcare,Medical Devices,0.135,0.16,True,pass
+BIP,Brookfield Infrastructure Partn,Utilities,Utilities - Diversified,2.26,0.119,False,debt/mcap 226%
+BJ,"BJ's Wholesale Club Holdings, I",Consumer Defensive,Discount Stores,0.205,0.002,True,pass
+BKNG,Booking Holdings Inc. Common St,Consumer Cyclical,Travel Services,0.188,0.155,True,pass
+BKR,Baker Hughes Company,Energy,Oil & Gas Equipment & Services,0.333,0.098,False,debt/mcap 33%
+BLK,"BlackRock, Inc.",Financial Services,Asset Management,0.08,0.074,False,sector: Financial Services
+BML-PG,Bank of America Corporation Dep,Financial Services,Banks - Diversified,,,False,no fundamental data
+BML-PH,Bank of America Corporation Dep,Financial Services,Banks - Diversified,,,False,no fundamental data
+BML-PJ,Bank of America Corporation Dep,Financial Services,Banks - Diversified,,,False,no fundamental data
+BML-PL,Bank of America Corporation Dep,Financial Services,Banks - Diversified,,,False,no fundamental data
+BMNR,"BitMine Immersion Technologies,",Financial Services,Capital Markets,0.0,0.028,False,sector: Financial Services
+BMO,Bank Of Montreal,Financial Services,Banks - Diversified,2.848,3.859,False,sector: Financial Services
+BMRN,BioMarin Pharmaceutical Inc.,Healthcare,Biotechnology,0.371,0.077,False,debt/mcap 37%
+BMY,Bristol-Myers Squibb Company,Healthcare,Drug Manufacturers - General,0.351,0.099,False,debt/mcap 35%
+BN,Brookfield Corporation,Financial Services,Asset Management,3.067,0.17,False,sector: Financial Services
+BNS,Bank Nova Scotia Halifax Pfd 3,Financial Services,Banks - Diversified,3.014,4.753,False,sector: Financial Services
+BNT,Brookfield Wealth Solutions Ltd,Financial Services,Insurance - Diversified,1.595,1.229,False,sector: Financial Services
+BNTX,BioNTech SE,Healthcare,Biotechnology,0.014,0.608,False,cash/mcap 61%
+BNY,The Bank of New York Mellon Cor,Financial Services,Banks - Diversified,0.934,1.978,False,sector: Financial Services
+BP,BP p.l.c.,Energy,Oil & Gas Integrated,0.536,0.332,False,debt/mcap 54%
+BR,"Broadridge Financial Solutions,",Technology,Information Technology Services,0.174,0.02,True,pass
+BRK-A,Berkshire Hathaway Inc.,Financial Services,Insurance - Diversified,0.11,0.314,False,sector: Financial Services
+BRK-B,Berkshire Hathaway Inc. New,Financial Services,Insurance - Diversified,0.111,0.315,False,sector: Financial Services
+BRO,"Brown & Brown, Inc.",Financial Services,Insurance Brokers,0.35,0.047,False,sector: Financial Services
+BSAC,Banco Santander - Chile,Financial Services,Banks - Regional,0.0,0.0,False,sector: Financial Services
+BSBR,Banco Santander Brasil SA,Financial Services,Banks - Regional,20.152,9.852,False,sector: Financial Services
+BSP,Bending Spoons S.p.A.,Technology,Software - Application,0.166,0.028,True,pass
+BSX,Boston Scientific Corporation,Healthcare,Medical Devices,0.207,0.009,True,pass
+BSY,"Bentley Systems, Incorporated",Technology,Software - Application,0.103,0.012,True,pass
+BTI,British American Tobacco  Indus,Consumer Defensive,Tobacco,0.265,0.019,False,industry: Tobacco
+BTSG,"BrightSpring Health Services, I",Healthcare,Health Information Services,0.179,0.054,True,pass
+BUD,Anheuser-Busch Inbev SA Sponsor,Consumer Defensive,Beverages - Brewers,0.46,0.051,False,industry: Beverages - Brewers
+BURL,"Burlington Stores, Inc.",Consumer Cyclical,Apparel Retail,0.397,0.047,False,debt/mcap 40%
+BWA,BorgWarner Inc.,Consumer Cyclical,Auto Parts,0.309,0.153,False,debt/mcap 31%
+BWXT,"BWX Technologies, Inc.",Industrials,Aerospace & Defense,0.169,0.051,True,pass
+BX,Blackstone Inc.,Financial Services,Asset Management,0.1,0.021,False,sector: Financial Services
+BXP,"BXP, Inc.",Real Estate,REIT - Office,1.525,0.13,False,sector: Real Estate
+C,"Citigroup, Inc.",Financial Services,Banks - Diversified,4.027,6.903,False,sector: Financial Services
+CACI,"CACI International, Inc.",Technology,Information Technology Services,0.354,0.019,False,debt/mcap 35%
+CAH,"Cardinal Health, Inc.",Healthcare,Medical Distribution,0.172,0.084,True,pass
+CARR,Carrier Global Corporation,Industrials,Building Products & Equipment,0.271,0.031,True,pass
+CART,Maplebear Inc.,Consumer Cyclical,Internet Retail,0.003,0.069,True,pass
+CASY,"Caseys General Stores, Inc.",Consumer Cyclical,Specialty Retail,0.115,0.021,False,convenience stores (large beer/tobacco/lottery sales)
+CAT,"Caterpillar, Inc.",Industrials,Farm & Heavy Construction Machinery,0.158,0.025,True,pass
+CB,Chubb Limited,Financial Services,Insurance - Property & Casualty,0.186,0.058,False,sector: Financial Services
+CBRE,CBRE Group Inc,Real Estate,Real Estate Services,0.288,0.045,False,sector: Real Estate
+CBRS,Cerebras Systems Inc.,Technology,Semiconductors,0.057,0.305,False,cash/mcap 31%
+CCEP,Coca-Cola Europacific Partners ,Consumer Defensive,Beverages - Non-Alcoholic,0.245,0.04,True,pass
+CCI,Crown Castle Inc.,Real Estate,REIT - Specialty,0.591,0.003,False,sector: Real Estate
+CCJ,Cameco Corporation,Energy,Uranium,0.03,0.026,True,pass
+CCK,"Crown Holdings, Inc.",Consumer Cyclical,Packaging & Containers,0.47,0.049,False,debt/mcap 47%
+CCL,Carnival Corporation Ltd.,Consumer Cyclical,Travel Services,0.649,0.031,False,cruise line (onboard casinos/alcohol)
+CDE,"Coeur Mining, Inc.",Basic Materials,Gold,0.053,0.078,True,pass
+CDNS,"Cadence Design Systems, Inc.",Technology,Software - Application,0.031,0.017,True,pass
+CDW,CDW Corporation,Technology,Information Technology Services,0.334,0.019,False,debt/mcap 33%
+CEG,Constellation Energy Corporatio,Utilities,Utilities - Independent Power Producers,0.266,0.007,True,pass
+CF,"CF Industries Holdings, Inc.",Basic Materials,Agricultural Inputs,0.194,0.133,True,pass
+CFG,"Citizens Financial Group, Inc.",Financial Services,Banks - Regional,0.667,0.507,False,sector: Financial Services
+CG,The Carlyle Group Inc.,Financial Services,Asset Management,0.996,0.143,False,sector: Financial Services
+CHD,"Church & Dwight Company, Inc.",Consumer Defensive,Household & Personal Products,0.094,0.018,True,pass
+CHKP,Check Point Software Technologi,Technology,Software - Infrastructure,0.127,0.147,True,pass
+CHRW,"C.H. Robinson Worldwide, Inc.",Industrials,Integrated Freight & Logistics,0.149,0.013,True,pass
+CHT,"Chunghwa Telecom Co., Ltd.",Communication Services,Telecom Services,1.005,2.053,False,debt/mcap 101%
+CHTR,"Charter Communications, Inc.",Communication Services,Telecom Services,6.675,0.035,False,debt/mcap 667%
+CHYM,"Chime Financial, Inc.",Technology,Software - Application,0.017,0.11,True,pass
+CI,The Cigna Group,Healthcare,Healthcare Plans,0.405,0.092,False,debt/mcap 40%
+CIB,Grupo Cibest S.A.,Financial Services,Banks - Regional,0.0,0.0,False,sector: Financial Services
+CIEN,Ciena Corporation,Technology,Communication Equipment,0.072,0.058,True,pass
+CINF,Cincinnati Financial Corporatio,Financial Services,Insurance - Property & Casualty,0.031,0.05,False,sector: Financial Services
+CL,Colgate-Palmolive Company,Consumer Defensive,Household & Personal Products,0.102,0.021,True,pass
+CLH,"Clean Harbors, Inc.",Industrials,Waste Management,0.211,0.032,True,pass
+CLS,"Celestica, Inc.",Technology,Electronic Components,0.031,0.118,True,pass
+CLX,Clorox Company (The),Consumer Defensive,Household & Personal Products,0.526,0.013,False,debt/mcap 53%
+CM,Canadian Imperial Bank of Comme,Financial Services,Banks - Diversified,2.8,3.06,False,sector: Financial Services
+CMCSA,Comcast Corporation,Communication Services,Telecom Services,1.06,0.092,False,debt/mcap 106%
+CME,CME Group Inc.,Financial Services,Financial Data & Stock Exchanges,0.036,0.021,False,sector: Financial Services
+CMG,"Chipotle Mexican Grill, Inc.",Consumer Cyclical,Restaurants,0.139,0.022,True,pass
+CMI,Cummins Inc.,Industrials,Specialty Industrial Machinery,0.12,0.057,True,pass
+CMS,CMS Energy Corporation,Utilities,Utilities - Regulated Electric,0.919,0.021,False,debt/mcap 92%
+CNA,CNA Financial Corporation,Financial Services,Insurance - Property & Casualty,0.226,0.156,False,sector: Financial Services
+CNC,Centene Corporation,Healthcare,Healthcare Plans,0.459,0.696,False,debt/mcap 46%
+CNH,CNH Industrial N.V.,Industrials,Farm & Heavy Construction Machinery,1.391,0.075,False,debt/mcap 139%
+CNI,Canadian National Railway Compa,Industrials,Railroads,0.322,0.01,False,debt/mcap 32%
+CNP,"CenterPoint Energy, Inc (Holdin",Utilities,Utilities - Regulated Electric,0.885,0.02,False,debt/mcap 89%
+CNQ,Canadian Natural Resources Limi,Energy,Oil & Gas E&P,0.174,0.023,True,pass
+COF,Capital One Financial Corporati,Financial Services,Credit Services,0.396,0.389,False,sector: Financial Services
+COHR,Coherent Corp.,Technology,Scientific & Technical Instruments,0.086,0.048,True,pass
+COIN,"Coinbase Global, Inc.",Financial Services,Financial Data & Stock Exchanges,0.181,0.232,False,sector: Financial Services
+COKE,"Coca-Cola Consolidated, Inc.",Consumer Defensive,Beverages - Non-Alcoholic,0.187,0.012,True,pass
+COO,"The Cooper Companies, Inc.",Healthcare,Medical Instruments & Supplies,0.247,0.014,True,pass
+COP,ConocoPhillips,Energy,Oil & Gas E&P,0.126,0.042,True,pass
+COR,"Cencora, Inc.",Healthcare,Medical Distribution,0.229,0.045,True,pass
+COST,Costco Wholesale Corporation,Consumer Defensive,Discount Stores,0.023,0.047,True,pass
+CP,Canadian Pacific Kansas City Li,Industrials,Railroads,0.331,0.005,False,debt/mcap 33%
+CPAY,"Corpay, Inc.",Technology,Software - Infrastructure,0.408,0.121,False,debt/mcap 41%
+CPNG,"Coupang, Inc.",Consumer Cyclical,Internet Retail,0.218,0.237,True,pass
+CPRT,"Copart, Inc.",Industrials,Specialty Business Services,0.003,0.161,True,pass
+CPT,Camden Property Trust,Real Estate,REIT - Residential,0.418,0.004,False,sector: Real Estate
+CQP,"Cheniere Energy Partners, LP",Energy,Oil & Gas Midstream,0.447,0.018,False,debt/mcap 45%
+CR,Crane Company,Industrials,Specialty Industrial Machinery,0.083,0.028,True,pass
+CRBG,Corebridge Financial Inc.,Financial Services,Asset Management,0.933,0.318,False,sector: Financial Services
+CRCL,"Circle Internet Group, Inc.",Financial Services,Capital Markets,0.001,0.094,False,sector: Financial Services
+CRDO,Credo Technology Group Holding ,Technology,Semiconductors,0.001,0.027,True,pass
+CRH,CRH PLC,Basic Materials,Building Materials,0.357,0.085,False,debt/mcap 36%
+CRL,Charles River Laboratories Inte,Healthcare,Diagnostics & Research,0.175,0.011,True,pass
+CRM,"Salesforce, Inc.",Technology,Software - Application,0.225,0.06,True,pass
+CRS,Carpenter Technology Corporatio,Industrials,Metal Fabrication,0.05,0.011,True,pass
+CRWD,"CrowdStrike Holdings, Inc.",Technology,Software - Infrastructure,0.003,0.02,True,pass
+CRWV,"CoreWeave, Inc.",Technology,Software - Infrastructure,1.705,0.183,False,debt/mcap 171%
+CSCO,"Cisco Systems, Inc.",Technology,Communication Equipment,0.076,0.039,True,pass
+CSGP,"CoStar Group, Inc.",Real Estate,Real Estate Services,0.097,0.041,False,sector: Real Estate
+CSL,Carlisle Companies Incorporated,Industrials,Building Products & Equipment,0.199,0.038,True,pass
+CSX,CSX Corporation,Industrials,Railroads,0.202,0.017,True,pass
+CTA-PA,"EIDP, Inc. Preferred Stock $3.5",Basic Materials,Agricultural Inputs,,,False,no fundamental data
+CTA-PB,"EIDP, Inc. Preferred Stock $4.5",Basic Materials,Agricultural Inputs,,,False,no fundamental data
+CTAS,Cintas Corporation,Industrials,Specialty Business Services,0.031,0.004,True,pass
+CTSH,Cognizant Technology Solutions ,Technology,Information Technology Services,0.073,0.053,True,pass
+CVE,Cenovus Energy Inc,Energy,Oil & Gas Integrated,0.193,0.053,True,pass
+CVNA,Carvana Co.,Consumer Cyclical,Auto & Truck Dealerships,0.075,0.048,True,pass
+CVS,CVS Health Corporation,Healthcare,Healthcare Plans,0.661,0.121,False,debt/mcap 66%
+CVX,Chevron Corporation,Energy,Oil & Gas Integrated,0.081,0.019,True,pass
+CW,Curtiss-Wright Corporation,Industrials,Aerospace & Defense,0.065,0.027,True,pass
+CX,"Cemex, S.A.B. de C.V. Sponsored",Basic Materials,Building Materials,0.393,0.042,False,debt/mcap 39%
+D,"Dominion Energy, Inc.",Utilities,Utilities - Regulated Electric,0.949,0.007,False,debt/mcap 95%
+DAL,"Delta Air Lines, Inc.",Industrials,Airlines,0.378,0.072,False,debt/mcap 38%
+DASH,"DoorDash, Inc.",Consumer Cyclical,Internet Retail,0.042,0.077,True,pass
+DB,Deutsche Bank AG,Financial Services,Banks - Regional,9.007,10.539,False,sector: Financial Services
+DD,"DuPont de Nemours, Inc.",Basic Materials,Specialty Chemicals,0.168,0.092,True,pass
+DDOG,"Datadog, Inc.",Technology,Software - Application,0.015,0.059,True,pass
+DE,Deere & Company,Industrials,Farm & Heavy Construction Machinery,0.355,0.038,False,debt/mcap 35%
+DECK,Deckers Outdoor Corporation,Consumer Cyclical,Footwear & Accessories,0.049,0.111,True,pass
+DELL,Dell Technologies Inc.,Technology,Computer Hardware,0.131,0.043,True,pass
+DEO,Diageo plc,Consumer Defensive,Beverages - Wineries & Distilleries,0.427,0.034,False,industry: Beverages - Wineries & Distilleries
+DG,Dollar General Corporation,Consumer Defensive,Discount Stores,0.54,0.054,False,debt/mcap 54%
+DGX,Quest Diagnostics Incorporated,Healthcare,Diagnostics & Research,0.23,0.029,True,pass
+DHI,"D.R. Horton, Inc.",Consumer Cyclical,Residential Construction,0.153,0.052,True,pass
+DHR,Danaher Corporation,Healthcare,Diagnostics & Research,0.17,0.035,True,pass
+DINO,HF Sinclair Corporation,Energy,Oil & Gas Refining & Marketing,0.171,0.169,True,pass
+DIS,Walt Disney Company (The),Communication Services,Entertainment,0.24,0.027,False,industry: Entertainment
+DKNG,DraftKings Inc.,Consumer Cyclical,Gambling,0.185,0.095,False,industry: Gambling
+DKS,Dick's Sporting Goods Inc,Consumer Cyclical,Specialty Retail,0.562,0.064,False,debt/mcap 56%
+DLR,"Digital Realty Trust, Inc.",Real Estate,REIT - Specialty,0.306,0.012,False,sector: Real Estate
+DLR-PJ,"Digital Realty Trust, Inc. 5.25",Real Estate,REIT - Specialty,,,False,no fundamental data
+DLR-PK,"Digital Realty Trust, Inc. 5.85",Real Estate,REIT - Specialty,,,False,no fundamental data
+DLTR,"Dollar Tree, Inc.",Consumer Defensive,Discount Stores,0.305,0.042,False,debt/mcap 31%
+DOC,"Healthpeak Properties, Inc.",Real Estate,REIT - Healthcare Facilities,0.765,0.122,False,sector: Real Estate
+DOCN,"DigitalOcean Holdings, Inc.",Technology,Software - Infrastructure,0.188,0.073,True,pass
+DOCU,"DocuSign, Inc.",Technology,Software - Application,0.012,0.051,True,pass
+DOV,Dover Corporation,Industrials,Specialty Industrial Machinery,0.118,0.061,True,pass
+DOW,Dow Inc.,Basic Materials,Chemicals,0.755,0.179,False,debt/mcap 76%
+DPZ,Domino's Pizza Inc,Consumer Cyclical,Restaurants,0.496,0.022,False,debt/mcap 50%
+DRI,"Darden Restaurants, Inc.",Consumer Cyclical,Restaurants,0.345,0.009,False,debt/mcap 34%
+DRS,"Leonardo DRS, Inc.",Industrials,Aerospace & Defense,0.028,0.029,True,pass
+DT,"Dynatrace, Inc.",Technology,Software - Application,0.01,0.066,True,pass
+DTE,DTE Energy Company,Utilities,Utilities - Regulated Electric,0.987,0.001,False,debt/mcap 99%
+DTM,"DT Midstream, Inc.",Energy,Oil & Gas Midstream,0.262,0.018,True,pass
+DUK,Duke Energy Corporation (Holdin,Utilities,Utilities - Regulated Electric,0.928,0.007,False,debt/mcap 93%
+DUK-PA,Duke Energy Corporation Deposit,Utilities,Utilities - Regulated Electric,,,False,no fundamental data
+DVA,DaVita Inc.,Healthcare,Medical Care Facilities,1.136,0.048,False,debt/mcap 114%
+DVN,Devon Energy Corporation,Energy,Oil & Gas E&P,0.207,0.017,True,pass
+DXCM,"DexCom, Inc.",Healthcare,Medical Devices,0.045,0.059,True,pass
+E,ENI S.p.A.,Energy,Oil & Gas Integrated,0.46,0.232,False,debt/mcap 46%
+EBAY,eBay Inc.,Consumer Cyclical,Internet Retail,0.135,0.037,True,pass
+EC,Ecopetrol S.A.,Energy,Oil & Gas Integrated,0.0,0.0,True,pass
+ECHO,EchoStar Corporation,Communication Services,Telecom Services,0.623,0.018,False,debt/mcap 62%
+ECL,Ecolab Inc.,Basic Materials,Specialty Chemicals,0.164,0.009,True,pass
+ED,"Consolidated Edison, Inc.",Utilities,Utilities - Regulated Electric,0.657,0.034,False,debt/mcap 66%
+EFX,"Equifax, Inc.",Industrials,Consulting Services,0.24,0.009,True,pass
+EG,"Everest Group, Ltd.",Financial Services,Insurance - Reinsurance,0.236,0.266,False,sector: Financial Services
+EGP,"EastGroup Properties, Inc.",Real Estate,REIT - Industrial,0.173,0.002,False,sector: Real Estate
+EHC,Encompass Health Corporation,Healthcare,Medical Care Facilities,0.21,0.006,True,pass
+EIX,Edison International,Utilities,Utilities - Regulated Electric,1.888,0.008,False,debt/mcap 189%
+EL,"Estee Lauder Companies, Inc. (T",Consumer Defensive,Household & Personal Products,0.234,0.088,True,pass
+ELAN,Elanco Animal Health Incorporat,Healthcare,Drug Manufacturers - Specialty & Generic,0.368,0.046,False,debt/mcap 37%
+ELS,"Equity Lifestyle Properties, In",Real Estate,REIT - Residential,0.279,0.002,False,sector: Real Estate
+ELV,"Elevance Health, Inc.",Healthcare,Healthcare Plans,0.338,0.415,False,debt/mcap 34%
+EMA,Emera Incorporated,Utilities,Utilities - Regulated Electric,1.461,0.026,False,debt/mcap 146%
+EMBJ,Embraer S.A.,Industrials,Aerospace & Defense,1.046,0.855,False,debt/mcap 105%
+EME,"EMCOR Group, Inc.",Industrials,Engineering & Construction,0.019,0.026,True,pass
+EMR,Emerson Electric Company,Industrials,Specialty Industrial Machinery,0.15,0.024,True,pass
+ENB,Enbridge Inc,Energy,Oil & Gas Midstream,1.018,0.019,False,debt/mcap 102%
+ENSG,"The Ensign Group, Inc.",Healthcare,Medical Care Facilities,0.216,0.037,True,pass
+ENTG,"Entegris, Inc.",Technology,Semiconductor Equipment & Materials,0.142,0.015,True,pass
+EOG,"EOG Resources, Inc.",Energy,Oil & Gas E&P,0.095,0.057,True,pass
+EPD,Enterprise Products Partners L.,Energy,Oil & Gas Midstream,0.415,0.003,False,debt/mcap 42%
+EQH,"Equitable Holdings, Inc.",Financial Services,Asset Management,0.488,1.303,False,sector: Financial Services
+EQIX,"Equinix, Inc.",Real Estate,REIT - Specialty,0.263,0.024,False,sector: Real Estate
+EQNR,Equinor ASA,Energy,Oil & Gas Integrated,0.257,0.208,True,pass
+EQT,EQT Corporation,Energy,Oil & Gas E&P,0.16,0.002,True,pass
+EQX,Equinox Gold Corp.,Basic Materials,Gold,0.074,0.043,True,pass
+ERIC,Ericsson,Technology,Communication Equipment,0.0,0.0,True,pass
+ERIE,Erie Indemnity Company,Financial Services,Insurance Brokers,0.004,0.028,False,sector: Financial Services
+ES,Eversource Energy (D/B/A),Utilities,Utilities - Regulated Electric,1.154,0.07,False,debt/mcap 115%
+ESLT,Elbit Systems Ltd.,Industrials,Aerospace & Defense,0.023,0.026,True,pass
+ESS,"Essex Property Trust, Inc.",Real Estate,REIT - Residential,0.364,0.005,False,sector: Real Estate
+ESTC,Elastic N.V.,Technology,Software - Application,0.058,0.143,True,pass
+ETN,"Eaton Corporation, PLC",Industrials,Specialty Industrial Machinery,0.148,0.005,True,pass
+ETR,Entergy Corporation,Utilities,Utilities - Regulated Electric,0.658,0.073,False,debt/mcap 66%
+EVR,Evercore Inc.,Financial Services,Capital Markets,0.098,0.112,False,sector: Financial Services
+EVRG,"Evergy, Inc.",Utilities,Utilities - Regulated Electric,0.833,0.001,False,debt/mcap 83%
+EW,Edwards Lifesciences Corporatio,Healthcare,Medical Devices,0.013,0.08,True,pass
+EWBC,"East West Bancorp, Inc.",Financial Services,Banks - Regional,0.233,0.283,False,sector: Financial Services
+EXC,Exelon Corporation,Utilities,Utilities - Regulated Electric,1.114,0.031,False,debt/mcap 111%
+EXE,Expand Energy Corporation,Energy,Oil & Gas E&P,0.223,0.006,True,pass
+EXEL,"Exelixis, Inc.",Healthcare,Biotechnology,0.01,0.053,True,pass
+EXPD,Expeditors International of Was,Industrials,Integrated Freight & Logistics,0.022,0.04,True,pass
+EXPE,"Expedia Group, Inc.",Consumer Cyclical,Travel Services,0.166,0.208,True,pass
+EXR,Extra Space Storage Inc,Real Estate,REIT - Industrial,0.424,0.003,False,sector: Real Estate
+F,Ford Motor Company,Consumer Cyclical,Auto Manufacturers,3.382,0.513,False,debt/mcap 338%
+FANG,"Diamondback Energy, Inc.",Energy,Oil & Gas E&P,0.212,0.008,True,pass
+FAST,Fastenal Company,Industrials,Industrial Distribution,0.008,0.004,True,pass
+FCNCA,"First Citizens BancShares, Inc.",Financial Services,Banks - Regional,0.996,0.745,False,sector: Financial Services
+FCX,"Freeport-McMoRan, Inc.",Basic Materials,Copper,0.115,0.048,True,pass
+FDS,FactSet Research Systems Inc.,Financial Services,Financial Data & Stock Exchanges,0.133,0.023,False,sector: Financial Services
+FDX,FedEx Corporation,Industrials,Integrated Freight & Logistics,0.465,0.156,False,debt/mcap 47%
+FDXF,"FedEx Freight Holding Company, ",Industrials,Integrated Freight & Logistics,0.332,0.021,False,debt/mcap 33%
+FE,FirstEnergy Corp.,Utilities,Utilities - Regulated Electric,1.107,0.002,False,debt/mcap 111%
+FER,Ferrovial N.V.,Industrials,Engineering & Construction,0.268,0.097,True,pass
+FERG,Ferguson Enterprises Inc.,Industrials,Industrial Distribution,0.149,0.009,True,pass
+FFIV,"F5, Inc.",Technology,Software - Infrastructure,0.011,0.083,True,pass
+FHN,First Horizon Corporation,Financial Services,Banks - Regional,0.374,0.518,False,sector: Financial Services
+FICO,Fair Isaac Corporation,Technology,Software - Application,0.364,0.016,False,debt/mcap 36%
+FIG,"Figma, Inc.",Technology,Software - Application,0.006,0.144,True,pass
+FIS,Fidelity National Information S,Technology,Information Technology Services,1.069,0.037,False,debt/mcap 107%
+FISV,"Fiserv, Inc.",,,0.0,0.0,True,pass
+FITB,Fifth Third Bancorp,Financial Services,Banks - Regional,0.371,0.12,False,sector: Financial Services
+FIVE,"Five Below, Inc.",Consumer Cyclical,Specialty Retail,0.154,0.09,True,pass
+FIX,"Comfort Systems USA, Inc.",Industrials,Engineering & Construction,0.009,0.051,True,pass
+FLEX,Flex Ltd.,Technology,Electronic Components,0.187,0.096,True,pass
+FLS,Flowserve Corporation,Industrials,Specialty Industrial Machinery,0.225,0.074,True,pass
+FLUT,Flutter Entertainment plc,Consumer Cyclical,Gambling,0.878,0.113,False,industry: Gambling
+FMS,Fresenius Medical Care AG,Healthcare,Medical Care Facilities,0.918,0.089,False,debt/mcap 92%
+FMX,Fomento Economico Mexicano S.A.,Consumer Defensive,Beverages - Brewers,5.911,2.759,False,industry: Beverages - Brewers
+FN,Fabrinet,Technology,Electronic Components,0.0,0.075,True,pass
+FNF,"Fidelity National Financial, In",Financial Services,Insurance - Specialty,0.44,0.37,False,sector: Financial Services
+FNV,Franco-Nevada Corporation,Basic Materials,Gold,0.0,0.023,True,pass
+FOX,Fox Corporation,Communication Services,Entertainment,0.319,0.177,False,industry: Entertainment
+FOXA,Fox Corporation,Communication Services,Entertainment,0.284,0.158,False,industry: Entertainment
+FRHC,Freedom Holding Corp.,Financial Services,Financial Conglomerates,0.234,0.363,False,sector: Financial Services
+FRO,Frontline Plc,Energy,Oil & Gas Midstream,0.192,0.025,True,pass
+FROG,JFrog Ltd.,Technology,Software - Application,0.001,0.071,True,pass
+FSLR,"First Solar, Inc.",Technology,Solar,0.017,0.087,True,pass
+FTAI,FTAI Aviation Ltd.,Industrials,Aerospace & Defense,0.18,0.02,True,pass
+FTI,TechnipFMC plc,Energy,Oil & Gas Equipment & Services,0.049,0.039,True,pass
+FTNT,"Fortinet, Inc.",Technology,Software - Infrastructure,0.006,0.048,True,pass
+FTS,Fortis Inc.,Utilities,Utilities - Regulated Electric,1.212,0.013,False,debt/mcap 121%
+FTV,Fortive Corporation,Technology,Scientific & Technical Instruments,0.185,0.019,True,pass
+FUTU,Futu Holdings Limited,Financial Services,Capital Markets,2.052,11.205,False,sector: Financial Services
+FWONA,Liberty Media Corporation - Ser,Communication Services,Entertainment,0.231,0.069,False,industry: Entertainment
+FWONK,Liberty Media Corporation - Ser,Communication Services,Entertainment,0.212,0.063,False,industry: Entertainment
+GD,General Dynamics Corporation,Industrials,Aerospace & Defense,0.09,0.044,False,weapons/defense
+GDDY,GoDaddy Inc.,Technology,Software - Infrastructure,0.259,0.078,True,pass
+GE,GE Aerospace,Industrials,Aerospace & Defense,0.066,0.031,True,pass
+GEHC,GE HealthCare Technologies Inc.,Healthcare,Medical Devices,0.301,0.082,False,debt/mcap 30%
+GEN,Gen Digital Inc.,Technology,Software - Infrastructure,0.47,0.034,False,debt/mcap 47%
+GEV,GE Vernova Inc.,Industrials,Specialty Industrial Machinery,0.017,0.072,True,pass
+GFI,Gold Fields Limited,Basic Materials,Gold,0.09,0.075,True,pass
+GFL,GFL Environmental Inc. Subordin,Industrials,Waste Management,0.759,0.018,False,debt/mcap 76%
+GFS,GlobalFoundries Inc.,Technology,Semiconductors,0.072,0.101,True,pass
+GGG,Graco Inc.,Industrials,Specialty Industrial Machinery,0.015,0.013,True,pass
+GH,"Guardant Health, Inc.",Healthcare,Diagnostics & Research,0.071,0.044,True,pass
+GIB,CGI Inc.,Technology,Information Technology Services,0.268,0.038,True,pass
+GILD,"Gilead Sciences, Inc.",Healthcare,Drug Manufacturers - General,0.124,0.038,True,pass
+GIS,"General Mills, Inc.",Consumer Defensive,Packaged Foods,0.743,0.024,False,debt/mcap 74%
+GKOS,Glaukos Corporation,Healthcare,Medical Devices,0.007,0.024,True,pass
+GL,Globe Life Inc.,Financial Services,Insurance - Life,0.28,0.037,False,sector: Financial Services
+GLPI,"Gaming and Leisure Properties, ",Real Estate,REIT - Specialty,0.718,0.014,False,sector: Real Estate
+GLW,Corning Incorporated,Technology,Electronic Components,0.086,0.024,True,pass
+GM,General Motors Company,Consumer Cyclical,Auto Manufacturers,1.762,0.375,False,debt/mcap 176%
+GMAB,Genmab A/S,Healthcare,Biotechnology,0.15,0.043,True,pass
+GME,GameStop Corporation,Consumer Cyclical,Specialty Retail,0.354,0.414,False,debt/mcap 35%
+GMED,"Globus Medical, Inc.",Healthcare,Medical Devices,0.011,0.057,True,pass
+GNRC,Generac Holdlings Inc.,Industrials,Specialty Industrial Machinery,0.129,0.034,True,pass
+GOOG,Alphabet Inc.,Communication Services,Internet Content & Information,0.044,0.078,True,pass
+GOOGL,Alphabet Inc.,Communication Services,Internet Content & Information,0.044,0.077,True,pass
+GPC,Genuine Parts Company,Consumer Cyclical,Auto Parts,0.409,0.046,False,debt/mcap 41%
+GPN,Global Payments Inc.,Industrials,Specialty Business Services,0.919,0.211,False,debt/mcap 92%
+GRAB,Grab Holdings Limited,Technology,Software - Application,0.183,0.589,False,cash/mcap 59%
+GRMN,Garmin Ltd.,Technology,Scientific & Technical Instruments,0.004,0.045,True,pass
+GS,"Goldman Sachs Group, Inc. (The)",Financial Services,Capital Markets,3.221,3.874,False,sector: Financial Services
+GS-PA,"Goldman Sachs Group, Inc. (The)",Financial Services,Capital Markets,,,False,no fundamental data
+GS-PD,"Goldman Sachs Group, Inc. (The)",Financial Services,Capital Markets,,,False,no fundamental data
+GSAT,"Globalstar, Inc.",Communication Services,Telecom Services,0.039,0.038,True,pass
+GSK,GSK plc,Healthcare,Drug Manufacturers - General,0.24,0.03,True,pass
+GWRE,"Guidewire Software, Inc.",Technology,Software - Application,0.053,0.058,True,pass
+GWW,"W.W. Grainger, Inc.",Industrials,Industrial Distribution,0.044,0.009,True,pass
+H,Hyatt Hotels Corporation,Consumer Cyclical,Lodging,0.276,0.029,False,industry: Lodging
+HAL,Halliburton Company,Energy,Oil & Gas Equipment & Services,0.274,0.062,True,pass
+HALO,"Halozyme Therapeutics, Inc.",Healthcare,Biotechnology,0.147,0.016,True,pass
+HAS,"Hasbro, Inc.",Consumer Cyclical,Leisure,0.231,0.086,True,pass
+HBAN,Huntington Bancshares Incorpora,Financial Services,Banks - Regional,0.778,0.574,False,sector: Financial Services
+HCA,"HCA Healthcare, Inc.",Healthcare,Medical Care Facilities,0.53,0.01,False,debt/mcap 53%
+HD,"Home Depot, Inc. (The)",Consumer Cyclical,Home Improvement Retail,0.192,0.006,True,pass
+HDB,HDFC Bank Limited,Financial Services,Banks - Regional,52.074,23.121,False,sector: Financial Services
+HEI,Heico Corporation,Industrials,Aerospace & Defense,0.057,0.005,True,pass
+HEI-A,Heico Corporation,Industrials,Aerospace & Defense,0.076,0.007,True,pass
+HIG,"The Hartford Insurance Group, I",Financial Services,Insurance - Diversified,0.123,0.127,False,sector: Financial Services
+HIG-PG,"The Hartford Insurance Group, I",Financial Services,Insurance - Diversified,,,False,no fundamental data
+HII,"Huntington Ingalls Industries, ",Industrials,Aerospace & Defense,0.235,0.031,False,weapons/defense
+HLN,Haleon plc,Healthcare,Drug Manufacturers - Specialty & Generic,0.217,0.022,True,pass
+HLT,Hilton Worldwide Holdings Inc.,Consumer Cyclical,Lodging,0.176,0.01,False,industry: Lodging
+HMC,"Honda Motor Company, Ltd.",Consumer Cyclical,Auto Manufacturers,326.22,124.851,False,debt/mcap 32622%
+HON,Honeywell International Inc.,Industrials,Conglomerates,0.249,0.089,True,pass
+HONA,Honeywell Aerospace Inc.,Industrials,Aerospace & Defense,0.331,0.032,False,debt/mcap 33%
+HOOD,"Robinhood Markets, Inc.",Financial Services,Capital Markets,0.295,0.324,False,sector: Financial Services
+HPE,Hewlett Packard Enterprise Comp,Technology,Communication Equipment,0.278,0.085,True,pass
+HPQ,HP Inc.,Technology,Computer Hardware,0.398,0.161,False,debt/mcap 40%
+HRL,Hormel Foods Corporation,Consumer Defensive,Packaged Foods,0.244,0.074,False,pork products
+HSAI,Hesai Group,Consumer Cyclical,Auto Parts,0.046,0.434,False,cash/mcap 43%
+HSBC,"HSBC Holdings, plc.",Financial Services,Banks - Diversified,2.916,4.067,False,sector: Financial Services
+HST,"Host Hotels & Resorts, Inc.",Real Estate,REIT - Hotel & Motel,0.321,0.111,False,sector: Real Estate
+HSY,The Hershey Company,Consumer Defensive,Confectioners,0.163,0.02,True,pass
+HTHT,H World Group Limited,Consumer Cyclical,Lodging,2.277,1.035,False,industry: Lodging
+HUBB,Hubbell Inc,Industrials,Electrical Equipment & Parts,0.238,0.016,True,pass
+HUBS,"HubSpot, Inc.",Technology,Software - Application,0.02,0.111,True,pass
+HUM,Humana Inc.,Healthcare,Healthcare Plans,0.296,0.48,False,cash/mcap 48%
+HWM,Howmet Aerospace Inc.,Industrials,Aerospace & Defense,0.058,0.006,True,pass
+IBKR,"Interactive Brokers Group, Inc.",Financial Services,Capital Markets,0.269,0.992,False,sector: Financial Services
+IBM,International Business Machines,Technology,Information Technology Services,0.276,0.045,True,pass
+IBN,ICICI Bank Limited,Financial Services,Banks - Regional,27.953,26.033,False,sector: Financial Services
+ICE,Intercontinental Exchange Inc.,Financial Services,Financial Data & Stock Exchanges,0.254,0.01,False,sector: Financial Services
+ICLR,ICON plc,Healthcare,Diagnostics & Research,0.222,0.051,True,pass
+IDXX,"IDEXX Laboratories, Inc.",Healthcare,Diagnostics & Research,0.025,0.005,True,pass
+IEX,IDEX Corporation,Industrials,Specialty Industrial Machinery,0.104,0.035,True,pass
+IFF,International Flavors & Fragran,Basic Materials,Specialty Chemicals,0.265,0.024,True,pass
+IHG,Intercontinental Hotels Group,Consumer Cyclical,Lodging,0.186,0.034,False,industry: Lodging
+ILMN,"Illumina, Inc.",Healthcare,Diagnostics & Research,0.065,0.037,True,pass
+IMO,Imperial Oil Limited,Energy,Oil & Gas Integrated,0.064,0.044,True,pass
+INCY,Incyte Corporation,Healthcare,Biotechnology,0.002,0.157,True,pass
+INFY,Infosys Limited,Technology,Information Technology Services,0.018,0.078,True,pass
+ING,"ING Group, N.V.",Financial Services,Banks - Diversified,3.087,1.516,False,sector: Financial Services
+INIO,INNIO N.V.,Industrials,Specialty Industrial Machinery,0.242,0.098,True,pass
+INSM,Insmed Incorporated,Healthcare,Biotechnology,0.03,0.046,True,pass
+INTC,Intel Corporation,Technology,Semiconductors,0.143,0.155,True,pass
+INTU,Intuit Inc.,Technology,Software - Application,0.092,0.079,True,pass
+INVH,Invitation Homes Inc.,Real Estate,REIT - Residential,0.57,0.009,False,sector: Real Estate
+IONQ,"IonQ, Inc.",Technology,Computer Hardware,0.004,0.164,True,pass
+IOT,Samsara Inc.,Technology,Software - Infrastructure,0.003,0.034,True,pass
+IP,International Paper Company,Consumer Cyclical,Packaging & Containers,0.526,0.042,False,debt/mcap 53%
+IQV,"IQVIA Holdings, Inc.",Healthcare,Diagnostics & Research,0.37,0.055,False,debt/mcap 37%
+IR,Ingersoll Rand Inc.,Industrials,Specialty Industrial Machinery,0.16,0.044,True,pass
+IRM,Iron Mountain Incorporated (Del,Real Estate,REIT - Specialty,0.575,0.006,False,sector: Real Estate
+ISRG,"Intuitive Surgical, Inc.",Healthcare,Medical Instruments & Supplies,0.0,0.026,True,pass
+IT,"Gartner, Inc.",Technology,Information Technology Services,0.23,0.103,True,pass
+ITUB,Itau Unibanco Banco Holding SA,Financial Services,Banks - Regional,14.199,6.161,False,sector: Financial Services
+ITW,Illinois Tool Works Inc.,Industrials,Specialty Industrial Machinery,0.118,0.01,True,pass
+IVZ,Invesco Ltd,Financial Services,Asset Management,0.105,0.079,False,sector: Financial Services
+IX,ORIX Corporation,Financial Services,Financial Conglomerates,159.121,24.438,False,sector: Financial Services
+J,Jacobs Solutions Inc.,Industrials,Engineering & Construction,0.224,0.065,True,pass
+JAZZ,Jazz Pharmaceuticals plc,Healthcare,Biotechnology,0.314,0.157,False,debt/mcap 31%
+JBHT,"J.B. Hunt Transport Services, I",Industrials,Integrated Freight & Logistics,0.07,0.0,True,pass
+JBL,Jabil Inc.,Technology,Electronic Components,0.155,0.062,True,pass
+JBS,JBS N.V.,Consumer Defensive,Packaged Foods,1.917,0.259,False,debt/mcap 192%
+JCI,Johnson Controls International ,Industrials,Building Products & Equipment,0.103,0.007,True,pass
+JD,"JD.com, Inc.",Consumer Cyclical,Internet Retail,3.036,6.391,False,debt/mcap 304%
+JEF,Jefferies Financial Group Inc.,Financial Services,Capital Markets,3.881,6.074,False,sector: Financial Services
+JHX,James Hardie Industries plc.,Basic Materials,Building Materials,0.286,0.018,True,pass
+JKHY,"Jack Henry & Associates, Inc.",Technology,Information Technology Services,0.007,0.001,True,pass
+JLL,Jones Lang LaSalle Incorporated,Real Estate,Real Estate Services,0.196,0.031,False,sector: Real Estate
+JNJ,Johnson & Johnson,Healthcare,Drug Manufacturers - General,0.068,0.026,True,pass
+JPM,JP Morgan Chase & Co.,Financial Services,Banks - Diversified,1.482,2.102,False,sector: Financial Services
+JPM-PC,J P Morgan Chase & Co Depositar,Financial Services,Banks - Diversified,,,False,no fundamental data
+JPM-PD,J P Morgan Chase & Co Depositar,Financial Services,Banks - Diversified,,,False,no fundamental data
+KB,KB Financial Group Inc,Financial Services,Banks - Regional,4615.517,3976.555,False,sector: Financial Services
+KDP,Keurig Dr Pepper Inc.,Consumer Defensive,Beverages - Non-Alcoholic,0.687,0.031,False,debt/mcap 69%
+KEP,Korea Electric Power Corporatio,Utilities,Utilities - Regulated Electric,10278.211,436.318,False,debt/mcap 1027821%
+KEY,KeyCorp,Financial Services,Banks - Regional,0.748,0.11,False,sector: Financial Services
+KEY-PI,KeyCorp Depositary Shares Each ,Financial Services,Banks - Regional,,,False,no fundamental data
+KEY-PJ,KeyCorp Depositary Shares each ,Financial Services,Banks - Regional,,,False,no fundamental data
+KEY-PK,"KeyCorp Depositary Shares, each",Financial Services,Banks - Regional,1.061,0.157,False,sector: Financial Services
+KEYS,Keysight Technologies Inc.,Technology,Scientific & Technical Instruments,0.053,0.05,True,pass
+KGC,Kinross Gold Corporation,Basic Materials,Gold,0.032,0.111,True,pass
+KHC,The Kraft Heinz Company,Consumer Defensive,Packaged Foods,0.658,0.093,False,debt/mcap 66%
+KIM,Kimco Realty Corporation (HC),Real Estate,REIT - Retail,0.527,0.034,False,sector: Real Estate
+KKR,KKR & Co. Inc.,Financial Services,Asset Management,0.644,0.546,False,sector: Financial Services
+KLAC,KLA Corporation,Technology,Semiconductor Equipment & Materials,0.029,0.023,True,pass
+KMB,Kimberly-Clark Corporation,Consumer Defensive,Household & Personal Products,0.182,0.027,True,pass
+KMI,"Kinder Morgan, Inc.",Energy,Oil & Gas Midstream,0.443,0.012,False,debt/mcap 44%
+KO,Coca-Cola Company (The),Consumer Defensive,Beverages - Non-Alcoholic,0.105,0.041,True,pass
+KR,Kroger Company (The),Consumer Defensive,Grocery Stores,0.613,0.043,False,debt/mcap 61%
+KSPI,Joint Stock Company Kaspi.kz - ,Technology,Software - Infrastructure,0.0,0.0,True,pass
+KVUE,Kenvue Inc.,Consumer Defensive,Household & Personal Products,0.225,0.028,True,pass
+KYMR,"Kymera Therapeutics, Inc.",Healthcare,Biotechnology,0.007,0.09,True,pass
+L,Loews Corporation,Financial Services,Insurance - Property & Casualty,0.393,0.281,False,sector: Financial Services
+LAMR,Lamar Advertising Company,Real Estate,REIT - Specialty,0.311,0.004,False,sector: Real Estate
+LDOS,"Leidos Holdings, Inc.",Technology,Information Technology Services,0.367,0.042,False,debt/mcap 37%
+LECO,"Lincoln Electric Holdings, Inc.",Industrials,Tools & Accessories,0.081,0.019,True,pass
+LEN,Lennar Corporation,Consumer Cyclical,Residential Construction,0.296,0.058,True,pass
+LEN-B,Lennar Corporation,Consumer Cyclical,Residential Construction,0.299,0.059,True,pass
+LH,Labcorp Holdings Inc.,Healthcare,Diagnostics & Research,0.233,0.009,True,pass
+LHX,"L3Harris Technologies, Inc.",Industrials,Aerospace & Defense,0.213,0.058,False,weapons/defense
+LI,Li Auto Inc.,Consumer Cyclical,Auto Manufacturers,1.363,7.94,False,debt/mcap 136%
+LII,"Lennox International, Inc.",Industrials,Building Products & Equipment,0.177,0.004,True,pass
+LIN,Linde plc,Basic Materials,Specialty Chemicals,0.113,0.017,True,pass
+LITE,Lumentum Holdings Inc.,Technology,Communication Equipment,0.022,0.036,True,pass
+LLY,Eli Lilly and Company,Healthcare,Drug Manufacturers - General,0.039,0.004,True,pass
+LMT,Lockheed Martin Corporation,Industrials,Aerospace & Defense,0.139,0.041,False,weapons/defense
+LNG,"Cheniere Energy, Inc.",Energy,Oil & Gas Midstream,0.41,0.025,False,debt/mcap 41%
+LNT,Alliant Energy Corporation,Utilities,Utilities - Regulated Electric,0.676,0.001,False,debt/mcap 68%
+LOGI,Logitech International S.A. - R,Technology,Computer Hardware,0.008,0.111,True,pass
+LOW,"Lowe's Companies, Inc.",Consumer Cyclical,Home Improvement Retail,0.358,0.027,False,debt/mcap 36%
+LPLA,LPL Financial Holdings Inc.,Financial Services,Capital Markets,0.368,0.129,False,sector: Financial Services
+LRCX,Lam Research Corporation,Technology,Semiconductor Equipment & Materials,0.012,0.025,True,pass
+LSCC,Lattice Semiconductor Corporati,Technology,Semiconductors,0.003,0.013,True,pass
+LTH,"Life Time Group Holdings, Inc.",Consumer Cyclical,Leisure,0.426,0.029,False,debt/mcap 43%
+LULU,lululemon athletica inc.,Consumer Cyclical,Apparel Retail,0.172,0.112,True,pass
+LUV,Southwest Airlines Company,Industrials,Airlines,0.331,0.174,False,debt/mcap 33%
+LVS,Las Vegas Sands Corp.,Consumer Cyclical,Resorts & Casinos,0.646,0.119,False,industry: Resorts & Casinos
+LYB,LyondellBasell Industries NV,Basic Materials,Specialty Chemicals,0.618,0.147,False,debt/mcap 62%
+LYG,Lloyds Banking Group Plc,Financial Services,Banks - Regional,2.356,4.686,False,sector: Financial Services
+LYV,"Live Nation Entertainment, Inc.",Communication Services,Entertainment,0.272,0.219,False,industry: Entertainment
+MA,Mastercard Incorporated,Financial Services,Credit Services,0.043,0.019,False,sector: Financial Services
+MAA,Mid-America Apartment Communiti,Real Estate,REIT - Residential,0.42,0.002,False,sector: Real Estate
+MAIR,Madison Air Solutions Corporati,Industrials,Building Products & Equipment,0.275,0.023,True,pass
+MANH,"Manhattan Associates, Inc.",Technology,Software - Application,0.004,0.014,True,pass
+MAR,Marriott International,Consumer Cyclical,Lodging,0.171,0.004,False,industry: Lodging
+MAS,Masco Corporation,Industrials,Building Products & Equipment,0.224,0.039,True,pass
+MCD,McDonald's Corporation,Consumer Cyclical,Restaurants,0.299,0.005,True,pass
+MCHP,Microchip Technology Incorporat,Technology,Semiconductors,0.129,0.006,True,pass
+MCK,McKesson Corporation,Healthcare,Medical Distribution,0.102,0.045,True,pass
+MCO,Moody's Corporation,Financial Services,Financial Data & Stock Exchanges,0.089,0.019,False,sector: Financial Services
+MDB,"MongoDB, Inc.",Technology,Software - Infrastructure,0.002,0.085,True,pass
+MDLN,Medline Inc.,Healthcare,Medical Instruments & Supplies,0.292,0.062,True,pass
+MDLZ,"Mondelez International, Inc.",Consumer Defensive,Confectioners,0.272,0.02,True,pass
+MDT,Medtronic plc.,Healthcare,Medical Devices,0.228,0.071,True,pass
+MEDP,"Medpace Holdings, Inc.",Healthcare,Diagnostics & Research,0.009,0.039,True,pass
+MELI,"MercadoLibre, Inc.",Consumer Cyclical,Internet Retail,0.16,0.07,True,pass
+MET,"MetLife, Inc.",Financial Services,Insurance - Life,0.792,0.43,False,sector: Financial Services
+MET-PA,"MetLife, Inc. Preferred Series ",Financial Services,Insurance - Life,,,False,no fundamental data
+MET-PE,"MetLife, Inc. Depositary Shares",Financial Services,Insurance - Life,,,False,no fundamental data
+META,"Meta Platforms, Inc.",Communication Services,Internet Content & Information,0.073,0.052,True,pass
+MFC,Manulife Financial Corporation,Financial Services,Insurance - Life,0.316,0.445,False,sector: Financial Services
+MFG,"Mizuho Financial Group, Inc. Sp",Financial Services,Banks - Regional,645.666,1024.271,False,sector: Financial Services
+MGA,"Magna International, Inc.",Consumer Cyclical,Auto Parts,0.39,0.086,False,debt/mcap 39%
+MICC,The Magnum Ice Cream Company N.,Consumer Defensive,Packaged Foods,0.32,0.048,False,debt/mcap 32%
+MKC,"McCormick & Company, Incorporat",Consumer Defensive,Packaged Foods,0.394,0.026,False,debt/mcap 39%
+MKC-V,"McCormick & Company, Incorporat",Consumer Defensive,Packaged Foods,0.392,0.026,False,debt/mcap 39%
+MKL,Markel Group Inc.,Financial Services,Insurance - Property & Casualty,0.191,0.279,False,sector: Financial Services
+MKSI,MKS Inc.,Technology,Scientific & Technical Instruments,0.306,0.045,False,debt/mcap 31%
+MLI,"Mueller Industries, Inc.",Industrials,Metal Fabrication,0.002,0.125,True,pass
+MLM,"Martin Marietta Materials, Inc.",Basic Materials,Building Materials,0.165,0.003,True,pass
+MMM,3M Company,Industrials,Conglomerates,0.174,0.082,True,pass
+MNST,Monster Beverage Corporation,Consumer Defensive,Beverages - Non-Alcoholic,0.001,0.037,True,pass
+MO,"Altria Group, Inc.",Consumer Defensive,Tobacco,0.185,0.021,False,industry: Tobacco
+MOG-A,Moog Inc.,Industrials,Aerospace & Defense,0.103,0.006,True,pass
+MOG-B,Moog Inc.,Industrials,Aerospace & Defense,0.103,0.006,True,pass
+MOH,Molina Healthcare Inc,Healthcare,Healthcare Plans,0.371,0.806,False,debt/mcap 37%
+MPC,Marathon Petroleum Corporation,Energy,Oil & Gas Refining & Marketing,0.275,0.062,True,pass
+MPLX,MPLX LP,Energy,Oil & Gas Midstream,0.428,0.017,False,debt/mcap 43%
+MPWR,"Monolithic Power Systems, Inc.",Technology,Semiconductors,0.0,0.018,True,pass
+MRK,"Merck & Company, Inc.",Healthcare,Drug Manufacturers - General,0.146,0.019,True,pass
+MRNA,"Moderna, Inc.",Healthcare,Biotechnology,0.015,0.058,True,pass
+MRSH,Marsh,Financial Services,Insurance Brokers,0.234,0.019,False,sector: Financial Services
+MRVL,"Marvell Technology, Inc.",Technology,Semiconductors,0.03,0.022,True,pass
+MS,Morgan Stanley,Financial Services,Capital Markets,2.106,2.562,False,sector: Financial Services
+MS-PA,Morgan Stanley Dep Shs repstg 1,Financial Services,Capital Markets,,,False,no fundamental data
+MS-PE,Morgan Stanley DEPOSITARY SHARE,Financial Services,Capital Markets,,,False,no fundamental data
+MS-PF,Morgan Stanley Dep Shs Rpstg 1/,Financial Services,Capital Markets,,,False,no fundamental data
+MS-PI,Morgan Stanley Depository Share,Financial Services,Capital Markets,,,False,no fundamental data
+MS-PK,Morgan Stanley Depositary Share,Financial Services,Capital Markets,,,False,no fundamental data
+MSCI,MSCI Inc.,Financial Services,Financial Data & Stock Exchanges,0.152,0.006,False,sector: Financial Services
+MSFT,Microsoft Corporation,Technology,Software - Infrastructure,0.035,0.017,True,pass
+MSI,"Motorola Solutions, Inc.",Technology,Communication Equipment,0.118,0.009,True,pass
+MSTR,Strategy Inc,Technology,Software - Application,0.123,0.107,False,bitcoin treasury company
+MT,Arcelor Mittal NY Registry Shar,Basic Materials,Steel,0.321,0.108,False,debt/mcap 32%
+MTB,M&T Bank Corporation,Financial Services,Banks - Regional,0.631,0.509,False,sector: Financial Services
+MTD,"Mettler-Toledo International, I",Healthcare,Diagnostics & Research,0.064,0.002,True,pass
+MTSI,MACOM Technology Solutions Hold,Technology,Semiconductors,0.023,0.037,True,pass
+MTZ,"MasTec, Inc.",Industrials,Engineering & Construction,0.315,0.032,False,debt/mcap 31%
+MU,"Micron Technology, Inc.",Technology,Semiconductors,0.005,0.043,True,pass
+MUFG,"Mitsubishi UFJ Financial Group,",Financial Services,Banks - Diversified,446.61,589.694,False,sector: Financial Services
+NBIS,Nebius Group N.V.,Communication Services,Internet Content & Information,0.243,0.192,True,pass
+NBIX,"Neurocrine Biosciences, Inc.",Healthcare,Drug Manufacturers - Specialty & Generic,0.031,0.026,True,pass
+NDAQ,"Nasdaq, Inc.",Financial Services,Financial Data & Stock Exchanges,0.157,0.009,False,sector: Financial Services
+NDSN,Nordson Corporation,Industrials,Specialty Industrial Machinery,0.101,0.006,True,pass
+NEE,"NextEra Energy, Inc.",Utilities,Utilities - Regulated Electric,0.649,0.032,False,debt/mcap 65%
+NEM,Newmont Corporation,Basic Materials,Gold,0.05,0.08,True,pass
+NET,"Cloudflare, Inc.",Technology,Software - Infrastructure,0.035,0.042,True,pass
+NFLX,"Netflix, Inc.",Communication Services,Entertainment,0.068,0.032,False,industry: Entertainment
+NGG,"National Grid Transco, PLC Nati",Utilities,Utilities - Regulated Electric,0.565,0.034,False,debt/mcap 57%
+NI,NiSource Inc,Utilities,Utilities - Regulated Gas,0.856,0.003,False,debt/mcap 86%
+NKE,"Nike, Inc.",Consumer Cyclical,Footwear & Accessories,0.194,0.146,True,pass
+NLY,Annaly Capital Management Inc.,Real Estate,REIT - Mortgage,8.882,0.115,False,sector: Real Estate
+NLY-PF,Annaly Capital Management Inc 6,Real Estate,REIT - Mortgage,,,False,no fundamental data
+NLY-PG,Annaly Capital Management Inc 6,Real Estate,REIT - Mortgage,,,False,no fundamental data
+NMR,Nomura Holdings Inc,Financial Services,Capital Markets,1356.545,1882.578,False,sector: Financial Services
+NOC,Northrop Grumman Corporation,Industrials,Aerospace & Defense,0.22,0.047,False,weapons/defense
+NOK,Nokia Corporation Sponsored,Technology,Communication Equipment,0.07,0.104,True,pass
+NOW,"ServiceNow, Inc.",Technology,Software - Application,0.077,0.042,True,pass
+NRG,"NRG Energy, Inc.",Utilities,Utilities - Independent Power Producers,1.162,0.008,False,debt/mcap 116%
+NSC,Norfolk Southern Corporation,Industrials,Railroads,0.223,0.021,True,pass
+NTAP,"NetApp, Inc.",Technology,Software - Infrastructure,0.065,0.091,True,pass
+NTES,"NetEase, Inc.",Communication Services,Electronic Gaming & Multimedia,0.173,2.41,False,cash/mcap 241%
+NTNX,"Nutanix, Inc.",Technology,Software - Infrastructure,0.084,0.13,True,pass
+NTR,Nutrien Ltd.,Basic Materials,Agricultural Inputs,0.384,0.028,False,debt/mcap 38%
+NTRA,"Natera, Inc.",Healthcare,Diagnostics & Research,0.004,0.018,True,pass
+NTRS,Northern Trust Corporation,Financial Services,Asset Management,0.541,0.282,False,sector: Financial Services
+NU,Nu Holdings Ltd.,Financial Services,Banks - Regional,0.105,0.271,False,sector: Financial Services
+NUE,Nucor Corporation,Basic Materials,Steel,0.114,0.059,True,pass
+NVDA,NVIDIA Corporation,Technology,Semiconductors,0.008,0.013,True,pass
+NVO,Novo Nordisk A/S,Healthcare,Drug Manufacturers - General,0.794,0.255,False,debt/mcap 79%
+NVR,"NVR, Inc.",Consumer Cyclical,Residential Construction,0.067,0.068,True,pass
+NVS,Novartis AG,Healthcare,Drug Manufacturers - General,0.159,0.029,True,pass
+NVT,nVent Electric plc,Industrials,Electrical Equipment & Parts,0.115,0.055,True,pass
+NWG,NatWest Group plc,Financial Services,Banks - Regional,2.31,3.81,False,sector: Financial Services
+NWS,News Corporation,Communication Services,Entertainment,0.171,0.123,False,industry: Entertainment
+NWSA,News Corporation,Communication Services,Entertainment,0.186,0.134,False,industry: Entertainment
+NXPI,NXP Semiconductors N.V.,Technology,Semiconductors,0.168,0.06,True,pass
+NXT,Nextpower Inc.,Technology,Solar,0.0,0.084,True,pass
+NYT,New York Times Company (The),Communication Services,Publishing,0.0,0.058,True,pass
+O,Realty Income Corporation,Real Estate,REIT - Retail,0.582,0.011,False,sector: Real Estate
+ODFL,"Old Dominion Freight Line, Inc.",Industrials,Trucking,0.001,0.013,True,pass
+OGE,OGE Energy Corp,Utilities,Utilities - Regulated Electric,0.572,0.0,False,debt/mcap 57%
+OHI,"Omega Healthcare Investors, Inc",Real Estate,REIT - Healthcare Facilities,0.269,0.003,False,sector: Real Estate
+OKE,"ONEOK, Inc.",Energy,Oil & Gas Midstream,0.466,0.003,False,debt/mcap 47%
+OKTA,"Okta, Inc.",Technology,Software - Infrastructure,0.001,0.063,True,pass
+OMC,Omnicom Group Inc.,Communication Services,Advertising Agencies,0.51,0.17,False,debt/mcap 51%
+ON,ON Semiconductor Corporation,Technology,Semiconductors,0.169,0.139,True,pass
+ONC,BeOne Medicines Ltd.,Healthcare,Biotechnology,0.049,0.121,True,pass
+ONON,On Holding AG,Consumer Cyclical,Footwear & Accessories,0.05,0.11,True,pass
+ORCL,Oracle Corporation,Technology,Software - Infrastructure,0.427,0.094,False,debt/mcap 43%
+ORLY,"O'Reilly Automotive, Inc.",Consumer Cyclical,Auto Parts,0.145,0.003,True,pass
+OTIS,Otis Worldwide Corporation,Industrials,Specialty Industrial Machinery,0.301,0.03,False,debt/mcap 30%
+OVV,Ovintiv Inc. (DE),Energy,Oil & Gas E&P,0.25,0.035,True,pass
+OXY,Occidental Petroleum Corporatio,Energy,Oil & Gas E&P,0.229,0.065,True,pass
+P,"Everpure, Inc.",Technology,Computer Hardware,0.005,0.024,True,pass
+PAA,"Plains All American Pipeline, L",Energy,Oil & Gas Midstream,0.462,0.057,False,debt/mcap 46%
+PAAS,Pan American Silver Corp.,Basic Materials,Gold,0.053,0.108,True,pass
+PAC,Grupo Aeroportuario Del Pacific,Industrials,Airports & Air Services,4.979,1.745,False,debt/mcap 498%
+PAG,"Penske Automotive Group, Inc.",Consumer Cyclical,Auto & Truck Dealerships,0.656,0.005,False,debt/mcap 66%
+PANW,"Palo Alto Networks, Inc.",Technology,Software - Infrastructure,0.009,0.01,True,pass
+PAYC,"Paycom Software, Inc.",Technology,Software - Application,0.083,0.017,True,pass
+PAYX,"Paychex, Inc.",Technology,Software - Application,0.116,0.023,True,pass
+PBA,Pembina Pipeline Corp.,Energy,Oil & Gas Midstream,0.462,0.005,False,debt/mcap 46%
+PBR,Petroleo Brasileiro S.A. Petrob,Energy,Oil & Gas Integrated,2.579,0.378,False,debt/mcap 258%
+PBR-A,Petroleo Brasileiro S.A. Petrob,Energy,Oil & Gas Integrated,2.758,0.405,False,debt/mcap 276%
+PCAR,PACCAR Inc.,Industrials,Farm & Heavy Construction Machinery,0.281,0.172,True,pass
+PCG,Pacific Gas & Electric Co.,Utilities,Utilities - Regulated Electric,1.655,0.023,False,debt/mcap 165%
+PDD,PDD Holdings Inc.,Consumer Cyclical,Internet Retail,0.043,4.079,False,cash/mcap 408%
+PEG,Public Service Enterprise Group,Utilities,Utilities - Regulated Electric,0.666,0.005,False,debt/mcap 67%
+PEN,"Penumbra, Inc.",Healthcare,Medical Devices,0.017,0.054,True,pass
+PEP,"Pepsico, Inc.",Consumer Defensive,Beverages - Non-Alcoholic,0.277,0.06,True,pass
+PFE,"Pfizer, Inc.",Healthcare,Drug Manufacturers - General,0.365,0.067,False,debt/mcap 36%
+PFG,Principal Financial Group Inc,Financial Services,Asset Management,0.204,0.237,False,sector: Financial Services
+PFGC,Performance Food Group Company,Consumer Defensive,Food Distribution,0.5,0.006,False,debt/mcap 50%
+PG,Procter & Gamble Company (The),Consumer Defensive,Household & Personal Products,0.104,0.041,True,pass
+PGR,Progressive Corporation (The),Financial Services,Insurance - Property & Casualty,0.063,0.016,False,sector: Financial Services
+PH,Parker-Hannifin Corporation,Industrials,Specialty Industrial Machinery,0.077,0.004,True,pass
+PHG,Koninklijke Philips N.V. NY Reg,Healthcare,Medical Devices,0.284,0.068,True,pass
+PHM,"PulteGroup, Inc.",Consumer Cyclical,Residential Construction,0.102,0.058,True,pass
+PHYS,"""Sprott Physical Gold Trust""",,,0.0,0.0,True,pass
+PINS,"Pinterest, Inc.",Communication Services,Internet Content & Information,0.108,0.132,True,pass
+PKG,Packaging Corporation of Americ,Consumer Cyclical,Packaging & Containers,0.192,0.026,True,pass
+PKX,POSCO Holdings Inc.,Basic Materials,Steel,2118.27,951.808,False,debt/mcap 211827%
+PLD,"Prologis, Inc.",Real Estate,REIT - Industrial,0.301,0.018,False,sector: Real Estate
+PLTR,Palantir Technologies Inc.,Technology,Software - Infrastructure,0.0,0.021,True,pass
+PM,Philip Morris International Inc,Consumer Defensive,Tobacco,0.147,0.021,False,industry: Tobacco
+PNC,"PNC Financial Services Group, I",Financial Services,Banks - Regional,0.881,0.072,False,sector: Financial Services
+PNFP,"Pinnacle Financial Partners, In",Financial Services,Banks - Regional,0.688,0.47,False,sector: Financial Services
+PNR,Pentair plc.,Industrials,Specialty Industrial Machinery,0.155,0.007,True,pass
+PNW,Pinnacle West Capital Corporati,Utilities,Utilities - Regulated Electric,1.281,0.001,False,debt/mcap 128%
+PODD,Insulet Corporation,Healthcare,Medical Devices,0.098,0.052,True,pass
+PPG,"PPG Industries, Inc.",Basic Materials,Specialty Chemicals,0.283,0.062,True,pass
+PPL,PPL Corporation,Utilities,Utilities - Regulated Electric,0.759,0.012,False,debt/mcap 76%
+PR,Permian Resources Corporation,Energy,Oil & Gas E&P,0.145,0.006,True,pass
+PRU,"Prudential Financial, Inc.",Financial Services,Insurance - Life,1.411,0.974,False,sector: Financial Services
+PS,Pershing Square Inc.,Financial Services,Asset Management,0.014,0.0,False,sector: Financial Services
+PSA,Public Storage,Real Estate,REIT - Industrial,0.201,0.009,False,sector: Real Estate
+PSA-PH,Public Storage Depositary Share,Real Estate,REIT - Industrial,,,False,no fundamental data
+PSA-PK,Public Storage Depositary Share,Real Estate,REIT - Industrial,,,False,no fundamental data
+PSLV,"""Sprott Physical Silver Trust""",,,0.0,0.0,True,pass
+PSO,"Pearson, Plc",Communication Services,Publishing,0.169,0.032,True,pass
+PSX,Phillips 66,Energy,Oil & Gas Refining & Marketing,0.168,0.053,True,pass
+PTC,PTC Inc.,Technology,Software - Application,0.076,0.017,True,pass
+PUK,Prudential Public Limited Compa,Financial Services,Insurance - Life,0.196,0.195,False,sector: Financial Services
+PWR,"Quanta Services, Inc.",Industrials,Engineering & Construction,0.08,0.025,True,pass
+PYPL,"PayPal Holdings, Inc.",Financial Services,Credit Services,0.301,0.217,False,sector: Financial Services
+Q,"Qnity Electronics, Inc.",Technology,Semiconductor Equipment & Materials,0.185,0.039,True,pass
+QCOM,QUALCOMM Incorporated,Technology,Semiconductors,0.087,0.047,True,pass
+QGEN,Qiagen N.V.,Healthcare,Diagnostics & Research,0.159,0.077,True,pass
+QSR,Restaurant Brands International,Consumer Cyclical,Restaurants,0.472,0.03,False,debt/mcap 47%
+QXO,"QXO, Inc.",Industrials,Industrial Distribution,0.614,0.242,False,debt/mcap 61%
+R,"Ryder System, Inc.",Industrials,Rental & Leasing Services,0.757,0.018,False,debt/mcap 76%
+RACE,Ferrari N.V.,Consumer Cyclical,Auto Manufacturers,0.046,0.021,True,pass
+RBA,"RB Global, Inc.",Industrials,Specialty Business Services,0.283,0.032,True,pass
+RBC,RBC Bearings Incorporated,Industrials,Tools & Accessories,0.053,0.006,True,pass
+RBLX,Roblox Corporation,Communication Services,Electronic Gaming & Multimedia,0.062,0.104,True,pass
+RBRK,"Rubrik, Inc.",Technology,Software - Infrastructure,0.045,0.068,True,pass
+RCI,"Rogers Communication, Inc.",Communication Services,Telecom Services,2.647,0.207,False,debt/mcap 265%
+RCL,Royal Caribbean Cruises Ltd.,Consumer Cyclical,Travel Services,0.282,0.01,False,cruise line (onboard casinos/alcohol)
+RDDT,"Reddit, Inc.",Communication Services,Internet Content & Information,0.002,0.171,True,pass
+RDY,Dr. Reddy's Laboratories Ltd,Healthcare,Drug Manufacturers - Specialty & Generic,6.124,6.459,False,debt/mcap 612%
+REG,Regency Centers Corporation,Real Estate,REIT - Retail,0.369,0.014,False,sector: Real Estate
+REGN,"Regeneron Pharmaceuticals, Inc.",Healthcare,Biotechnology,0.028,0.097,True,pass
+RELX,RELX PLC PLC,Industrials,Specialty Business Services,0.128,0.003,True,pass
+RF,Regions Financial Corporation,Financial Services,Banks - Regional,0.431,0.424,False,sector: Financial Services
+RF-PC,Regions Financial Corporation D,Financial Services,Banks - Regional,,,False,no fundamental data
+RGA,"Reinsurance Group of America, I",Financial Services,Insurance - Reinsurance,0.33,0.328,False,sector: Financial Services
+RGEN,Repligen Corporation,Healthcare,Medical Instruments & Supplies,0.061,0.076,True,pass
+RGLD,"Royal Gold, Inc.",Basic Materials,Gold,0.02,0.009,True,pass
+RIO,Rio Tinto Plc,Basic Materials,Other Industrial Metals & Mining,0.172,0.071,True,pass
+RIVN,"Rivian Automotive, Inc.",Consumer Cyclical,Auto Manufacturers,0.306,0.31,False,debt/mcap 31%
+RJF,"Raymond James Financial, Inc.",Financial Services,Asset Management,0.201,0.53,False,sector: Financial Services
+RKLB,Rocket Lab Corporation,Industrials,Aerospace & Defense,0.004,0.066,True,pass
+RKT,"Rocket Companies, Inc.",Financial Services,Mortgage Finance,0.836,0.078,False,sector: Financial Services
+RL,Ralph Lauren Corporation,Consumer Cyclical,Apparel Manufacturing,0.128,0.083,True,pass
+RMD,ResMed Inc.,Healthcare,Medical Instruments & Supplies,0.019,0.031,True,pass
+RNR,RenaissanceRe Holdings Ltd.,Financial Services,Insurance - Reinsurance,0.17,2.211,False,sector: Financial Services
+ROIV,Roivant Sciences Ltd.,Healthcare,Biotechnology,0.004,0.144,True,pass
+ROK,"Rockwell Automation, Inc.",Industrials,Specialty Industrial Machinery,0.074,0.01,True,pass
+ROKU,"Roku, Inc.",Communication Services,Entertainment,0.021,0.111,False,industry: Entertainment
+ROL,"Rollins, Inc.",Consumer Cyclical,Personal Services,0.068,0.008,True,pass
+ROP,"Roper Technologies, Inc.",Technology,Software - Application,0.211,0.007,True,pass
+ROST,"Ross Stores, Inc.",Consumer Cyclical,Apparel Retail,0.065,0.059,True,pass
+RPM,RPM International Inc.,Basic Materials,Specialty Chemicals,0.21,0.024,True,pass
+RPRX,Royalty Pharma plc,Healthcare,Biotechnology,0.231,0.022,True,pass
+RRC,Range Resources Corporation,Energy,Oil & Gas E&P,0.072,0.0,True,pass
+RRX,Regal Rexnord Corporation,Industrials,Specialty Industrial Machinery,0.455,0.042,False,debt/mcap 46%
+RS,"Reliance, Inc.",Basic Materials,Steel,0.088,0.011,True,pass
+RSG,"Republic Services, Inc.",Industrials,Waste Management,0.192,0.001,True,pass
+RTO,Rentokil Initial plc,Industrials,Specialty Business Services,0.523,0.211,False,debt/mcap 52%
+RTX,RTX Corporation,Industrials,Aerospace & Defense,0.144,0.034,False,weapons/defense
+RVMD,"Revolution Medicines, Inc.",Healthcare,Biotechnology,0.029,0.096,True,pass
+RVTY,"Revvity, Inc.",Healthcare,Diagnostics & Research,0.191,0.058,True,pass
+RY,Royal Bank Of Canada,Financial Services,Banks - Diversified,1.8,2.99,False,sector: Financial Services
+RYAAY,Ryanair Holdings plc,Industrials,Airlines,0.007,0.101,True,pass
+SAIL,"SailPoint, Inc.",Technology,Software - Infrastructure,0.003,0.026,True,pass
+SAN,"Banco Santander, S.A. Sponsored",Financial Services,Banks - Diversified,2.623,2.144,False,sector: Financial Services
+SAP,SAP  SE,Technology,Software - Application,0.039,0.041,True,pass
+SBAC,SBA Communications Corporation,Real Estate,REIT - Specialty,0.766,0.016,False,sector: Real Estate
+SBS,Companhia de saneamento Basico ,Utilities,Utilities - Regulated Water,3.227,1.089,False,debt/mcap 323%
+SBUX,Starbucks Corporation,Consumer Cyclical,Restaurants,0.19,0.033,True,pass
+SCCO,Southern Copper Corporation,Basic Materials,Copper,0.057,0.054,True,pass
+SCHW,Charles Schwab Corporation (The,Financial Services,Capital Markets,0.263,0.45,False,sector: Financial Services
+SCHW-PD,The Charles Schwab Corporation ,Financial Services,Capital Markets,,,False,no fundamental data
+SCI,Service Corporation Internation,Consumer Cyclical,Personal Services,0.498,0.017,False,debt/mcap 50%
+SE,Sea Limited,Consumer Cyclical,Internet Retail,0.091,0.2,True,pass
+SEIC,SEI Investments Company,Financial Services,Asset Management,0.006,0.035,False,sector: Financial Services
+SF,Stifel Financial Corporation,Financial Services,Capital Markets,0.312,0.522,False,sector: Financial Services
+SGI,Somnigroup International Inc.,Consumer Cyclical,"Furnishings, Fixtures & Appliances",0.438,0.008,False,debt/mcap 44%
+SHEL,Shell PLC,Energy,Oil & Gas Integrated,0.247,0.118,True,pass
+SHG,Shinhan Financial Group Co Ltd,Financial Services,Banks - Regional,7086.636,9410.417,False,sector: Financial Services
+SHOP,Shopify Inc.,Technology,Software - Application,0.001,0.024,True,pass
+SHW,Sherwin-Williams Company (The),Basic Materials,Specialty Chemicals,0.184,0.003,True,pass
+SITM,SiTime Corporation,Technology,Semiconductors,0.099,0.143,True,pass
+SJM,The J.M. Smucker Company,Consumer Defensive,Packaged Foods,0.5,0.003,False,debt/mcap 50%
+SKHY,SK hynix Inc.,Technology,Semiconductors,15.015,108.783,False,debt/mcap 1502%
+SKM,"SK Telecom Co., Ltd.",Communication Services,Telecom Services,880.891,175.198,False,debt/mcap 88089%
+SKYD,Skydance Corporation,Communication Services,Entertainment,0.404,0.041,False,industry: Entertainment
+SLB,SLB Limited,Energy,Oil & Gas Equipment & Services,0.162,0.045,True,pass
+SLF,Sun Life Financial Inc.,Financial Services,Insurance - Diversified,0.345,2.62,False,sector: Financial Services
+SMCI,"Super Micro Computer, Inc.",Technology,Computer Hardware,0.428,0.349,False,debt/mcap 43%
+SMFG,Sumitomo Mitsui Financial Group,Financial Services,Banks - Diversified,389.736,753.206,False,sector: Financial Services
+SMMT,Summit Therapeutics Inc.,Healthcare,Biotechnology,0.002,0.054,True,pass
+SMTC,Semtech Corporation,Technology,Semiconductors,0.044,0.017,True,pass
+SN,"SharkNinja, Inc.",Consumer Cyclical,"Furnishings, Fixtures & Appliances",0.031,0.026,True,pass
+SNA,Snap-On Incorporated,Industrials,Tools & Accessories,0.071,0.091,True,pass
+SNDK,Sandisk Corporation,Technology,Computer Hardware,0.001,0.032,True,pass
+SNN,"Smith & Nephew SNATS, Inc.",Healthcare,Medical Devices,0.305,0.061,False,debt/mcap 30%
+SNOW,Snowflake Inc.,Technology,Software - Application,0.026,0.022,True,pass
+SNPS,"Synopsys, Inc.",Technology,Software - Infrastructure,0.121,0.04,True,pass
+SNX,TD SYNNEX Corporation,Technology,Electronics & Computer Distribution,0.319,0.04,False,debt/mcap 32%
+SNY,Sanofi,Healthcare,Drug Manufacturers - General,0.187,0.056,True,pass
+SO,Southern Company (The),Utilities,Utilities - Regulated Electric,0.715,0.028,False,debt/mcap 72%
+SOFI,"SoFi Technologies, Inc.",Financial Services,Credit Services,0.183,0.129,False,sector: Financial Services
+SOLV,Solventum Corporation,Healthcare,Medical Instruments & Supplies,0.382,0.029,False,debt/mcap 38%
+SONY,Sony Group Corporation,Technology,Consumer Electronics,12.661,14.687,False,debt/mcap 1266%
+SPCX,Space Exploration Technologies ,Industrials,Aerospace & Defense,0.021,0.049,True,pass
+SPG,"Simon Property Group, Inc.",Real Estate,REIT - Retail,0.356,0.012,False,sector: Real Estate
+SPGI,S&P Global Inc.,Financial Services,Financial Data & Stock Exchanges,0.1,0.018,False,sector: Financial Services
+SPOT,Spotify Technology S.A.,Communication Services,Internet Content & Information,0.004,0.058,True,pass
+SQM,Sociedad Quimica y Minera S.A.,Basic Materials,Specialty Chemicals,0.34,0.279,False,debt/mcap 34%
+SRE,DBA Sempra,Utilities,Utilities - Diversified,0.652,0.001,False,debt/mcap 65%
+SSB,SouthState Bank Corporation,Financial Services,Banks - Regional,0.296,0.286,False,sector: Financial Services
+SSL,Sasol Ltd.,Basic Materials,Specialty Chemicals,10.063,4.27,False,debt/mcap 1006%
+SSNC,"SS&C Technologies Holdings, Inc",Technology,Software - Application,0.406,0.028,False,debt/mcap 41%
+STE,STERIS plc (Ireland),Healthcare,Medical Devices,0.092,0.022,True,pass
+STLA,Stellantis N.V.,Consumer Cyclical,Auto Manufacturers,4.16,2.053,False,debt/mcap 416%
+STLD,"Steel Dynamics, Inc.",Basic Materials,Steel,0.124,0.026,True,pass
+STM,STMicroelectronics N.V.,Technology,Semiconductors,0.077,0.127,True,pass
+STRL,"Sterling Infrastructure, Inc.",Industrials,Engineering & Construction,0.016,0.021,True,pass
+STT,State Street Corporation,Financial Services,Asset Management,1.128,3.472,False,sector: Financial Services
+STT-PG,State Street Corporation Deposi,Financial Services,Asset Management,,,False,no fundamental data
+STX,Seagate Technology Holdings PLC,Technology,Computer Hardware,0.018,0.009,True,pass
+STZ,"Constellation Brands, Inc.",Consumer Defensive,Beverages - Brewers,0.45,0.004,False,industry: Beverages - Brewers
+SU,Suncor Energy  Inc.,Energy,Oil & Gas Integrated,0.157,0.057,True,pass
+SUI,"Sun Communities, Inc.",Real Estate,REIT - Residential,0.265,0.049,False,sector: Real Estate
+SUNB,"Sunbelt Rentals Holdings, Inc.",Industrials,Rental & Leasing Services,0.333,0.001,False,debt/mcap 33%
+SUZ,Suzano S.A.,Basic Materials,Paper & Paper Products,8.736,2.308,False,debt/mcap 874%
+SW,Smurfit WestRock plc,Consumer Cyclical,Packaging & Containers,0.622,0.032,False,debt/mcap 62%
+SWK,"Stanley Black & Decker, Inc.",Industrials,Tools & Accessories,0.334,0.038,False,debt/mcap 33%
+SWKS,"Skyworks Solutions, Inc.",Technology,Semiconductors,0.033,0.039,True,pass
+SYF,Synchrony Financial,Financial Services,Credit Services,0.694,0.649,False,sector: Financial Services
+SYK,Stryker Corporation,Healthcare,Medical Devices,0.139,0.029,True,pass
+SYY,Sysco Corporation,Consumer Defensive,Food Distribution,0.369,0.044,False,debt/mcap 37%
+T,AT&T Inc.,Communication Services,Telecom Services,1.252,0.075,False,debt/mcap 125%
+TAK,Takeda Pharmaceutical Company L,Healthcare,Drug Manufacturers - Specialty & Generic,80.194,6.265,False,debt/mcap 8019%
+TCOM,Trip.com Group Limited,Consumer Cyclical,Travel Services,1.082,3.19,False,debt/mcap 108%
+TD,Toronto Dominion Bank (The),Financial Services,Banks - Diversified,2.624,3.116,False,sector: Financial Services
+TDG,Transdigm Group Incorporated,Industrials,Aerospace & Defense,0.528,0.044,False,debt/mcap 53%
+TDY,Teledyne Technologies Incorpora,Technology,Scientific & Technical Instruments,0.066,0.018,True,pass
+TEAM,Atlassian Corporation,Technology,Software - Application,0.025,0.026,True,pass
+TECH,Bio-Techne Corp,Healthcare,Biotechnology,0.025,0.023,True,pass
+TECK,Teck Resources Ltd,Basic Materials,Copper,0.328,0.225,False,debt/mcap 33%
+TEL,TE Connectivity plc,Technology,Electronic Components,0.092,0.028,True,pass
+TEM,"Tempus AI, Inc.",Healthcare,Health Information Services,0.11,0.062,True,pass
+TER,"Teradyne, Inc.",Technology,Semiconductor Equipment & Materials,0.003,0.011,True,pass
+TEVA,Teva Pharmaceutical Industries ,Healthcare,Drug Manufacturers - Specialty & Generic,0.344,0.074,False,debt/mcap 34%
+TFC,Truist Financial Corporation,Financial Services,Banks - Regional,1.202,0.967,False,sector: Financial Services
+TGT,Target Corporation,Consumer Defensive,Discount Stores,0.274,0.077,True,pass
+THC,Tenet Healthcare Corporation,Healthcare,Medical Care Facilities,0.609,0.123,False,debt/mcap 61%
+TIGO,Millicom International Cellular,Communication Services,Telecom Services,0.906,0.065,False,debt/mcap 91%
+TJX,"TJX Companies, Inc. (The)",Consumer Cyclical,Apparel Retail,0.093,0.039,True,pass
+TKO,"TKO Group Holdings, Inc.",Communication Services,Entertainment,0.145,0.017,False,industry: Entertainment
+TLK,"PT Telekomunikasi Indonesia, Tb",Communication Services,Telecom Services,0.0,0.0,True,pass
+TLN,Talen Energy Corporation,Utilities,Utilities - Independent Power Producers,0.59,0.014,False,debt/mcap 59%
+TM,Toyota Motor Corporation,Consumer Cyclical,Auto Manufacturers,190.679,57.918,False,debt/mcap 19068%
+TME,Tencent Music Entertainment Gro,Communication Services,Internet Content & Information,1.232,2.236,False,debt/mcap 123%
+TMO,Thermo Fisher Scientific Inc,Healthcare,Diagnostics & Research,0.16,0.023,True,pass
+TMUS,"T-Mobile US, Inc.",Communication Services,Telecom Services,0.718,0.034,False,debt/mcap 72%
+TOL,"Toll Brothers, Inc.",Consumer Cyclical,Residential Construction,0.217,0.079,True,pass
+TOST,"Toast, Inc.",Technology,Software - Infrastructure,0.0,0.094,True,pass
+TPL,Texas Pacific Land Corporation,Energy,Oil & Gas E&P,0.001,0.011,True,pass
+TPR,"Tapestry, Inc.",Consumer Cyclical,Luxury Goods,0.171,0.05,True,pass
+TRGP,"Targa Resources, Inc.",Energy,Oil & Gas Midstream,0.29,0.002,True,pass
+TRI,Thomson Reuters Corp,Industrials,Specialty Business Services,0.063,0.014,True,pass
+TRMB,Trimble Inc.,Technology,Scientific & Technical Instruments,0.096,0.014,True,pass
+TROW,"T. Rowe Price Group, Inc.",Financial Services,Asset Management,0.038,0.17,False,sector: Financial Services
+TRP,TC Energy Corporation,Energy,Oil & Gas Midstream,0.95,0.037,False,debt/mcap 95%
+TRU,TransUnion,Financial Services,Financial Data & Stock Exchanges,0.377,0.06,False,sector: Financial Services
+TRV,"The Travelers Companies, Inc.",Financial Services,Insurance - Property & Casualty,0.121,0.076,False,sector: Financial Services
+TS,Tenaris S.A.,Energy,Oil & Gas Equipment & Services,0.015,0.091,True,pass
+TSCO,Tractor Supply Company,Consumer Cyclical,Specialty Retail,0.38,0.011,False,debt/mcap 38%
+TSEM,Tower Semiconductor Ltd.,Technology,Semiconductors,0.007,0.078,True,pass
+TSLA,"Tesla, Inc.",Consumer Cyclical,Auto Manufacturers,0.01,0.029,True,pass
+TSM,Taiwan Semiconductor Manufactur,Technology,Semiconductors,0.389,1.907,False,debt/mcap 39%
+TSN,"Tyson Foods, Inc.",Consumer Defensive,Farm Products,0.399,0.037,False,pork products
+TT,Trane Technologies plc,Industrials,Building Products & Equipment,0.047,0.014,True,pass
+TTC,Toro Company (The),Industrials,Tools & Accessories,0.105,0.017,True,pass
+TTE,TotalEnergies SE,Energy,Oil & Gas Integrated,0.301,0.18,False,debt/mcap 30%
+TTWO,"Take-Two Interactive Software, ",Communication Services,Electronic Gaming & Multimedia,0.083,0.051,True,pass
+TU,Telus Corporation,Communication Services,Telecom Services,2.257,0.1,False,debt/mcap 226%
+TW,Tradeweb Markets Inc.,Financial Services,Capital Markets,0.006,0.08,False,sector: Financial Services
+TWLO,Twilio Inc.,Technology,Software - Infrastructure,0.033,0.091,True,pass
+TWST,Twist Bioscience Corporation,Healthcare,Biotechnology,0.011,0.016,True,pass
+TXN,Texas Instruments Incorporated,Technology,Semiconductors,0.049,0.03,True,pass
+TXRH,"Texas Roadhouse, Inc.",Consumer Cyclical,Restaurants,0.091,0.017,True,pass
+TXT,Textron Inc.,Industrials,Aerospace & Defense,0.29,0.111,True,pass
+TYL,"Tyler Technologies, Inc.",Technology,Software - Application,0.093,0.056,True,pass
+U,Unity Software Inc.,Technology,Software - Application,0.14,0.142,True,pass
+UAL,"United Airlines Holdings, Inc.",Industrials,Airlines,1.013,0.433,False,debt/mcap 101%
+UBER,"Uber Technologies, Inc.",Technology,Software - Application,0.111,0.04,True,pass
+UBS,UBS Group AG Registered,Financial Services,Banks - Diversified,4.146,3.981,False,sector: Financial Services
+UDR,"UDR, Inc.",Real Estate,REIT - Residential,0.459,0.0,False,sector: Real Estate
+UHAL,U-Haul Holding Company,Industrials,Rental & Leasing Services,0.725,0.098,False,debt/mcap 72%
+UHS,"Universal Health Services, Inc.",Healthcare,Medical Care Facilities,0.595,0.016,False,debt/mcap 60%
+UI,Ubiquiti Inc.,Technology,Communication Equipment,0.002,0.018,True,pass
+UL,Unilever PLC,Consumer Defensive,Household & Personal Products,0.228,0.042,True,pass
+ULS,UL Solutions Inc.,Industrials,Specialty Business Services,0.032,0.029,True,pass
+ULTA,"Ulta Beauty, Inc.",Consumer Cyclical,Specialty Retail,0.092,0.008,True,pass
+UMBF,UMB Financial Corporation,Financial Services,Banks - Regional,0.373,0.236,False,sector: Financial Services
+UMC,United Microelectronics Corpora,Technology,Semiconductors,1.904,3.624,False,debt/mcap 190%
+UNH,UnitedHealth Group Incorporated,Healthcare,Healthcare Plans,0.203,0.078,True,pass
+UNM,Unum Group,Financial Services,Insurance - Life,0.276,0.144,False,sector: Financial Services
+UNP,Union Pacific Corporation,Industrials,Railroads,0.172,0.017,True,pass
+UPS,"United Parcel Service, Inc.",Industrials,Integrated Freight & Logistics,0.329,0.074,False,debt/mcap 33%
+URI,"United Rentals, Inc.",Industrials,Rental & Leasing Services,0.219,0.002,True,pass
+USB,U.S. Bancorp,Financial Services,Banks - Regional,0.789,0.535,False,sector: Financial Services
+USB-PH,U.S. Bancorp Depositary Shares ,Financial Services,Banks - Regional,,,False,no fundamental data
+USB-PP,U.S. Bancorp Depositary Shares ,Financial Services,Banks - Regional,,,False,no fundamental data
+USFD,US Foods Holding Corp.,Consumer Defensive,Food Distribution,0.241,0.002,True,pass
+UTHR,United Therapeutics Corporation,Healthcare,Drug Manufacturers - Specialty & Generic,0.0,0.104,True,pass
+V,Visa Inc.,Financial Services,Credit Services,0.029,0.018,False,sector: Financial Services
+VALE,VALE S.A.,Basic Materials,Other Industrial Metals & Mining,2.268,0.538,False,debt/mcap 227%
+VEEV,Veeva Systems Inc.,Healthcare,Health Information Services,0.003,0.143,True,pass
+VG,"Venture Global, Inc.",Energy,Oil & Gas Midstream,1.158,0.085,False,debt/mcap 116%
+VICI,VICI Properties Inc.,Real Estate,REIT - Diversified,0.662,0.01,False,sector: Real Estate
+VIK,Viking Holdings Ltd,Consumer Cyclical,Travel Services,0.159,0.102,False,cruise line (onboard casinos/alcohol)
+VIV,Telefonica Brasil S.A.,Communication Services,Telecom Services,1.101,0.476,False,debt/mcap 110%
+VLO,Valero Energy Corporation,Energy,Oil & Gas Refining & Marketing,0.099,0.088,True,pass
+VLTO,Veralto Corp,Industrials,Pollution & Treatment Controls,0.116,0.066,True,pass
+VMC,Vulcan Materials Company (Holdi,Basic Materials,Building Materials,0.147,0.003,True,pass
+VMRK,Vivmark Residential,Real Estate,REIT - Residential,0.192,0.002,False,sector: Real Estate
+VOD,Vodafone Group Plc,Communication Services,Telecom Services,1.48,0.396,False,debt/mcap 148%
+VRSK,"Verisk Analytics, Inc.",Industrials,Consulting Services,0.181,0.022,True,pass
+VRSN,"VeriSign, Inc.",Technology,Software - Infrastructure,0.065,0.017,True,pass
+VRT,"Vertiv Holdings, LLC",Industrials,Electrical Equipment & Parts,0.037,0.041,True,pass
+VRTX,Vertex Pharmaceuticals Incorpor,Healthcare,Biotechnology,0.014,0.055,True,pass
+VSAT,"ViaSat, Inc.",Technology,Communication Equipment,0.653,0.164,False,debt/mcap 65%
+VST,Vistra Corp.,Utilities,Utilities - Independent Power Producers,0.442,0.009,False,debt/mcap 44%
+VTR,"Ventas, Inc.",Real Estate,REIT - Healthcare Facilities,0.282,0.005,False,sector: Real Estate
+VTRS,Viatris Inc.,Healthcare,Drug Manufacturers - Specialty & Generic,0.623,0.069,False,debt/mcap 62%
+VYLR,Vylor Inc.,Financial Services,Shell Companies,0.101,0.049,False,sector: Financial Services
+VZ,Verizon Communications Inc.,Communication Services,Telecom Services,1.053,0.024,False,debt/mcap 105%
+W,Wayfair Inc.,Consumer Cyclical,Internet Retail,0.221,0.072,True,pass
+WAB,Westinghouse Air Brake Technolo,Industrials,Railroads,0.143,0.01,True,pass
+WAT,Waters Corporation,Healthcare,Diagnostics & Research,0.121,0.012,True,pass
+WCC,"WESCO International, Inc.",Industrials,Industrial Distribution,0.406,0.05,False,debt/mcap 41%
+WCN,"Waste Connections, Inc.",Industrials,Waste Management,0.212,0.002,True,pass
+WDAY,"Workday, Inc.",Technology,Software - Application,0.079,0.071,True,pass
+WDC,Western Digital Corporation,Technology,Computer Hardware,0.007,0.01,True,pass
+WEC,"WEC Energy Group, Inc.",Utilities,Utilities - Regulated Electric,0.607,0.002,False,debt/mcap 61%
+WELL,Welltower Inc.,Real Estate,REIT - Healthcare Facilities,0.123,0.013,False,sector: Real Estate
+WES,"Western Midstream Partners, LP",Energy,Oil & Gas Midstream,0.476,0.005,False,debt/mcap 48%
+WF,Woori Financial Group Inc.,Financial Services,Banks - Regional,6207.922,4578.137,False,sector: Financial Services
+WFC,Wells Fargo & Company,Financial Services,Banks - Diversified,1.853,1.845,False,sector: Financial Services
+WFC-PC,Wells Fargo & Company Depositar,Financial Services,Banks - Diversified,4.446,4.426,False,sector: Financial Services
+WFC-PY,Wells Fargo & Company Depositar,Financial Services,Banks - Diversified,,,False,no fundamental data
+WIT,Wipro Limited,Technology,Information Technology Services,10.344,20.381,False,debt/mcap 1034%
+WM,"Waste Management, Inc.",Industrials,Waste Management,0.252,0.003,True,pass
+WMB,"Williams Companies, Inc. (The)",Energy,Oil & Gas Midstream,0.339,0.002,False,debt/mcap 34%
+WMG,Warner Music Group Corp.,Communication Services,Entertainment,0.307,0.039,False,industry: Entertainment
+WMS,"Advanced Drainage Systems, Inc.",Industrials,Building Products & Equipment,0.173,0.016,True,pass
+WMT,Walmart Inc.,Consumer Defensive,Discount Stores,0.076,0.012,True,pass
+WPC,W. P. Carey Inc. REIT,Real Estate,REIT - Diversified,0.595,0.01,False,sector: Real Estate
+WPM,Wheaton Precious Metals Corp,Basic Materials,Gold,0.037,0.002,True,pass
+WRB,W.R. Berkley Corporation,Financial Services,Insurance - Property & Casualty,0.113,0.142,False,sector: Financial Services
+WSE,Wise Group plc,Technology,Information Technology Services,0.047,0.522,False,cash/mcap 52%
+WSM,"Williams-Sonoma, Inc.",Consumer Cyclical,Specialty Retail,0.051,0.035,True,pass
+WSO,"Watsco, Inc.",Industrials,Industrial Distribution,0.044,0.051,True,pass
+WSO-B,"Watsco, Inc.",Industrials,Industrial Distribution,0.044,0.052,True,pass
+WST,"West Pharmaceutical Services, I",Healthcare,Medical Instruments & Supplies,0.011,0.016,True,pass
+WTFC,Wintrust Financial Corporation,Financial Services,Banks - Regional,0.424,0.408,False,sector: Financial Services
+WTRG,"Essential Utilities, Inc.",Utilities,Utilities - Regulated Water,0.692,0.001,False,debt/mcap 69%
+WTS,"Watts Water Technologies, Inc.",Industrials,Specialty Industrial Machinery,0.018,0.03,True,pass
+WTW,Willis Towers Watson Public Lim,Financial Services,Insurance Brokers,0.237,0.066,False,sector: Financial Services
+WWD,"Woodward, Inc.",Industrials,Aerospace & Defense,0.077,0.026,True,pass
+WY,Weyerhaeuser Company,Real Estate,REIT - Specialty,0.367,0.024,False,sector: Real Estate
+XEL,Xcel Energy Inc.,Utilities,Utilities - Regulated Electric,0.834,0.049,False,debt/mcap 83%
+XOM,ExxonMobil Holdings Corporation,Energy,Oil & Gas Integrated,0.045,0.016,True,pass
+XPO,"XPO, Inc.",Industrials,Trucking,0.18,0.012,True,pass
+XYL,Xylem Inc.,Industrials,Specialty Industrial Machinery,0.143,0.033,True,pass
+XYZ,"Block, Inc.",Technology,Software - Infrastructure,0.157,0.147,True,pass
+YPF,YPF Sociedad Anonima,Energy,Oil & Gas Integrated,0.598,0.198,False,debt/mcap 60%
+YUM,"Yum! Brands, Inc.",Consumer Cyclical,Restaurants,0.316,0.016,False,debt/mcap 32%
+YUMC,"Yum China Holdings, Inc.",Consumer Cyclical,Restaurants,0.149,0.092,True,pass
+ZBH,"Zimmer Biomet Holdings, Inc.",Healthcare,Medical Devices,0.422,0.026,False,debt/mcap 42%
+ZBRA,Zebra Technologies Corporation,Technology,Communication Equipment,0.173,0.009,True,pass
+ZM,"Zoom Communications, Inc.",Technology,Software - Application,0.002,0.26,True,pass
+ZS,"Zscaler, Inc.",Technology,Software - Infrastructure,0.048,0.09,True,pass
+ZTO,ZTO Express (Cayman) Inc.,Industrials,Integrated Freight & Logistics,1.465,2.081,False,debt/mcap 146%
+ZTS,Zoetis Inc.,Healthcare,Drug Manufacturers - Specialty & Generic,0.281,0.051,True,pass
