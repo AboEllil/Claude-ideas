@@ -40,8 +40,12 @@ def _session():
 
 
 def _get(s, url):
-    for k in range(4):
-        r = s.get(url, timeout=30)
+    for k in range(6):
+        try:
+            r = s.get(url, timeout=30)
+        except requests.RequestException:
+            time.sleep(2 ** k)
+            continue
         time.sleep(0.12)                                   # SEC limit: 10 requests / second
         if r.status_code == 200:
             return r.json()
