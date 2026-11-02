@@ -69,7 +69,9 @@ Squeeze 20 / 1.5) are best - tuning settings overfits.
    alcohol-heavy restaurant chains, convenience stores.
 2. **Financial check** (lab/shariah.py, AAOIFI): debt/mcap < 30%, cash+ST investments/mcap < 30%,
    interest income/revenue < 5%; missing data = excluded. Islamic banks (ADIB, FAIT, FAITA, SAUD) pass
-   on their own Sharia board. Output: reports/universe/shariah_check.csv (603 US pass, 17 EGX pass).
+   on their own Sharia board. Output: reports/universe/shariah_check.csv (892 pass incl. 17 EGX; Nov 2026).
+   Universe (lab/expand.py, refreshed quarterly): ALL US large caps $10B+ (largecap_screen.csv), mid caps $2-10B,
+   small caps $1-2B (smallcap_screen.csv), top halal-filtered crypto (81 coins). Board: 833 US, 79 crypto, 17 EGX.
 3. **Fund confirmation** (lab/shariah_funds.py): full holdings of certified Shariah funds from SEC N-PORT
    (SPUS, HLAL, SPTE, MNZL, AMAGX, AMANX, IMANX, ADJEX) -> "Confirmed" vs "Screened" label.
    Needs env `SEC_USER_AGENT="Name email"` (SEC requirement).
@@ -105,6 +107,8 @@ Squeeze 20 / 1.5) are best - tuning settings overfits.
 
 ## Gotchas learned
 - `pkill -f name` kills the very command that runs it; pipe through grep buffers output.
+- Yahoo rate-limits (HTTP 401 "Invalid Crumb" / 429) when two big downloads run at once: run them one at a time.
+- Yahoo crypto history can start with a bad print (TAO first quote $0.13 then $87.78): run_crypto_lab.clean().
 - yfinance `dividendYield` is already in %; `info` for EGX lacks sector/debt (use statements).
 - Crypto names from Yahoo end with " USD" - strip before stablecoin filters.
 - Pandas index from yfinance hourly data is in seconds, not ns.
