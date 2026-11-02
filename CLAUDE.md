@@ -37,6 +37,10 @@ Squeeze 20 / 1.5) are best - tuning settings overfits.
 - ML ranker v2 (run_ml_signals2.py + lab/sec_fundamentals.py): targets '+2 ATR hit' and trade size, adds SEC
   earnings dates/growth/margins, sector strength; slot-portfolio ranking test: FAILED (US and EGX). Hit is
   predictable (US AUC 0.67) but mainly via which rule fired, size is not; SEC/sector data added nothing.
+- Order/liquidity/whale tests (run_order_liquidity.py): simple signal order (weekly green, then 60-day return)
+  is NOT better than random (lost in 2016-2020); liquidity risk-on filter (DXY, HYG/IEF, VIX) FAILED; whale
+  footprint (CMF20 > 0.05) FAILED, but on EGX raised avg trade and Sharpe in both periods - forward-track only.
+  FRED, DefiLlama, CoinGecko, blockchain explorers, FINRA are blocked by the network policy.
 - ML forecaster (gradient boosting, walk-forward, yearly retrain, 30-day embargo): AUC 0.53-0.55
   every year - small steady edge; used only as a **0-100 ranking** (tie-breaker), not a signal.
 - Buy & hold of halal stocks beat every signal on raw return in 2021-2026 (bull market).
