@@ -40,7 +40,10 @@ Squeeze 20 / 1.5) are best - tuning settings overfits.
 - Order/liquidity/whale tests (run_order_liquidity.py): simple signal order (weekly green, then 60-day return)
   is NOT better than random (lost in 2016-2020); liquidity risk-on filter (DXY, HYG/IEF, VIX) FAILED; whale
   footprint (CMF20 > 0.05) FAILED, but on EGX raised avg trade and Sharpe in both periods - forward-track only.
-  FRED, DefiLlama, CoinGecko, blockchain explorers, FINRA are blocked by the network policy.
+- Real liquidity data (run_liquidity2.py; FRED, DefiLlama, blockchain.info now allowed): Fed net liquidity,
+  stablecoin supply, BTC on-chain volume as filters/timing: all FAILED except BTC timing on stablecoin growth
+  (2021+ only, weak). Crypto signals while Fed liquidity rising: 73%/63% win vs 54%/46% falling (both periods)
+  but Sharpe not higher -> forward-track only. Whale exchange-flow data is paid.
 - ML forecaster (gradient boosting, walk-forward, yearly retrain, 30-day embargo): AUC 0.53-0.55
   every year - small steady edge; used only as a **0-100 ranking** (tie-breaker), not a signal.
 - Buy & hold of halal stocks beat every signal on raw return in 2021-2026 (bull market).
