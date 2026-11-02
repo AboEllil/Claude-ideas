@@ -31,6 +31,9 @@ Squeeze 20 / 1.5) are best - tuning settings overfits.
 - Did NOT help: order-block "3 of 4" confluence, RSI(2) pullback (high win rate, loses money),
   Ramadan effect, market/breadth regime on EGX, insider buying (SEC Form 4), tighter ATR stops,
   vol-scaled risk, most TradingView community indicators (24 tested; none beat buy & hold).
+- ML signal filter (run_ml_signals.py, Nov 2026): GBM + pattern-twin kNN on 57 features incl. 30-day price shape,
+  16k trades, walk-forward: FAILED its pre-registered rule (0 of 6 groups). No reliable win-rate gain; small
+  per-trade edge on EGX only. Weekly-trend filter is as good and simpler. Not used on the dashboard.
 - ML forecaster (gradient boosting, walk-forward, yearly retrain, 30-day embargo): AUC 0.53-0.55
   every year - small steady edge; used only as a **0-100 ranking** (tie-breaker), not a signal.
 - Buy & hold of halal stocks beat every signal on raw return in 2021-2026 (bull market).

@@ -421,7 +421,7 @@ def main():
     top = sorted(zip(X, imp.importances_mean), key=lambda x: -x[1])[:12]
     md += ["", "## 4. What the model looks at most (permutation importance, in-sample, for explanation only)", "",
            "| Feature | AUC drop when shuffled |", "|---|---|"] + [f"| {n} | {v:.4f} |" for n, v in top]
-    pr.drop(columns=["legs"]).to_csv(OUT / "walkforward_predictions.csv.gz", index=False)
+    pr.drop(columns=["legs"]).to_csv(ROOT / "data" / "ml_signals_predictions.csv.gz", index=False)  # local only
     (OUT / "REPORT.md").write_text("\n".join(md) + "\n")
     print("\n".join(md))
 
