@@ -49,6 +49,11 @@ Squeeze 20 / 1.5) are best - tuning settings overfits.
   liquidity rising); Strong 4-5 / Medium 3 / Weak 0-2. Stronger won more often in BOTH periods on EGX and crypto
   (e.g. crypto your-rule Strong 74%/62% vs Weak 54%/44%), NOT on US (flat or reversed). Every BUY on the
   dashboard shows why_buy, checks, evidence, plan (columns in signals.csv).
+- Crypto lab (run_crypto_lab.py): ML on 83k coin-days (44 features incl. on-chain, stablecoins, Fed): cannot
+  predict coin direction (AUC ~0.50) -> ML timing/rotation FAILED (DD -60..-71%). PASSED (pre-registered, both
+  periods): S4 = current crypto rule + ML filter (Sharpe 1.57/1.27 vs 0.99/1.13) and S3 = per-coin adaptive
+  SuperTrend settings re-chosen yearly (1.03/1.32 vs 0.99/1.13; 2019-20 margin tiny). Model leans on market mood
+  (BTC 30d, stablecoins, Fed, on-chain), not coin patterns. Exchange data (funding, Coinbase, ETF flows) blocked.
 - ML forecaster (gradient boosting, walk-forward, yearly retrain, 30-day embargo): AUC 0.53-0.55
   every year - small steady edge; used only as a **0-100 ranking** (tie-breaker), not a signal.
 - Buy & hold of halal stocks beat every signal on raw return in 2021-2026 (bull market).
