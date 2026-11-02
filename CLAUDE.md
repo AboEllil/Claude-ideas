@@ -52,7 +52,8 @@ Squeeze 20 / 1.5) are best - tuning settings overfits.
 - Crypto lab (run_crypto_lab.py): ML on 83k coin-days (44 features incl. on-chain, stablecoins, Fed): cannot
   predict coin direction (AUC ~0.50) -> ML timing/rotation FAILED (DD -60..-71%). PASSED (pre-registered, both
   periods): S4 = current crypto rule + ML filter (Sharpe 1.57/1.27 vs 0.99/1.13) and S3 = per-coin adaptive
-  SuperTrend settings re-chosen yearly (1.03/1.32 vs 0.99/1.13; 2019-20 margin tiny). Model leans on market mood
+  SuperTrend settings re-chosen yearly (1.03/1.32 vs 0.99/1.13; 2019-20 margin tiny). RE-TEST on 75 coins (81-coin
+  list, bad prints cleaned): S4 PASSES again (1.67/1.13 vs 1.58/0.94), S3 FAILS (tie in 2019-20). Model leans on market mood
   (BTC 30d, stablecoins, Fed, on-chain), not coin patterns. Exchange data (funding, Coinbase, ETF flows) blocked.
 - Whale/crowd data (run_crypto_whales.py; Coinbase API + alternative.me allowed; Binance geo-blocked, Farside
   bot-blocked): BTC timing "hold only while 7-day Coinbase premium > 0" PASSED (2018-20 57%/1.54/-35% vs B&H
