@@ -107,7 +107,7 @@ def main():
     todo = [t for t in tickers if t not in set(done.ticker)]
     print(f"{len(tickers)} stocks, {len(todo)} to check")
     rows = []
-    with ThreadPoolExecutor(max_workers=6) as ex:
+    with ThreadPoolExecutor(max_workers=3) as ex:
         for i, r in enumerate(ex.map(check, todo), 1):
             rows.append(r)
             if i % 50 == 0:
