@@ -34,6 +34,9 @@ Squeeze 20 / 1.5) are best - tuning settings overfits.
 - ML signal filter (run_ml_signals.py, Nov 2026): GBM + pattern-twin kNN on 57 features incl. 30-day price shape,
   16k trades, walk-forward: FAILED its pre-registered rule (0 of 6 groups). No reliable win-rate gain; small
   per-trade edge on EGX only. Weekly-trend filter is as good and simpler. Not used on the dashboard.
+- ML ranker v2 (run_ml_signals2.py + lab/sec_fundamentals.py): targets '+2 ATR hit' and trade size, adds SEC
+  earnings dates/growth/margins, sector strength; slot-portfolio ranking test: FAILED (US and EGX). Hit is
+  predictable (US AUC 0.67) but mainly via which rule fired, size is not; SEC/sector data added nothing.
 - ML forecaster (gradient boosting, walk-forward, yearly retrain, 30-day embargo): AUC 0.53-0.55
   every year - small steady edge; used only as a **0-100 ranking** (tie-breaker), not a signal.
 - Buy & hold of halal stocks beat every signal on raw return in 2021-2026 (bull market).
