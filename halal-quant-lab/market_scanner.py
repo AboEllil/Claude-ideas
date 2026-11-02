@@ -358,18 +358,28 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     scr = pd.read_csv(ROOT / "reports" / "broad_screen.csv")
     us = scr[scr.compliant & (scr.marketCap >= 10e9)]
+    us = us[~us.ticker.isin(ALCOHOL_HEAVY)]
+    # All US large caps ($10B+) and small caps ($1-2B) from the screener (lab/expand.py), when screened.
+    # Defense contractors are not screened out by name outside the original list, so drop the whole industry.
+    def extra(name, taken):
+        path = UNIVERSE / f"{name}_screen.csv"
+        if not path.exists():
+            return pd.DataFrame(columns=["ticker", "name", "sector", "industry"])
+        x = pd.read_csv(path)
+        return x[x.compliant & ~x.ticker.isin(taken) & (x.industry != "Aerospace & Defense") & ~x.ticker.isin(ALCOHOL_HEAVY)]
+    large = extra("largecap", set(us.ticker))
+    us = pd.concat([us, large], ignore_index=True)
     mid = pd.read_csv(UNIVERSE / "midcap_screen.csv")
-    # Defense contractors are not screened out by name among mid caps, so drop the whole industry.
     mid = mid[mid.compliant & ~mid.ticker.isin(us.ticker) & (mid.industry != "Aerospace & Defense")
               & ~mid.ticker.isin(ALCOHOL_HEAVY)]
-    us = us[~us.ticker.isin(ALCOHOL_HEAVY)]
+    small = extra("smallcap", set(us.ticker) | set(mid.ticker))
     crypto = {c["symbol"]: c["name"] for c in json.loads((UNIVERSE / "crypto_list.json").read_text())}
     egx = [t + ".CA" for t in halal_egx()]
-    names = (dict(zip(us.ticker, us.name)) | dict(zip(mid.ticker, mid.name)) | ETFS | crypto
+    names = (dict(zip(us.ticker, us.name)) | dict(zip(mid.ticker, mid.name)) | dict(zip(small.ticker, small.name)) | ETFS | crypto
              | {t: t[:-3] + " (EGX)" for t in egx})
-    sectors = dict(zip(us.ticker, us.sector)) | dict(zip(mid.ticker, mid.sector))
-    size = {t: "Large cap" for t in us.ticker} | {t: "Mid cap" for t in mid.ticker}
-    kinds = ({t: "US stock" for t in list(us.ticker) + list(mid.ticker)} | {t: "Halal ETF" for t in ETFS}
+    sectors = dict(zip(us.ticker, us.sector)) | dict(zip(mid.ticker, mid.sector)) | dict(zip(small.ticker, small.sector))
+    size = {t: "Large cap" for t in us.ticker} | {t: "Mid cap" for t in mid.ticker} | {t: "Small cap" for t in small.ticker}
+    kinds = ({t: "US stock" for t in list(us.ticker) + list(mid.ticker) + list(small.ticker)} | {t: "Halal ETF" for t in ETFS}
              | {t: "Crypto" for t in crypto} | {t: "EGX stock" for t in egx})
     # Full AAOIFI check from financial statements (lab/shariah.py): keep only stocks that pass.
     sh_path = UNIVERSE / "shariah_check.csv"

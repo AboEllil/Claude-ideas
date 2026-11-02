@@ -77,10 +77,22 @@ def rule_position(st, bright, weekly):
     return pos, entry
 
 
+def clean(df):
+    """Drop bad prints: a 10x jump or crash in one day is a data error (e.g. a coin's first Yahoo quote).
+    Bad prints in the first 30 bars trim the start; later ones drop that bar."""
+    for _ in range(3):
+        jump = (df.Close / df.Close.shift(1)).apply(lambda x: x > 10 or x < 0.1)
+        if not jump.any():
+            break
+        first = int(np.argmax(jump.to_numpy()))
+        df = df.iloc[first:] if first < 30 else df[~jump]
+    return df
+
+
 def coin(args):
     tk, df = args[0], args[1]
     with_grid = args[2] if len(args) > 2 else True
-    df = df.dropna(subset=["Open", "High", "Low", "Close"])
+    df = clean(df.dropna(subset=["Open", "High", "Low", "Close"]))
     if len(df) < 400:
         return None
     idx = df.index
@@ -249,9 +261,8 @@ def build(jobs):
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     crypto = [c["symbol"] for c in json.loads((ROOT / "reports" / "universe" / "crypto_list.json").read_text())]
-    if (DATA / "lab_prices.pkl").exists():
-        px = pd.read_pickle(DATA / "lab_prices.pkl")
-    else:                                                       # fresh machine (scheduled run): download
+    px = pd.read_pickle(DATA / "lab_prices.pkl") if (DATA / "lab_prices.pkl").exists() else None
+    if px is None or any(t not in px["Close"] for t in crypto):  # fresh machine or new coins: download
         import yfinance as yf
         raw = yf.download(crypto, start="2014-01-01", auto_adjust=True, progress=False, threads=True, group_by="column")
         px = {k: raw[k] for k in ("Open", "High", "Low", "Close", "Volume")}

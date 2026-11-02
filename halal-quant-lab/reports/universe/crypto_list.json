@@ -128,11 +128,199 @@
   "name": "Render"
  },
  {
+  "symbol": "ATOM-USD",
+  "name": "Cosmos"
+ },
+ {
   "symbol": "AERO29270-USD",
   "name": "Aerodrome Finance"
  },
  {
-  "symbol": "ATOM-USD",
-  "name": "Cosmos"
+  "symbol": "FIL-USD",
+  "name": "Filecoin"
+ },
+ {
+  "symbol": "ZRO26997-USD",
+  "name": "LayerZero"
+ },
+ {
+  "symbol": "NIGHT39064-USD",
+  "name": "Midnight"
+ },
+ {
+  "symbol": "XDC-USD",
+  "name": "XDC Network"
+ },
+ {
+  "symbol": "DASH-USD",
+  "name": "Dash"
+ },
+ {
+  "symbol": "STX4847-USD",
+  "name": "Stacks"
+ },
+ {
+  "symbol": "CAKE-USD",
+  "name": "PancakeSwap"
+ },
+ {
+  "symbol": "BDX-USD",
+  "name": "Beldex"
+ },
+ {
+  "symbol": "APT21794-USD",
+  "name": "Aptos"
+ },
+ {
+  "symbol": "FLR-USD",
+  "name": "Flare"
+ },
+ {
+  "symbol": "PYTH-USD",
+  "name": "Pyth Network"
+ },
+ {
+  "symbol": "VET-USD",
+  "name": "VeChain"
+ },
+ {
+  "symbol": "TIA-USD",
+  "name": "Celestia"
+ },
+ {
+  "symbol": "RAY-USD",
+  "name": "Raydium"
+ },
+ {
+  "symbol": "VIRTUAL-USD",
+  "name": "Virtuals Protocol"
+ },
+ {
+  "symbol": "FET-USD",
+  "name": "Artificial Superintelligence Alliance"
+ },
+ {
+  "symbol": "SEI-USD",
+  "name": "Sei"
+ },
+ {
+  "symbol": "BTT-USD",
+  "name": "BitTorrent [New]"
+ },
+ {
+  "symbol": "BSV-USD",
+  "name": "Bitcoin SV"
+ },
+ {
+  "symbol": "XPL-USD",
+  "name": "Plasma"
+ },
+ {
+  "symbol": "STRK22691-USD",
+  "name": "Starknet"
+ },
+ {
+  "symbol": "KITE-USD",
+  "name": "Kite"
+ },
+ {
+  "symbol": "GNO-USD",
+  "name": "Gnosis"
+ },
+ {
+  "symbol": "XTZ-USD",
+  "name": "Tezos"
+ },
+ {
+  "symbol": "OP-USD",
+  "name": "Optimism"
+ },
+ {
+  "symbol": "BEAM28298-USD",
+  "name": "Beam"
+ },
+ {
+  "symbol": "CFX-USD",
+  "name": "Conflux"
+ },
+ {
+  "symbol": "IMX10603-USD",
+  "name": "Immutable"
+ },
+ {
+  "symbol": "DCR-USD",
+  "name": "Decred"
+ },
+ {
+  "symbol": "GRT6719-USD",
+  "name": "The Graph"
+ },
+ {
+  "symbol": "MON30495-USD",
+  "name": "Monad"
+ },
+ {
+  "symbol": "KAIA-USD",
+  "name": "Kaia"
+ },
+ {
+  "symbol": "ENS-USD",
+  "name": "Ethereum Name Service"
+ },
+ {
+  "symbol": "AR-USD",
+  "name": "Arweave"
+ },
+ {
+  "symbol": "ZBCN-USD",
+  "name": "Zebec Network"
+ },
+ {
+  "symbol": "BAT-USD",
+  "name": "Basic Attention Token"
+ },
+ {
+  "symbol": "IOTA-USD",
+  "name": "IOTA"
+ },
+ {
+  "symbol": "JASMY-USD",
+  "name": "JasmyCoin"
+ },
+ {
+  "symbol": "AKT-USD",
+  "name": "Akash Network"
+ },
+ {
+  "symbol": "ZAMA-USD",
+  "name": "Zama"
+ },
+ {
+  "symbol": "TWT-USD",
+  "name": "Trust Wallet Token"
+ },
+ {
+  "symbol": "RUNE-USD",
+  "name": "THORChain"
+ },
+ {
+  "symbol": "TRAC-USD",
+  "name": "OriginTrail"
+ },
+ {
+  "symbol": "SOON36542-USD",
+  "name": "SOON"
+ },
+ {
+  "symbol": "MET38353-USD",
+  "name": "Meteora"
+ },
+ {
+  "symbol": "THETA-USD",
+  "name": "Theta Network"
+ },
+ {
+  "symbol": "AXS-USD",
+  "name": "Axie Infinity"
  }
 ]

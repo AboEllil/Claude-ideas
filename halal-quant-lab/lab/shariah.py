@@ -93,6 +93,11 @@ def board_tickers():
     scr = pd.read_csv(ROOT / "reports" / "broad_screen.csv")
     mid = pd.read_csv(UNIVERSE / "midcap_screen.csv")
     us = list(scr[scr.compliant & (scr.marketCap >= 10e9)].ticker) + list(mid[mid.compliant].ticker)
+    for name in ("largecap", "smallcap"):                      # lists from lab/expand.py
+        p = UNIVERSE / f"{name}_screen.csv"
+        if p.exists():
+            x = pd.read_csv(p)
+            us += list(x[x.compliant & (x.industry != "Aerospace & Defense")].ticker)
     return sorted(set(us)) + [t + ".CA" for t in halal_egx()]
 
 
@@ -102,7 +107,7 @@ def main():
     todo = [t for t in tickers if t not in set(done.ticker)]
     print(f"{len(tickers)} stocks, {len(todo)} to check")
     rows = []
-    with ThreadPoolExecutor(max_workers=3) as ex:
+    with ThreadPoolExecutor(max_workers=6) as ex:
         for i, r in enumerate(ex.map(check, todo), 1):
             rows.append(r)
             if i % 50 == 0:

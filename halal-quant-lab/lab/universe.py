@@ -68,6 +68,9 @@ EXCLUDED_TICKERS = {
     "RCL": "cruise line (onboard casinos/alcohol)", "CCL": "cruise line (onboard casinos/alcohol)",
     "NCLH": "cruise line (onboard casinos/alcohol)",
     "CASY": "convenience stores (large beer/tobacco/lottery sales)",
+    "MUSA": "convenience stores (large beer/tobacco/lottery sales)",
+    "ARKO": "convenience stores (large beer/tobacco/lottery sales)",
+    "SFD": "pork products", "VIK": "cruise line (onboard casinos/alcohol)",
 }
 FIELDS = ("shortName", "sector", "industry", "marketCap", "totalDebt", "totalCash",
           "returnOnEquity", "returnOnAssets", "profitMargins", "grossMargins",
@@ -81,9 +84,9 @@ def fetch_fundamentals(tickers, refresh=False):
     DATA.mkdir(exist_ok=True)
     cache_file = DATA / "fundamentals.json"
     cache = json.loads(cache_file.read_text()) if cache_file.exists() and not refresh else {}
-    for t in tickers:
-        if t in cache and all(k in cache[t] for k in FIELDS):
-            continue
+    todo = [t for t in tickers if not (t in cache and all(k in cache[t] for k in FIELDS))]
+
+    def one(t):
         info = {}
         for attempt in range(3):
             try:
@@ -93,10 +96,15 @@ def fetch_fundamentals(tickers, refresh=False):
             except Exception:
                 pass
             time.sleep(2 * (attempt + 1))
-        cache[t] = {k: info.get(k) for k in FIELDS}
-        time.sleep(0.2)
-        if len(cache) % 25 == 0:
-            cache_file.write_text(json.dumps(cache, indent=1))
+        return t, {k: info.get(k) for k in FIELDS}
+
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=6) as ex:                 # parallel: much faster than one at a time
+        for i, (t, rec) in enumerate(ex.map(one, todo), 1):
+            cache[t] = rec
+            if i % 100 == 0:
+                print(f"  fundamentals {i}/{len(todo)}", flush=True)
+                cache_file.write_text(json.dumps(cache, indent=1))
     cache_file.write_text(json.dumps(cache, indent=1))
     return cache
 
