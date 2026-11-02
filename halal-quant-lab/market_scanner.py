@@ -243,6 +243,37 @@ def ml_scores(raw, kinds):
     return dict(zip(latest.ticker, p))
 
 
+def crypto_extras(df, raw, kinds):
+    """Crypto rows: the ML mood (crypto lab S4, passed: take signals only when positive) and each coin's adaptive
+    AlgoAlpha setting for this year (crypto lab S3, passed). Information only, tracked forward from Nov 2026."""
+    df["ml_mood"], df["ml_chance"], df["adaptive"] = "", None, ""
+    try:
+        from run_crypto_lab import score_latest
+        from run_signal_lab import supertrend_set
+        cr = [t for t, k in kinds.items() if k == "Crypto" and t in raw["Close"]]
+        px = {t: pd.DataFrame({f: raw[f][t] for f in ("Open", "High", "Low", "Close", "Volume")}) for t in cr}
+        sc = score_latest(px)
+        st_path = ROOT / "reports" / "crypto_lab" / "settings.csv"
+        settings = pd.read_csv(st_path).set_index("symbol") if st_path.exists() else pd.DataFrame()
+        for i in df.index[df.kind == "Crypto"]:
+            t = df.at[i, "symbol"]
+            if t in sc:
+                p, base = sc[t]
+                df.at[i, "ml_chance"] = round(p, 3)
+                df.at[i, "ml_mood"] = "Positive" if p > base else "Negative"
+            if t in settings.index:
+                fac, atr = float(settings.at[t, "factor"]), int(settings.at[t, "atr"])
+                d = px[t].dropna(subset=["Open", "High", "Low", "Close"])
+                st, _ = supertrend_set(*(d[k].to_numpy(float) for k in ("High", "Low", "Close")), atr, fac)
+                df.at[i, "adaptive"] = f"{fac:g} / {atr}: {'green' if st[-1] == 1 else 'red'}"
+        print(f"Crypto ML mood: {(df.ml_mood == 'Positive').sum()} positive, {(df.ml_mood == 'Negative').sum()} negative")
+    except Exception as e:                                                # never block the daily scan
+        print(f"warning: crypto ML mood unavailable ({e})")
+
+
+# Crypto lab results (reports/crypto_lab/REPORT.md, pre-registered, passed): Sharpe 2019-2020 / 2021-today
+CRYPTO_ML_FILTER = {"with": (1.57, 1.27), "without": (0.99, 1.13)}
+
 RULE_WHY = {
     "US stock": "{s} closed back above its 200-day average: the buy signal of the 200-day trend rule, the rule that "
                 "tested best for US stocks (it rides long uptrends and steps aside in downtrends).",
@@ -301,6 +332,12 @@ def explain_buys(df, raw, kinds):
                 evid += " In US tests the strength meter did not change the win rate, so treat every US buy the same and follow the stop."
             else:
                 evid += " In tests, stronger signals won more often in both 2016-2020 and 2021-today."
+        if mk == "Crypto" and r.get("ml_mood"):
+            w, wo = CRYPTO_ML_FILTER["with"], CRYPTO_ML_FILTER["without"]
+            evid += (f" Crypto ML mood is {r.ml_mood.lower()}: in the crypto test, taking signals only when the mood was "
+                     f"positive gave a steadier result (Sharpe {w[0]:.2f} vs {wo[0]:.2f} in 2019-2020, {w[1]:.2f} vs "
+                     f"{wo[1]:.2f} in 2021-today)" + (", so this one has the model's support." if r.ml_mood == "Positive"
+                                                      else ", so consider skipping this one or using a small position."))
         else:
             evid = ""
         risk = 1 - r.stop / r.close if r.close and r.stop == r.stop else np.nan   # share of price at risk
@@ -372,6 +409,7 @@ def main():
                             for s, k in zip(df.symbol, df.kind)])
     df.insert(4, "size", [size.get(s, "") for s in df.symbol])
     df.insert(5, "shariah", [shariah.get(s, "") for s in df.symbol])
+    crypto_extras(df, raw, kinds)
     # Display symbols without Yahoo suffixes, keeping them unique
     short = df.symbol.str.replace(r"\.CA$", "", regex=True).str.replace(r"\d*-USD$", "", regex=True)
     dup = short.duplicated(keep=False)

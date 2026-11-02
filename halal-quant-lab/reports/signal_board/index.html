@@ -95,6 +95,8 @@
   .lq-key .lq-key-band { background: color-mix(in srgb, var(--color-ok) 16%, transparent); }
   .lq-key .lq-key-ref { width: 16px; height: 0; border-top: 2px dashed var(--cds-chart-reference); border-radius: 0; }
   .lq-evidence { display: grid; gap: var(--cds-gap-xs); padding: var(--cds-pad-md); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); min-width: 0; }
+  .lq-btc { display: grid; gap: var(--cds-gap-xs); padding: var(--cds-pad-md); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); min-width: 0; }
+  .lq-btc .sb-table-wrap { max-height: none; }
   [data-dash-source-state=empty] { color: transparent; }
   [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
   @media (max-width: 720px) { .sb-hide-narrow { display: none; } }
@@ -139,8 +141,36 @@
         <p class="sb-note">Dollar value moved on the Bitcoin network, 30-day average: a free stand-in for whale activity. Rising = above its 90-day average (dashed line).</p>
         <div class="lq-chart" data-draw="lq-chart-chain" data-source="liquidity"></div>
       </div>
+      <div class="lq-card">
+        <div class="lq-top"><h3>Coinbase premium (US buyers)</h3><span class="lq-status" data-lq-status="premium"><span data-draw="lq-icon-premium" aria-hidden="true"></span><span data-draw="lq-state-premium" data-source="liquidity_now" data-field="premium_state" data-row="0">—</span></span></div>
+        <p class="lq-big"><b data-draw="lq-val-premium" data-source="liquidity_now" data-field="premium_value" data-row="0">—</b><small>% (7-day average)</small></p>
+        <p class="sb-note">How much more (or less) Bitcoin costs on Coinbase, where US institutions buy, than on the rest of the market. Positive = US money is buying. Green shading = positive.</p>
+        <div class="lq-chart" data-draw="lq-chart-premium" data-source="liquidity"></div>
+      </div>
+      <div class="lq-card">
+        <div class="lq-top"><h3>Fear &amp; Greed</h3><span class="lq-status" data-lq-status="fg"><span data-draw="lq-state-fg" data-source="liquidity_now" data-field="fg_label" data-row="0">—</span></span></div>
+        <p class="lq-big"><b data-draw="lq-val-fg" data-source="liquidity_now" data-field="fg_value" data-row="0">—</b> <small>of 100</small></p>
+        <p class="sb-note">The crypto crowd's mood, from 0 (extreme fear) to 100 (extreme greed). Green shading = greed (50 or more). In tests, avoiding greed did not help: signals in extreme greed won more often, because greed comes with strong trends.</p>
+        <div class="lq-chart" data-draw="lq-chart-fg" data-source="liquidity"></div>
+      </div>
     </div>
     <div class="lq-key" aria-hidden="true"><span><i class="lq-key-band"></i>Rising period</span><span><i class="lq-key-ref"></i>Comparison line</span></div>
+    <div class="lq-btc">
+      <h3>Bitcoin timing (passed a pre-set test)</h3>
+      <p class="lq-verdict lq-verdict--on" data-lq-btc="on" hidden><span class="lq-verdict-icon" aria-hidden="true">▲</span><span><b>Hold Bitcoin.</b> US buyers on Coinbase are paying a premium.</span></p>
+      <p class="lq-verdict lq-verdict--off" data-lq-btc="off" hidden><span class="lq-verdict-icon" aria-hidden="true">▼</span><span><b>Bitcoin in cash.</b> US buyers on Coinbase are not paying a premium, so the timing rule stays out.</span></p>
+      <span data-draw="lq-btc" data-source="liquidity_now"></span>
+      <p class="sb-note">Rule: hold Bitcoin only while the 7-day average Coinbase premium is above zero, otherwise hold cash. It was fixed before testing and beat simply holding Bitcoin in both test periods, with about half the worst drop, while invested only part of the time. Check it each day after the close; it is one coin, so size it as part of your crypto share.</p>
+      <div class="sb-table-wrap">
+        <table class="sb-table" data-source="btc_timing_evidence" data-row-key="strategy,period">
+          <thead><tr>
+            <th data-field="strategy">Strategy</th><th data-field="period">Period</th><th data-field="cagr" class="num">Per year</th>
+            <th data-field="sharpe" class="num">Sharpe</th><th data-field="max_dd" class="num">Worst drop</th><th data-field="invested" class="num">Time invested</th>
+          </tr></thead>
+          <tbody data-draw="lq-btc-rows"></tbody>
+        </table>
+      </div>
+    </div>
     <div class="lq-evidence">
       <h3>Does it matter? Crypto buy signals by Fed liquidity</h3>
       <p class="sb-note">Share of crypto buy signals that made money (sell half at +2 ATR, then stop at entry), with the average trade. The gap held in both test periods, but a strict pre-set test did not pass, so it is shown as information and tracked forward from November 2026. It is not a buy or sell rule.</p>
@@ -190,6 +220,8 @@
             <th data-field="ml_rank" class="num"><button type="button" class="sb-sort" data-sort="ml_rank">ML rank</button></th>
             <th data-field="weekly" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="weekly">Weekly</button></th>
             <th data-field="liquidity" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="liquidity">Liquidity</button></th>
+            <th data-field="ml_mood" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="ml_mood">Crypto ML mood</button></th>
+            <th data-field="adaptive" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="adaptive">Adaptive trend</button></th>
             <th data-field="close" class="num"><button type="button" class="sb-sort" data-sort="close">Price</button></th>
             <th data-field="currency" class="sb-hide-narrow"><button type="button" class="sb-sort" data-sort="currency">Cur.</button></th>
             <th data-field="change_1d" class="num sb-hide-narrow"><button type="button" class="sb-sort" data-sort="change_1d">1 day</button></th>
@@ -228,6 +260,10 @@
           <li>Sell: the rule exited in the last 3 days. Avoid: no uptrend.</li>
           <li>A buy on a thinly traded asset (under $5M a day, or EGP 1M) is shown as Hold.</li>
         </ul>
+      </div>
+      <div>
+        <h3>Crypto ML mood and adaptive trend</h3>
+        <p>ML mood: a model trained on 83,000 coin-days reads the crypto market's mood (Bitcoin's last 30 days, stablecoin growth, Fed liquidity, Bitcoin network activity) and each coin's own data. It cannot tell which coin will rise, but taking the crypto rule's signals only when the mood is positive gave a steadier result in both test periods. Adaptive trend: each coin's AlgoAlpha setting (factor / ATR) re-chosen every January from its last 3 years, and whether that trend is green; it also passed, by a small margin in 2019–2020. Bitcoin timing: hold Bitcoin only while US buyers on Coinbase pay a premium (passed). All three are tracked forward from November 2026.</p>
       </div>
       <div>
         <h3>Strength of a buy</h3>
@@ -355,6 +391,8 @@ dash.draw('actions', (box) => {
     if (Number.isFinite(r.take_profit)) line.append(item('Take half at', f.price(r.take_profit), 'take_profit'));
     line.append(item('Weekly', r.weekly, 'weekly'));
     if (r.liquidity) line.append(item('Fed liquidity', r.liquidity, 'liquidity'));
+    if (r.ml_mood) line.append(item('ML mood', r.ml_mood, 'ml_mood'));
+    if (r.adaptive) line.append(item('Adaptive trend', r.adaptive, 'adaptive'));
     if (Number.isFinite(r.ml_rank)) line.append(item('ML rank', String(r.ml_rank), 'ml_rank'));
     line.append(item('Rule', r.strategy, 'strategy'));
     const para = (cls, text, fieldName) => {
@@ -439,7 +477,7 @@ dash.draw('rows', (tbody) => {
     const ch = td(f.pct(r.change_1d), 'num sb-hide-narrow ' + (r.change_1d > 0 ? 'sb-up' : r.change_1d < 0 ? 'sb-down' : ''));
     tr.append(
       td(r.symbol, 'sb-sym'), td(r.name, 'sb-name sb-hide-narrow'), td(r.kind, 'sb-hide-narrow'), td(r.size || '', 'sb-hide-narrow'), td(r.shariah || '', 'sb-name sb-hide-narrow'), v, td(r.strategy, 'sb-hide-narrow'), td(r.strength_label || '', 'sb-hide-narrow'),
-      td(Number.isFinite(r.ml_rank) ? String(r.ml_rank) : '', 'num'), td(r.weekly, 'sb-hide-narrow'), td(r.liquidity || '', 'sb-hide-narrow'),
+      td(Number.isFinite(r.ml_rank) ? String(r.ml_rank) : '', 'num'), td(r.weekly, 'sb-hide-narrow'), td(r.liquidity || '', 'sb-hide-narrow'), td(r.ml_mood || '', 'sb-hide-narrow'), td(r.adaptive || '', 'sb-hide-narrow'),
       td(f.price(r.close), 'num'), td(r.currency, 'sb-hide-narrow'), ch, td(f.price(r.stop), 'num'), td(f.pct(r.stop_distance), 'num sb-hide-narrow'), td(Number.isFinite(r.take_profit) ? f.price(r.take_profit) : '', 'num sb-hide-narrow'),
       td(String(r.days_in_trend), 'num sb-hide-narrow'), td(r.squeeze, 'sb-hide-narrow'), td(r.lorentzian, 'sb-hide-narrow'),
       td(f.pct0(r.system_cagr), 'num sb-hide-narrow'), td(f.pct0(r.hold_cagr), 'num sb-hide-narrow'));
@@ -472,7 +510,7 @@ dash.draw('rows', (tbody) => {
     btn.addEventListener('click', () => {
       const k = btn.dataset.sort;
       if (st.sort === k) st.dir = -st.dir;
-      else { st.sort = k; st.dir = ['symbol', 'name', 'kind', 'size', 'shariah', 'currency', 'verdict', 'strategy', 'weekly', 'liquidity', 'squeeze', 'lorentzian'].includes(k) ? 1 : -1; }
+      else { st.sort = k; st.dir = ['symbol', 'name', 'kind', 'size', 'shariah', 'currency', 'verdict', 'strategy', 'weekly', 'liquidity', 'ml_mood', 'adaptive', 'squeeze', 'lorentzian'].includes(k) ? 1 : -1; }
       document.querySelectorAll('.sb-table th').forEach((th) => th.removeAttribute('aria-sort'));
       const th = btn.closest('th');
       if (th) th.setAttribute('aria-sort', st.dir === 1 ? 'ascending' : 'descending');
@@ -492,7 +530,10 @@ dash.calc('liquidity_now', {
     const word = (v) => (v === 'yes' ? 'Rising' : v === 'no' ? 'Falling' : 'Unknown');
     return [{ date: r.date, fed_value: Number(Number(r.fed_value).toFixed(2)), fed_state: word(r.fed_rising),
               stable_value: Math.round(Number(r.stable_value)), stable_state: word(r.stable_rising),
-              chain_value: Number(Number(r.chain_value).toFixed(1)), chain_state: word(r.chain_rising) }];
+              chain_value: Number(Number(r.chain_value).toFixed(1)), chain_state: word(r.chain_rising),
+              premium_value: r.premium_value === '' || r.premium_value == null ? null : Number(Number(r.premium_value).toFixed(3)),
+              premium_state: r.premium_rising === 'yes' ? 'Positive' : r.premium_rising === 'no' ? 'Negative' : 'Unknown',
+              fg_value: r.fg_value === '' || r.fg_value == null ? null : Math.round(Number(r.fg_value)), fg_label: r.fg_label || 'Unknown' }];
   },
 });
 
@@ -507,20 +548,42 @@ dash.calc('liquidity_now', {
     const want = r ? (r.fed_state === 'Rising' ? 'on' : r.fed_state === 'Falling' ? 'off' : '') : '';
     document.querySelectorAll('[data-lq-verdict]').forEach((p) => { p.hidden = p.dataset.lqVerdict !== want; });
   });
-  ['fed', 'stable', 'chain'].forEach((k) => {
+  const UP = ['Rising', 'Positive'], DOWN = ['Falling', 'Negative'];
+  const FMT = { fed: '.2f', stable: ',.0f', chain: '.1f', premium: '+.3f', fg: 'd' };
+  ['fed', 'stable', 'chain', 'premium'].forEach((k) => {
     dash.draw('lq-state-' + k, (el) => {
       const r = now();
       const st = r ? r[k + '_state'] : '';
       el.textContent = r ? st : '—';
       document.querySelectorAll('[data-lq-status="' + k + '"]').forEach((b) => {
-        b.classList.toggle('lq-up', st === 'Rising');
-        b.classList.toggle('lq-down', st === 'Falling');
+        b.classList.toggle('lq-up', UP.includes(st));
+        b.classList.toggle('lq-down', DOWN.includes(st));
       });
     });
-    dash.draw('lq-icon-' + k, (el) => { const r = now(); const st = r ? r[k + '_state'] : ''; el.textContent = st === 'Rising' ? '▲' : st === 'Falling' ? '▼' : ''; });
+    dash.draw('lq-icon-' + k, (el) => { const r = now(); const st = r ? r[k + '_state'] : ''; el.textContent = UP.includes(st) ? '▲' : DOWN.includes(st) ? '▼' : ''; });
+  });
+  dash.draw('lq-state-fg', (el) => { const r = now(); el.textContent = r ? r.fg_label : '—'; });
+  ['fed', 'stable', 'chain', 'premium', 'fg'].forEach((k) => {
     dash.draw('lq-val-' + k, (el) => {
       const r = now();
-      el.textContent = r ? d3.format(k === 'stable' ? ',.0f' : k === 'fed' ? '.2f' : '.1f')(r[k + '_value']) : '—';
+      el.textContent = r && r[k + '_value'] != null ? d3.format(FMT[k])(r[k + '_value']) : '—';
+    });
+  });
+  dash.draw('lq-btc', () => {
+    const r = now();
+    const want = r ? (r.premium_state === 'Positive' ? 'on' : r.premium_state === 'Negative' ? 'off' : '') : '';
+    document.querySelectorAll('[data-lq-btc]').forEach((p) => { p.hidden = p.dataset.lqBtc !== want; });
+  });
+  dash.draw('lq-btc-rows', (tbody) => {
+    const d = dash.data('btc_timing_evidence');
+    tbody.replaceChildren();
+    if (d.status !== 'ok') return;
+    d.data.forEach((r) => {
+      const tr = document.createElement('tr');
+      const td = (t, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = t; return c; };
+      tr.append(td(r.strategy), td(r.period), td(d3.format('.0%')(Number(r.cagr)), 'num'), td(d3.format('.2f')(Number(r.sharpe)), 'num'),
+                td(d3.format('.0%')(Number(r.max_dd)), 'num'), td(d3.format('.0%')(Number(r.invested)), 'num'));
+      tbody.append(tr);
     });
   });
 })();
@@ -532,6 +595,8 @@ dash.calc('liquidity_now', {
     fed: { unit: (v) => '$' + d3.format('.2f')(v) + 'T', ref: '13-week average', label: 'Fed net liquidity, last 3 years' },
     stable: { unit: (v) => '$' + d3.format(',.0f')(v) + 'B', ref: '30 days earlier', label: 'Stablecoins in circulation, last 3 years' },
     chain: { unit: (v) => '$' + d3.format('.1f')(v) + 'B', ref: '90-day average', label: 'Bitcoin on-chain value moved, last 3 years' },
+    premium: { unit: (v) => d3.format('+.2f')(v) + '%', ref: 'Zero line', label: 'Coinbase premium, 7-day average, last 3 years', on: '▲ Positive', off: '▼ Negative' },
+    fg: { unit: (v) => d3.format('d')(v), ref: '', label: 'Fear and Greed index, last 3 years', on: 'Greed (50+)', off: 'Fear (under 50)' },
   };
   const H = 150;
   function draw(el, k) {
@@ -599,8 +664,8 @@ dash.calc('liquidity_now', {
         tip.style('display', null).selectAll('*').remove();
         tip.append('div').attr('class', 'lq-tip-date').text(d3.utcFormat('%b %-d, %Y')(r.date));
         tip.append('div').text('Value ' + o.unit(r.v));
-        if (Number.isFinite(r.ref)) tip.append('div').text(o.ref + ' ' + o.unit(r.ref));
-        tip.append('div').text(r.on === 'yes' ? '▲ Rising' : r.on === 'no' ? '▼ Falling' : '');
+        if (Number.isFinite(r.ref) && o.ref) tip.append('div').text(o.ref + ' ' + o.unit(r.ref));
+        tip.append('div').text(r.on === 'yes' ? (o.on || '▲ Rising') : r.on === 'no' ? (o.off || '▼ Falling') : '');
         const scale = el.clientWidth / W;
         const tw = tip.node().offsetWidth;
         const left = Math.min(Math.max(0, x(r.date) * scale + 10), el.clientWidth - tw);
@@ -608,7 +673,7 @@ dash.calc('liquidity_now', {
       })
       .on('pointerleave', () => { rule.attr('opacity', 0); dot.attr('opacity', 0); tip.style('display', 'none'); });
   }
-  ['fed', 'stable', 'chain'].forEach((k) => dash.draw('lq-chart-' + k, (el) => draw(el, k)));
+  ['fed', 'stable', 'chain', 'premium', 'fg'].forEach((k) => dash.draw('lq-chart-' + k, (el) => draw(el, k)));
 })();
 </script>
 

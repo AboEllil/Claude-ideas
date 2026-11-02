@@ -1,6 +1,7 @@
 """Crypto lab: machine learning on every coin-day, per-coin adaptive indicators and ML-filtered signals.
 
-    python run_crypto_lab.py      # writes reports/crypto_lab/REPORT.md
+    python run_crypto_lab.py           # walk-forward test, writes reports/crypto_lab/REPORT.md
+    python run_crypto_lab.py --final   # saves reports/crypto_lab/model.pkl + settings.csv for the daily board
 
 Universe: the 34 halal-filtered coins in reports/universe/crypto_list.json (today's list, so coins that died are
 missing - survivorship bias flatters every strategy, buy & hold included). Daily bars from Yahoo.
@@ -28,6 +29,8 @@ its maximum drawdown is no more than 5 points deeper. S3 is also compared with B
 """
 import json
 import os
+import pickle
+import sys
 import warnings
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
@@ -75,7 +78,8 @@ def rule_position(st, bright, weekly):
 
 
 def coin(args):
-    tk, df = args
+    tk, df = args[0], args[1]
+    with_grid = args[2] if len(args) > 2 else True
     df = df.dropna(subset=["Open", "High", "Low", "Close"])
     if len(df) < 400:
         return None
@@ -116,7 +120,7 @@ def coin(args):
     base_pos, base_entry = rule_position(st, bright, weekly)
     # adaptive settings: rule position for every grid setting
     grid_pos = {}
-    for fac, al in GRID:
+    for fac, al in (GRID if with_grid else []):
         st2, _ = supertrend_set(h, l, c, al, fac)
         grid_pos[(fac, al)] = rule_position(st2, bright, weekly)[0]
     return tk, f, cs, pd.Series(base_pos, index=idx), pd.Series(base_entry, index=idx), \
@@ -163,11 +167,48 @@ def to_matrix(decisions, index, cols):
     return P
 
 
-def main():
-    OUT.mkdir(parents=True, exist_ok=True)
-    px = pd.read_pickle(DATA / "lab_prices.pkl")
-    crypto = [c["symbol"] for c in json.loads((ROOT / "reports" / "universe" / "crypto_list.json").read_text())]
-    jobs = [(t, pd.DataFrame({k: px[k][t] for k in ("Open", "High", "Low", "Close", "Volume")})) for t in crypto if t in px["Close"]]
+def best_settings(gp, hist):
+    """Best (factor, ATR) by Sharpe of the rule over `hist` (daily returns); default 3 / 10 if < 3 years of data."""
+    if hist.notna().sum() < 3 * 300:
+        return (3.0, 10)
+    sc = {}
+    for k, p in gp.items():
+        r = (p.shift(1).reindex(hist.index).fillna(0) * hist).fillna(0)
+        sc[k] = r.mean() / r.std() if r.std() > 0 else -9
+    return max(sc, key=sc.get)
+
+
+def final(res, closes, panel, X):
+    """Save the model trained on every labelled coin-day and this year's per-coin settings (for the daily board)."""
+    lab = panel[panel.y.notna()]
+    mdl = HistGradientBoostingClassifier(max_depth=3, learning_rate=0.04, max_iter=300, min_samples_leaf=200,
+                                         l2_regularization=2.0, random_state=0).fit(lab[X], lab.y)
+    yr = pd.Timestamp.today().year
+    rets = closes.pct_change(fill_method=None)
+    a, b = pd.Timestamp(f"{yr - 3}-01-01"), pd.Timestamp(f"{yr}-01-01")
+    settings = [(tk, *best_settings(gp, rets[tk].loc[a:b - pd.Timedelta(days=1)])) for tk, f, cs, bp, be, gp in res]
+    pd.DataFrame(settings, columns=["symbol", "factor", "atr"]).to_csv(OUT / "settings.csv", index=False)
+    with open(OUT / "model.pkl", "wb") as fh:
+        pickle.dump({"model": mdl, "X": X, "base": float(lab.y.mean()), "trained_to": str(lab.date.max().date()),
+                     "settings_year": yr}, fh)
+    print(f"saved crypto model ({len(lab):,} coin-days, base rate {lab.y.mean():.1%}) and {len(settings)} coin settings for {yr}")
+
+
+def score_latest(prices):
+    """{symbol: (chance up in 10 days, base rate)} for the latest day, from the saved model.
+    `prices` maps a Yahoo crypto symbol to its OHLCV DataFrame."""
+    path = OUT / "model.pkl"
+    if not path.exists():
+        return {}
+    saved = pickle.loads(path.read_bytes())
+    _, _, panel, _ = build([(t, df, False) for t, df in prices.items()])
+    latest = panel.loc[panel.groupby("ticker")["date"].idxmax()]
+    p = saved["model"].predict_proba(latest[saved["X"]])[:, 1]
+    return {t: (float(q), saved["base"]) for t, q in zip(latest.ticker, p)}
+
+
+def build(jobs):
+    """Features for every coin-day: coin features + Bitcoin / network / stablecoin / Fed market features."""
     with ProcessPoolExecutor(max_workers=os.cpu_count()) as ex:
         res = [r for r in ex.map(coin, jobs) if r]
     print(f"  features for {len(res)} coins", flush=True)
@@ -202,6 +243,25 @@ def main():
     panel = panel[panel.date >= "2016-01-01"].reset_index(drop=True)
     X = [c for c in panel.columns if c not in ("date", "ticker", "fwd", "y")]
 
+    return res, closes, panel, X
+
+
+def main():
+    OUT.mkdir(parents=True, exist_ok=True)
+    crypto = [c["symbol"] for c in json.loads((ROOT / "reports" / "universe" / "crypto_list.json").read_text())]
+    if (DATA / "lab_prices.pkl").exists():
+        px = pd.read_pickle(DATA / "lab_prices.pkl")
+    else:                                                       # fresh machine (scheduled run): download
+        import yfinance as yf
+        raw = yf.download(crypto, start="2014-01-01", auto_adjust=True, progress=False, threads=True, group_by="column")
+        px = {k: raw[k] for k in ("Open", "High", "Low", "Close", "Volume")}
+    jobs = [(t, pd.DataFrame({k: px[k][t] for k in ("Open", "High", "Low", "Close", "Volume")})) for t in crypto if t in px["Close"]]
+    res, closes, panel, X = build(jobs)
+    if "--final" in sys.argv:
+        final(res, closes, panel, X)
+        return
+    days = closes.index
+
     preds, aucs = [], []
     for yr in range(2019, panel.date.dt.year.max() + 1):
         start = pd.Timestamp(f"{yr}-01-01")
@@ -231,14 +291,7 @@ def main():
     for tk, f, cs, bp, be, gp in res:
         for yr in range(2017, days.year.max() + 1):
             a, b = pd.Timestamp(f"{yr - 3}-01-01"), pd.Timestamp(f"{yr}-01-01")
-            hist = rets[tk].loc[a:b - pd.Timedelta(days=1)]
-            best = (3.0, 10)
-            if hist.notna().sum() >= 3 * 300:
-                sc = {}
-                for k, p in gp.items():
-                    r = (p.shift(1).reindex(hist.index).fillna(0) * hist).fillna(0)
-                    sc[k] = r.mean() / r.std() if r.std() > 0 else -9
-                best = max(sc, key=sc.get)
+            best = best_settings(gp, rets[tk].loc[a:b - pd.Timedelta(days=1)])
             chosen.append((tk, yr, *best))
             sel = (days >= b) & (days < pd.Timestamp(f"{yr + 1}-01-01"))
             S3.loc[sel, tk] = gp[best].reindex(days[sel]).fillna(0).to_numpy()

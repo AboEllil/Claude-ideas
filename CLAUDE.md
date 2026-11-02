@@ -54,6 +54,10 @@ Squeeze 20 / 1.5) are best - tuning settings overfits.
   periods): S4 = current crypto rule + ML filter (Sharpe 1.57/1.27 vs 0.99/1.13) and S3 = per-coin adaptive
   SuperTrend settings re-chosen yearly (1.03/1.32 vs 0.99/1.13; 2019-20 margin tiny). Model leans on market mood
   (BTC 30d, stablecoins, Fed, on-chain), not coin patterns. Exchange data (funding, Coinbase, ETF flows) blocked.
+- Whale/crowd data (run_crypto_whales.py; Coinbase API + alternative.me allowed; Binance geo-blocked, Farside
+  bot-blocked): BTC timing "hold only while 7-day Coinbase premium > 0" PASSED (2018-20 57%/1.54/-35% vs B&H
+  43%/0.88/-72%; 2021+ 29%/0.91/-47% vs 19%/0.58/-77%). Premium as a signal filter FAILED (better trades, lower
+  Sharpe); "avoid extreme greed" WRONG (greed signals won more).
 - ML forecaster (gradient boosting, walk-forward, yearly retrain, 30-day embargo): AUC 0.53-0.55
   every year - small steady edge; used only as a **0-100 ranking** (tie-breaker), not a signal.
 - Buy & hold of halal stocks beat every signal on raw return in 2021-2026 (bull market).
@@ -87,6 +91,10 @@ Squeeze 20 / 1.5) are best - tuning settings overfits.
   lab/liquidity.py, refreshed by the daily task) and "liquidity_evidence" (fixed, from run_liquidity2.py).
   Crypto rows carry a `liquidity` tag (Fed Rising/Falling). FORWARD TEST starts 2026-11-03: in 6-12 months
   re-run run_liquidity2.py logic on signals dated after 2026-11-02 only (rules unchanged) - no log needed.
+- Crypto extras on the board (2 Nov 2026, forward-tracked): `ml_mood` (crypto lab model, reports/crypto_lab/model.pkl,
+  retrained monthly by the daily task), `adaptive` (per-coin AlgoAlpha factor/ATR for this year,
+  reports/crypto_lab/settings.csv), liquidity panel cards for Coinbase premium + Fear & Greed and a "Bitcoin
+  timing" HOLD/CASH box (dataset btc_timing_evidence). Crypto buy explanations mention the ML mood.
 - Scheduled tasks (fresh session each run, push notifications):
   - `trig_01KT4kmZohrrgTnorC6Mwcut` Halal Signal Board daily refresh - Mon-Fri 17:23 New York
     (retrains ML model in the first 7 days of each month)
