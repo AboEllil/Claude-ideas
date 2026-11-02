@@ -259,6 +259,8 @@ def main():
     # Full AAOIFI check from financial statements (lab/shariah.py): keep only stocks that pass.
     sh_path = UNIVERSE / "shariah_check.csv"
     shariah = {}
+    funds_path = UNIVERSE / "shariah_funds.csv"      # certified Shariah fund holdings (lab/shariah_funds.py)
+    funds = (pd.read_csv(funds_path).set_index("ticker")["funds"].to_dict() if funds_path.exists() else {})
     if sh_path.exists():
         sh = pd.read_csv(sh_path).set_index("ticker")
         for t, k in list(kinds.items()):
@@ -267,12 +269,13 @@ def main():
                     kinds.pop(t)
                     continue
                 row = sh.loc[t]
-                shariah[t] = (row.reason if row.reason != "pass" else
-                              f"pass: debt {row.debt_ratio:.0%}, cash {row.cash_ratio:.0%}, "
-                              f"interest income {row.income_ratio:.1%}")
+                ratios = (row.reason if row.reason != "pass" else
+                          f"debt {row.debt_ratio:.0%}, cash {row.cash_ratio:.0%}, interest income {row.income_ratio:.1%}")
+                shariah[t] = (f"Confirmed - held by {funds[t].replace(',', ', ')}; {ratios}" if t in funds
+                              else f"Screened - {ratios}")
         print(f"Shariah check: {sum(1 for k in kinds.values() if k in ('US stock', 'EGX stock'))} stocks pass")
     for t, k in kinds.items():
-        shariah.setdefault(t, {"Halal ETF": "certified Shariah fund", "Crypto": "debated among scholars"}.get(
+        shariah.setdefault(t, {"Halal ETF": "Confirmed - certified Shariah fund", "Crypto": "debated among scholars"}.get(
             k, "business screen only - check with Zoya"))
     raw = yf.download(list(kinds) + ["SPY"], period="12y", auto_adjust=True, progress=False, threads=True,
                       group_by="column")
