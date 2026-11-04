@@ -1,5 +1,4 @@
 date,fed_value,fed_ref,fed_rising,stable_value,stable_ref,stable_rising,chain_value,chain_ref,chain_rising,premium_value,premium_ref,premium_rising,fg_value,fg_ref,fg_rising,fg_label
-2023-11-03,5.9912,6.0083,no,124.1286,123.7589,yes,3.4867,2.7228,yes,-0.0072,0.0,no,72.0,,yes,Greed
 2023-11-10,6.0947,6.0164,yes,124.9241,124.0095,yes,3.8096,2.8315,yes,-0.0074,0.0,no,69.0,,yes,Greed
 2023-11-17,6.1644,6.0268,yes,125.7713,123.4482,yes,4.0308,2.9,yes,0.0172,0.0,yes,70.0,,yes,Greed
 2023-11-24,6.1732,6.0447,yes,127.0146,124.5813,yes,4.0308,2.9826,yes,-0.0042,0.0,no,66.0,,yes,Greed
@@ -156,4 +155,4 @@ date,fed_value,fed_ref,fed_rising,stable_value,stable_ref,stable_rising,chain_va
 2026-10-16,5.8711,5.833,yes,305.5155,303.6972,yes,8.7448,7.0096,yes,-0.0041,0.0,no,53.0,,yes,Neutral
 2026-10-23,5.8013,5.8242,no,303.6877,305.3611,no,8.1556,7.1999,yes,-0.0046,0.0,no,68.0,,yes,Greed
 2026-10-30,5.7456,5.8158,no,300.1224,306.3752,no,7.6544,7.3418,yes,-0.0007,0.0,no,51.0,,yes,Neutral
-2026-11-02,5.7415,5.8146,no,298.3647,306.62,no,7.6544,7.3418,yes,-0.0114,0.0,no,34.0,,no,Fear
+2026-11-04,5.7455,5.812,no,296.0114,307.0783,no,7.6544,7.3418,yes,-0.0124,0.0,no,26.0,,no,Fear

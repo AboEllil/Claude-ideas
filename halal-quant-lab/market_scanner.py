@@ -190,6 +190,10 @@ def analyse(args):
         "AVOID": f"No {rule} uptrend. Wait.",
     }
 
+    history = signal_history(df, kind, rule, c, a14, st, st_line, pos, weekly, user_sig, larrow, vol_ratio, v,
+                             sma200 if kind in ("US stock", "Halal ETF") else None,
+                             trail if kind == "EGX stock" else None)
+
     cost = COST.get(kind, 0.0005)
     r, p = run_position(o, c, pos, cost)
     rs = pd.Series(r, index=df.index).loc[HIST_START:]
@@ -211,12 +215,68 @@ def analyse(args):
         "hist_from": str(max(df.index[0], pd.Timestamp(HIST_START)).date()),
         "system_cagr": round(float(s_sys["cagr"]), 4), "system_max_dd": round(float(s_sys["max_dd"]), 4),
         "hold_cagr": round(float(s_bh["cagr"]), 4), "hold_max_dd": round(float(s_bh["max_dd"]), 4),
-        "trades": n_tr, "as_of": str(df.index[-1].date()),
+        "trades": n_tr, "as_of": str(df.index[-1].date()), "_history": history,
         # confirmations for the buy explanation (see build_signal_evidence.py)
         "chk_weekly": bool(weekly[-1]), "chk_trend": bool(st[-1] == 1), "chk_squeeze": bool(bright[-1]),
         "chk_lor": lor5,
         "signal_rule": ("Dashboard rule" if entered else "Your rule") if verdict in ("BUY", "STRONG BUY") else "",
     }
+
+
+HISTORY_DAYS = 365
+
+
+def signal_history(df, kind, rule, c, a14, st, st_line, pos, weekly, user_sig, larrow, vol_ratio, v, sma200, trail):
+    """Every buy / sell this board would have shown in the last HISTORY_DAYS, rebuilt from prices up to each
+    day's close only (no look-ahead), plus what happened afterwards (bought at the next close; outcome to the
+    rule's exit or to today). Rows for the dashboard's signal calendar."""
+    T, idx = len(c), df.index
+    value = (pd.Series(c) * pd.Series(v)).rolling(20).median().to_numpy()
+    if sma200 is not None:
+        stop = sma200
+    elif trail is not None:
+        stop = np.where(pos == 1, trail, st_line)
+    else:
+        stop = st_line
+    start = idx[-1] - pd.Timedelta(days=HISTORY_DAYS)
+    out = []
+    for t in range(max(1, T - 400), T):
+        if idx[t] < start:
+            continue
+        liquid = not (np.nan_to_num(value[t]) < MIN_VALUE.get(kind, 5_000_000))
+        entry = pos[t] == 1 and pos[t - 1] == 0
+        arrow = (kind != "Crypto" and not entry and pos[t] == 1 and pos[t - 1] == 1 and user_sig[t] and weekly[t] > 0.5)
+        exit_ = pos[t] == 0 and pos[t - 1] == 1
+        if (entry or arrow) and liquid:
+            user_recent = bool(user_sig[max(0, t - 2):t + 1].any()) and st[t] == 1
+            lor5 = bool(larrow[max(0, t - 5):t + 1].any())
+            if entry:
+                confirm = weekly[t] > 0.5 and (user_recent or (kind == "EGX stock" and np.nan_to_num(vol_ratio[t]) >= 1.5)
+                                               or (kind == "Crypto" and lor5))
+                signal, why = ("STRONG BUY" if confirm else "BUY"), f"New {rule} buy"
+            else:
+                signal, why = "BUY", "Your green arrow + bright squeeze inside the uptrend"
+            tp = c[t] + 2 * a14[t]
+            j = next((k for k in range(t + 1, T) if pos[k] == 0), None)
+            entry_px = c[t + 1] if t + 1 < T else np.nan
+            if j is not None:
+                exit_px, status, end = (c[j + 1] if j + 1 < T else c[j]), "Closed", j
+            else:
+                exit_px, status, end = c[-1], "Open", T - 1
+            hit = bool(t + 1 < T and np.nanmax(c[t + 1:end + 1]) >= tp) if end > t else False
+            out.append({"date": str(idx[t].date()), "signal": signal, "why": why, "close": round(float(c[t]), 6),
+                        "stop": round(float(stop[t]), 6) if np.isfinite(stop[t]) else None,
+                        "take_profit": round(float(tp), 6) if np.isfinite(tp) else None,
+                        "result": round(float(exit_px / entry_px - 1), 4) if np.isfinite(entry_px) else None,
+                        "status": status if np.isfinite(entry_px) else "Not bought yet",
+                        "exit_date": str(idx[j].date()) if j is not None else "",
+                        "hit_take_profit": "yes" if hit else "no", "days": int(end - t)})
+        elif exit_:
+            out.append({"date": str(idx[t].date()), "signal": "SELL", "why": f"{rule} exit",
+                        "close": round(float(c[t]), 6), "stop": None, "take_profit": None,
+                        "result": round(float(c[-1] / c[t] - 1), 4), "status": "Price change since the sell",
+                        "exit_date": "", "hit_take_profit": "", "days": int(T - 1 - t)})
+    return out
 
 
 def ml_scores(raw, kinds):
@@ -273,6 +333,20 @@ def crypto_extras(df, raw, kinds):
 
 # Crypto lab results (reports/crypto_lab/REPORT.md, pre-registered, passed): Sharpe 2019-2020 / 2021-today
 CRYPTO_ML_FILTER = {"with": (1.57, 1.27), "without": (0.99, 1.13)}
+
+def write_history(history, shown, names):
+    """reports/signal_board/signal_history.csv: the signal calendar's rows (newest first)."""
+    if not history:
+        return
+    h = pd.DataFrame(history)
+    h["name"] = [names.get(s, s) for s in h.symbol]
+    h["symbol"] = h.symbol.map(shown).fillna(h.symbol)
+    cols = ["date", "symbol", "name", "kind", "strategy", "signal", "why", "close", "stop", "take_profit",
+            "status", "result", "exit_date", "hit_take_profit", "days"]
+    h = h[cols].sort_values(["date", "signal", "symbol"], ascending=[False, True, True])
+    h.to_csv(OUT / "signal_history.csv", index=False)
+    print(f"Signal history: {len(h):,} signals over {h.date.nunique()} days")
+
 
 RULE_WHY = {
     "US stock": "{s} closed back above its 200-day average: the buy signal of the 200-day trend rule, the rule that "
@@ -408,6 +482,7 @@ def main():
             for t, k in kinds.items() if t in raw["Close"]]
     with ProcessPoolExecutor(max_workers=os.cpu_count()) as ex:
         rows = [r for r in ex.map(analyse, jobs) if r]
+    history = [dict(h, symbol=r["symbol"], kind=r["kind"], strategy=r["strategy"]) for r in rows for h in r.pop("_history")]
     df = pd.DataFrame(rows)
     ml = ml_scores(raw, kinds)
     df.insert(df.columns.get_loc("score") + 1, "ml_score", [round(float(ml[t]), 3) if t in ml else None for t in df.symbol])
@@ -423,7 +498,9 @@ def main():
     # Display symbols without Yahoo suffixes, keeping them unique
     short = df.symbol.str.replace(r"\.CA$", "", regex=True).str.replace(r"\d*-USD$", "", regex=True)
     dup = short.duplicated(keep=False)
+    shown = dict(zip(df.symbol, np.where(dup, df.symbol, short)))
     df["symbol"] = np.where(dup, df.symbol, short)
+    write_history(history, shown, names)
     # Liquidity tag for crypto (forward-tracked, information only - see reports/liquidity2/REPORT.md)
     df["liquidity"] = ""
     try:

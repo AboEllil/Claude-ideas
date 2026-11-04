@@ -97,6 +97,29 @@
   .lq-evidence { display: grid; gap: var(--cds-gap-xs); padding: var(--cds-pad-md); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); min-width: 0; }
   .lq-btc { display: grid; gap: var(--cds-gap-xs); padding: var(--cds-pad-md); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); min-width: 0; }
   .lq-btc .sb-table-wrap { max-height: none; }
+  .cal-top { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-sm) var(--cds-gap-md); }
+  .cal-nav { display: inline-flex; align-items: center; gap: var(--cds-gap-xs); }
+  .cal-btn { font: inherit; font-size: var(--cds-font-size-caption); padding: 5px 10px; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); cursor: pointer; }
+  .cal-btn:focus-visible, .cal-day:focus-visible, .cal-date:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 1px; }
+  .cal-month { font-weight: 600; min-width: 9.5rem; text-align: center; font-size: var(--cds-font-size-body); }
+  .cal-date { font: inherit; font-size: var(--cds-font-size-caption); padding: 5px 8px; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); }
+  .cal-layout { display: grid; grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); gap: var(--cds-gap-lg); align-items: start; }
+  @media (max-width: 820px) { .cal-layout { grid-template-columns: minmax(0, 1fr); } }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+  .cal-wd { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); text-align: center; padding: 2px 0; }
+  .cal-day { font: inherit; display: grid; gap: 2px; align-content: start; justify-items: center; min-height: 3.1rem; padding: 4px 2px; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); cursor: pointer; font-variant-numeric: tabular-nums; }
+  .cal-day[disabled] { cursor: default; opacity: .45; }
+  .cal-day.is-empty { color: var(--color-fg-muted); }
+  .cal-day.is-sel { border-color: var(--color-fg); box-shadow: inset 0 0 0 1px var(--color-fg); }
+  .cal-day .n { font-size: var(--cds-font-size-caption); font-weight: 600; }
+  .cal-day .dots { display: flex; gap: 3px; font-size: 10px; line-height: 1; }
+  .cal-day .b { color: var(--color-ok); font-weight: 700; }
+  .cal-day .s { color: var(--color-bad); font-weight: 700; }
+  .cal-key { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm) var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .cal-key .b { color: var(--color-ok); font-weight: 700; }
+  .cal-key .s { color: var(--color-bad); font-weight: 700; }
+  .cal-head { margin: 0; font-size: var(--cds-font-size-body); font-weight: 600; }
+  .cal-list .sb-table-wrap { max-height: 30rem; }
   [data-dash-source-state=empty] { color: transparent; }
   [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
   @media (max-width: 720px) { .sb-hide-narrow { display: none; } }
@@ -183,6 +206,37 @@
     <h2>Today's actions</h2>
     <p class="sb-note">New buy and sell signals from the latest close. Every buy explains why, shows its strength (how many of 5 confirmations agree) and how often past signals like it won. Orders are for the next session. Sell if the price closes below the stop. At the take-profit price, sell half and move the stop to your entry price (breakeven): in tests this raised the win rate from about 45% to 55–63%.</p>
     <div class="sb-actions" data-draw="actions" data-source="signals"></div>
+  </section>
+
+  <section class="sb-card" id="calendar">
+    <h2>Signal calendar</h2>
+    <p class="sb-note">Pick a day to see what the board said after that day's close: every buy, strong buy and sell, rebuilt from prices up to that close only. "Since" is what happened afterwards, bought at the next close: the result to the rule's exit, or to today if the trade is still open. Past days show the rule signals and price plan; the ML mood, ML rank and strength use models trained later, so they are not shown for past days. Last 12 months, today's lists of stocks and coins.</p>
+    <div class="cal-top">
+      <div class="cal-nav">
+        <button type="button" class="cal-btn" data-cal-move="-1" aria-label="Previous month">‹</button>
+        <span class="cal-month" data-draw="cal-month" data-source="signal_history">—</span>
+        <button type="button" class="cal-btn" data-cal-move="1" aria-label="Next month">›</button>
+      </div>
+      <label class="cal-key">Go to date <input type="date" class="cal-date" aria-label="Go to date"></label>
+      <span class="cal-key"><span><span class="b">●</span> buys</span><span><span class="s">●</span> sells</span></span>
+    </div>
+    <div class="cal-layout">
+      <div class="cal-grid" data-draw="cal-grid" data-source="signal_history" role="grid" aria-label="Signals per day"></div>
+      <div class="cal-list">
+        <p class="cal-head"><span data-draw="cal-day" data-source="signal_history">—</span></p>
+        <div class="sb-table-wrap">
+          <table class="sb-table" data-source="signal_history" data-row-key="date,symbol,signal">
+            <thead><tr>
+              <th data-field="symbol">Symbol</th><th data-field="signal">Signal</th><th data-field="kind" class="sb-hide-narrow">Type</th>
+              <th data-field="why" class="sb-hide-narrow">Why</th><th data-field="close" class="num">Price</th><th data-field="stop" class="num">Stop</th>
+              <th data-field="take_profit" class="num sb-hide-narrow">Take half at</th><th data-field="result" class="num">Since</th>
+              <th data-field="status" class="sb-hide-narrow">Status</th><th data-field="hit_take_profit" class="sb-hide-narrow">Reached take-profit</th>
+            </tr></thead>
+            <tbody data-draw="cal-rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="sb-card" id="all">
@@ -727,4 +781,98 @@ dash.draw('lq-evidence', (el) => {
   });
   svg.append('line').attr('x1', x(0)).attr('x2', x(0)).attr('y1', 0).attr('y2', H - 4).style('stroke', 'var(--cds-chart-axis)');
 });
+</script>
+
+<script>
+(function () {
+  window.calState = window.calState || { month: null, day: null };
+  const st = window.calState;
+  const rows = () => { const d = dash.data('signal_history'); return d.status === 'ok' ? d.data : null; };
+  const isBuy = (r) => r.signal === 'BUY' || r.signal === 'STRONG BUY';
+  const fmtDay = d3.utcFormat('%a %b %-d, %Y');
+  const parse = (s) => new Date(s + 'T00:00:00Z');
+  const ensure = (all) => {
+    if (!all || !all.length) return;
+    const dates = all.map((r) => r.date).sort();
+    if (!st.day) st.day = dates[dates.length - 1];
+    if (!st.month) st.month = st.day.slice(0, 7);
+  };
+  const redraw = () => { dash.draw('cal-month'); dash.draw('cal-grid'); dash.draw('cal-day'); dash.draw('cal-rows'); };
+  window.calGo = (day) => { st.day = day; st.month = day.slice(0, 7); document.querySelectorAll('.cal-date').forEach((i) => { i.value = day; }); redraw(); };
+
+  dash.draw('cal-month', (el) => {
+    const all = rows(); ensure(all);
+    el.textContent = all && st.month ? d3.utcFormat('%B %Y')(parse(st.month + '-01')) : '—';
+  });
+
+  dash.draw('cal-grid', (el) => {
+    const all = rows(); ensure(all);
+    el.replaceChildren();
+    if (!all || !st.month) return;
+    const counts = d3.rollup(all, (v) => ({ b: v.filter(isBuy).length, s: v.filter((r) => r.signal === 'SELL').length }), (r) => r.date);
+    ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].forEach((w) => { const h = document.createElement('div'); h.className = 'cal-wd'; h.textContent = w; el.append(h); });
+    const first = parse(st.month + '-01');
+    const lead = (first.getUTCDay() + 6) % 7;
+    for (let i = 0; i < lead; i++) el.append(document.createElement('div'));
+    const days = d3.utcDays(first, d3.utcMonth.offset(first, 1));
+    const minD = d3.min(all, (r) => r.date), maxD = d3.max(all, (r) => r.date);
+    days.forEach((d) => {
+      const key = d3.utcFormat('%Y-%m-%d')(d);
+      const c = counts.get(key);
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'cal-day' + (c ? '' : ' is-empty') + (key === st.day ? ' is-sel' : '');
+      b.disabled = key < minD || key > maxD;
+      b.setAttribute('aria-label', fmtDay(d) + (c ? ': ' + c.b + ' buys, ' + c.s + ' sells' : ': no signals'));
+      const n = document.createElement('span'); n.className = 'n'; n.textContent = String(d.getUTCDate());
+      const dots = document.createElement('span'); dots.className = 'dots';
+      if (c && c.b) { const x = document.createElement('span'); x.className = 'b'; x.textContent = '●' + c.b; dots.append(x); }
+      if (c && c.s) { const x = document.createElement('span'); x.className = 's'; x.textContent = '●' + c.s; dots.append(x); }
+      b.append(n, dots);
+      b.addEventListener('click', () => window.calGo(key));
+      el.append(b);
+    });
+  });
+
+  dash.draw('cal-day', (el) => {
+    const all = rows(); ensure(all);
+    if (!all || !st.day) { el.textContent = '—'; return; }
+    const day = all.filter((r) => r.date === st.day);
+    const nb = day.filter(isBuy).length, ns = day.filter((r) => r.signal === 'SELL').length;
+    el.textContent = fmtDay(parse(st.day)) + ': ' + (day.length ? nb + ' buys, ' + ns + ' sells' : 'no new signals');
+  });
+
+  dash.draw('cal-rows', (tbody) => {
+    const all = rows(); ensure(all);
+    tbody.replaceChildren();
+    if (!all || !st.day) return;
+    const order = { 'STRONG BUY': 0, 'BUY': 1, 'SELL': 2 };
+    const price = window.sbFmt.price;
+    all.filter((r) => r.date === st.day).sort((a, b) => order[a.signal] - order[b.signal] || a.symbol.localeCompare(b.symbol)).forEach((r) => {
+      const tr = document.createElement('tr');
+      const td = (t, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = t; return c; };
+      const num = (x) => (x === '' || x == null ? NaN : Number(x));
+      const res = num(r.result);
+      const sig = document.createElement('td');
+      sig.append(window.sbPill(r.signal));
+      tr.append(td(r.symbol, 'sb-sym'), sig, td(r.kind, 'sb-hide-narrow'), td(r.why, 'sb-name sb-hide-narrow'),
+        td(price(num(r.close)), 'num'), td(Number.isFinite(num(r.stop)) ? price(num(r.stop)) : '', 'num'),
+        td(Number.isFinite(num(r.take_profit)) ? price(num(r.take_profit)) : '', 'num sb-hide-narrow'),
+        td(window.sbFmt.pct(res), 'num ' + (res > 0 ? 'sb-up' : res < 0 ? 'sb-down' : '')),
+        td(r.status + (r.exit_date ? ' ' + r.exit_date : ''), 'sb-hide-narrow'), td(r.hit_take_profit, 'sb-hide-narrow'));
+      tbody.append(tr);
+    });
+  });
+
+  document.querySelectorAll('[data-cal-move]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (!st.month) return;
+      st.month = d3.utcFormat('%Y-%m')(d3.utcMonth.offset(parse(st.month + '-01'), Number(btn.dataset.calMove)));
+      dash.draw('cal-month'); dash.draw('cal-grid');
+    });
+  });
+  document.querySelectorAll('.cal-date').forEach((inp) => {
+    inp.addEventListener('change', () => { if (inp.value) window.calGo(inp.value); });
+  });
+})();
 </script>

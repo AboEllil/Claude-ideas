@@ -98,6 +98,10 @@ Squeeze 20 / 1.5) are best - tuning settings overfits.
   retrained monthly by the daily task), `adaptive` (per-coin AlgoAlpha factor/ATR for this year,
   reports/crypto_lab/settings.csv), liquidity panel cards for Coinbase premium + Fear & Greed and a "Bitcoin
   timing" HOLD/CASH box (dataset btc_timing_evidence). Crypto buy explanations mention the ML mood.
+- Signal calendar (4 Nov 2026): dataset "signal_history" (reports/signal_board/signal_history.csv, written by
+  market_scanner.signal_history): every BUY/STRONG BUY/SELL of the last 365 days rebuilt from prices up to each
+  close, with stop, take-profit and outcome (next-close entry, to rule exit or today, take-profit reached).
+  No ML mood/rank/strength for past days (models trained later = hindsight). Refreshed by the daily task.
 - Scheduled tasks (fresh session each run, push notifications):
   - `trig_01KT4kmZohrrgTnorC6Mwcut` Halal Signal Board daily refresh - Mon-Fri 17:23 New York
     (retrains ML model in the first 7 days of each month)
