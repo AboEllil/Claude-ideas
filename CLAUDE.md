@@ -102,6 +102,11 @@ Squeeze 20 / 1.5) are best - tuning settings overfits.
   market_scanner.signal_history): every BUY/STRONG BUY/SELL of the last 365 days rebuilt from prices up to each
   close, with stop, take-profit and outcome (next-close entry, to rule exit or today, take-profit reached).
   No ML mood/rank/strength for past days (models trained later = hindsight). Refreshed by the daily task.
+- Weekly top 5 (11 Nov 2026): datasets "weekly_top5" + "weekly_top5_paths" (market_scanner.weekly_top5): each
+  week's 5 best buys (Strong Buy first, then strength, then smallest risk to stop; one per asset), followed 30
+  calendar days from the next close, sold on the rule's exit, vs its market (SPY / EGX halal index / BTC).
+  Rebuilt 53 weeks: avg +2.0% vs market +0.8%, but beat the market in only 45% of weeks (median week +0.3%).
+  Strength is rule-based (no hindsight) and is now in signal_history too. Gotcha: numpy bool + bool = OR, use int().
 - Scheduled tasks (fresh session each run, push notifications):
   - `trig_01KT4kmZohrrgTnorC6Mwcut` Halal Signal Board daily refresh - Mon-Fri 17:23 New York
     (retrains ML model in the first 7 days of each month)

@@ -120,6 +120,17 @@
   .cal-key .s { color: var(--color-bad); font-weight: 700; }
   .cal-head { margin: 0; font-size: var(--cds-font-size-body); font-weight: 600; }
   .cal-list .sb-table-wrap { max-height: 30rem; }
+  .t5-select { font: inherit; font-size: var(--cds-font-size-caption); padding: 5px 8px; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); }
+  .t5-select:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 1px; }
+  .t5-sum { margin: 0; font-size: var(--cds-font-size-body); }
+  .t5-chart { position: relative; min-height: 240px; }
+  .t5-chart svg { display: block; overflow: visible; }
+  .t5-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs) var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-bottom: 4px; }
+  .t5-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .t5-legend i { display: inline-block; width: 14px; height: 0; border-top: 2px solid; }
+  .t5-legend i.dash { border-top-style: dashed; }
+  .t5-h { margin: var(--cds-gap-sm) 0 0; font-size: var(--cds-font-size-body); font-weight: 600; }
+  .sb .t5-sum b { font-weight: 600; }
   [data-dash-source-state=empty] { color: transparent; }
   [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
   @media (max-width: 720px) { .sb-hide-narrow { display: none; } }
@@ -208,9 +219,43 @@
     <div class="sb-actions" data-draw="actions" data-source="signals"></div>
   </section>
 
+  <section class="sb-card" id="top5">
+    <h2>Weekly top 5</h2>
+    <p class="sb-note">Each week's five best buy signals (Strong Buy first, then the strength score, then the smallest risk to the stop; one pick per stock or coin), each followed for 30 days from the next session the way the board says: sold at the next session after the rule's sell signal, otherwise held. Each is compared with its market over the same days (S&amp;P 500, the EGX halal index or Bitcoin). Weeks before November 2026 are rebuilt from prices known at the time, with no look-ahead; from November 2026 they are tracked as they happen. The take-profit is shown but not used here, so the numbers are for the whole position.</p>
+    <div class="cal-top">
+      <label class="cal-key">Week of <select class="t5-select" data-draw="t5-weeks" data-source="weekly_top5" aria-label="Week"></select></label>
+    </div>
+    <p class="t5-sum"><span data-draw="t5-summary" data-source="weekly_top5">—</span></p>
+    <div class="t5-chart" data-draw="t5-chart" data-source="weekly_top5_paths weekly_top5"></div>
+    <div class="sb-table-wrap">
+      <table class="sb-table" data-source="weekly_top5" data-row-key="week,symbol">
+        <thead><tr>
+          <th data-field="rank" class="num">#</th><th data-field="symbol">Symbol</th><th data-field="signal">Signal</th>
+          <th data-field="strength_label" class="sb-hide-narrow">Strength</th><th data-field="kind" class="sb-hide-narrow">Type</th>
+          <th data-field="entry_date" class="sb-hide-narrow">Bought</th><th data-field="entry_price" class="num">Buy price</th>
+          <th data-field="ret" class="num">Result</th><th data-field="bench_ret" class="num">Market</th>
+          <th data-field="status" class="sb-hide-narrow">Status</th><th data-field="hit_take_profit" class="sb-hide-narrow">Reached take-profit</th>
+        </tr></thead>
+        <tbody data-draw="t5-rows"></tbody>
+      </table>
+    </div>
+    <p class="t5-h">Every week so far</p>
+    <p class="sb-note">Across <b data-draw="t5-n" data-source="weekly_overall" data-field="weeks" data-row="0">—</b> weeks, the top 5 averaged <b data-draw="t5-avg" data-source="weekly_overall" data-field="avg_ret" data-row="0">—</b> against <b data-draw="t5-mkt" data-source="weekly_overall" data-field="avg_bench" data-row="0">—</b> for their markets, and beat the market in <b data-draw="t5-beat" data-source="weekly_overall" data-field="beat_share" data-row="0">—</b> of weeks. Weeks still inside their 30 days are counted at their latest value.</p>
+    <div class="sb-table-wrap">
+      <table class="sb-table" data-source="weekly_scorecard" data-row-key="week">
+        <thead><tr>
+          <th data-field="week">Week of</th><th data-field="picks" class="num">Picks</th><th data-field="up" class="num">Up</th>
+          <th data-field="avg_ret" class="num">Average result</th><th data-field="avg_bench" class="num">Market</th>
+          <th data-field="beat">Beat the market</th><th data-field="status" class="sb-hide-narrow">Status</th>
+        </tr></thead>
+        <tbody data-draw="t5-score"></tbody>
+      </table>
+    </div>
+  </section>
+
   <section class="sb-card" id="calendar">
     <h2>Signal calendar</h2>
-    <p class="sb-note">Pick a day to see what the board said after that day's close: every buy, strong buy and sell, rebuilt from prices up to that close only. "Since" is what happened afterwards, bought at the next close: the result to the rule's exit, or to today if the trade is still open. Past days show the rule signals and price plan; the ML mood, ML rank and strength use models trained later, so they are not shown for past days. Last 12 months, today's lists of stocks and coins.</p>
+    <p class="sb-note">Pick a day to see what the board said after that day's close: every buy, strong buy and sell, rebuilt from prices up to that close only. "Since" is what happened afterwards, bought at the next close: the result to the rule's exit, or to today if the trade is still open. Past days show the rule signals, the strength score (it uses only prices and data known that day) and the price plan; the ML mood and ML rank use models trained later, so they are not shown for past days. Last 12 months, today's lists of stocks and coins.</p>
     <div class="cal-top">
       <div class="cal-nav">
         <button type="button" class="cal-btn" data-cal-move="-1" aria-label="Previous month">‹</button>
@@ -227,7 +272,7 @@
         <div class="sb-table-wrap">
           <table class="sb-table" data-source="signal_history" data-row-key="date,symbol,signal">
             <thead><tr>
-              <th data-field="symbol">Symbol</th><th data-field="signal">Signal</th><th data-field="kind" class="sb-hide-narrow">Type</th>
+              <th data-field="symbol">Symbol</th><th data-field="signal">Signal</th><th data-field="strength_label" class="sb-hide-narrow">Strength</th><th data-field="kind" class="sb-hide-narrow">Type</th>
               <th data-field="why" class="sb-hide-narrow">Why</th><th data-field="close" class="num">Price</th><th data-field="stop" class="num">Stop</th>
               <th data-field="take_profit" class="num sb-hide-narrow">Take half at</th><th data-field="result" class="num">Since</th>
               <th data-field="status" class="sb-hide-narrow">Status</th><th data-field="hit_take_profit" class="sb-hide-narrow">Reached take-profit</th>
@@ -855,7 +900,7 @@ dash.draw('lq-evidence', (el) => {
       const res = num(r.result);
       const sig = document.createElement('td');
       sig.append(window.sbPill(r.signal));
-      tr.append(td(r.symbol, 'sb-sym'), sig, td(r.kind, 'sb-hide-narrow'), td(r.why, 'sb-name sb-hide-narrow'),
+      tr.append(td(r.symbol, 'sb-sym'), sig, td(r.strength_label || '', 'sb-hide-narrow'), td(r.kind, 'sb-hide-narrow'), td(r.why, 'sb-name sb-hide-narrow'),
         td(price(num(r.close)), 'num'), td(Number.isFinite(num(r.stop)) ? price(num(r.stop)) : '', 'num'),
         td(Number.isFinite(num(r.take_profit)) ? price(num(r.take_profit)) : '', 'num sb-hide-narrow'),
         td(window.sbFmt.pct(res), 'num ' + (res > 0 ? 'sb-up' : res < 0 ? 'sb-down' : '')),
@@ -874,5 +919,171 @@ dash.draw('lq-evidence', (el) => {
   document.querySelectorAll('.cal-date').forEach((inp) => {
     inp.addEventListener('change', () => { if (inp.value) window.calGo(inp.value); });
   });
+})();
+</script>
+
+<script>
+dash.calc('weekly_scorecard', {
+  inputs: ['weekly_top5'],
+  title: 'Weekly top 5 by week',
+  description: 'For each week: number of picks bought, how many are up, the average result and the average of their markets.',
+  fn: (weekly_top5) => {
+    const bought = weekly_top5.filter((r) => r.entry_date);
+    return d3.groups(bought, (r) => r.week).map(([week, g]) => {
+      const ret = d3.mean(g, (r) => Number(r.ret)), mkt = d3.mean(g, (r) => Number(r.bench_ret));
+      return { week, picks: g.length, up: g.filter((r) => Number(r.ret) > 0).length, avg_ret: Number(ret.toFixed(4)),
+               avg_bench: Number(mkt.toFixed(4)), beat: ret > mkt ? 'yes' : 'no',
+               status: g.some((r) => String(r.status).startsWith('Tracking')) ? 'Tracking' : 'Finished' };
+    }).sort((a, b) => (a.week < b.week ? 1 : -1));
+  },
+});
+dash.calc('weekly_overall', {
+  inputs: ['weekly_scorecard'],
+  title: 'Weekly top 5 overall',
+  description: 'Number of weeks, the average weekly result of the top 5, the average of their markets and the share of weeks they beat the market.',
+  fn: (weekly_scorecard) => [{ weeks: weekly_scorecard.length,
+    avg_ret: Number(d3.mean(weekly_scorecard, (r) => r.avg_ret).toFixed(4)),
+    avg_bench: Number(d3.mean(weekly_scorecard, (r) => r.avg_bench).toFixed(4)),
+    beat_share: Number((weekly_scorecard.filter((r) => r.beat === 'yes').length / Math.max(1, weekly_scorecard.length)).toFixed(2)) }],
+});
+
+(function () {
+  window.t5State = window.t5State || { week: null };
+  const st = window.t5State;
+  const pct = (v) => (Number.isFinite(v) ? d3.format('+.1%')(v) : '—');
+  const num = (x) => (x === '' || x == null ? NaN : Number(x));
+  const picks = () => { const d = dash.data('weekly_top5'); return d.status === 'ok' ? d.data : null; };
+  const weeks = (all) => [...new Set(all.map((r) => r.week))].sort().reverse();
+  const ensure = (all) => { if (all && all.length && !st.week) st.week = weeks(all)[0]; };
+  const fmtWeek = (w) => d3.utcFormat('%b %-d, %Y')(new Date(w + 'T00:00:00Z'));
+  const redraw = () => { ['t5-summary', 't5-chart', 't5-rows', 't5-weeks'].forEach((n) => dash.draw(n)); };
+
+  dash.draw('t5-weeks', (sel) => {
+    const all = picks(); ensure(all);
+    sel.replaceChildren();
+    if (!all) return;
+    weeks(all).forEach((w) => sel.append(new Option(fmtWeek(w), w)));
+    sel.value = st.week;
+    sel.onchange = () => { st.week = sel.value; redraw(); };
+  });
+
+  dash.draw('t5-summary', (el) => {
+    const all = picks(); ensure(all);
+    if (!all) { el.textContent = '—'; return; }
+    const g = all.filter((r) => r.week === st.week && r.entry_date);
+    if (!g.length) { el.textContent = 'The picks of this week are bought at the next session.'; return; }
+    const ret = d3.mean(g, (r) => num(r.ret)), mkt = d3.mean(g, (r) => num(r.bench_ret));
+    const day = d3.max(g, (r) => num(r.day));
+    const tracking = g.some((r) => String(r.status).startsWith('Tracking'));
+    el.textContent = (tracking ? 'Day ' + day + ' of 30: ' : 'After 30 days: ') + 'the top 5 average ' + pct(ret) + ' vs ' + pct(mkt) +
+      ' for their markets; ' + g.filter((r) => num(r.ret) > 0).length + ' of ' + g.length + ' are up.';
+  });
+
+  dash.draw('t5-chart', (el) => {
+    const all = picks(); ensure(all);
+    const pd = dash.data('weekly_top5_paths');
+    el.replaceChildren();
+    if (!all || pd.status !== 'ok') return;
+    const g = all.filter((r) => r.week === st.week && r.entry_date).sort((a, b) => num(a.rank) - num(b.rank));
+    const rows = pd.data.filter((r) => r.week === st.week).map((r) => ({ sym: r.symbol, day: num(r.day), ret: num(r.ret), bench: num(r.bench_ret), date: r.date }));
+    if (!g.length || !rows.length) return;
+    const legend = document.createElement('div');
+    legend.className = 't5-legend';
+    g.forEach((p, i) => { const sp = document.createElement('span'); const sw = document.createElement('i'); sw.style.borderTopColor = dash.colors[i]; sp.append(sw, p.symbol); legend.append(sp); });
+    const ms = document.createElement('span'); const mi = document.createElement('i'); mi.className = 'dash'; mi.style.borderTopColor = 'var(--cds-chart-reference)'; ms.append(mi, 'Market (average)'); legend.append(ms);
+    el.append(legend);
+    const bench = d3.rollups(rows, (v) => d3.mean(v, (r) => r.bench), (r) => r.day).map(([day, b]) => ({ day, b })).sort((a, b) => a.day - b.day);
+    const W = Math.max(260, el.clientWidth), H = 220;
+    const vals = rows.flatMap((r) => [r.ret, r.bench]).concat([0]).filter(Number.isFinite);
+    const y = d3.scaleLinear(d3.extent(vals), [H - 24, 8]).nice(5);
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img')
+      .attr('aria-label', 'Result of each of the week\'s top 5 picks over 30 days, and their markets');
+    const yt = y.ticks(5);
+    const probe = svg.append('g').style('font-size', 'var(--cds-font-size-caption)');
+    let wmax = 0;
+    yt.forEach((t) => { wmax = Math.max(wmax, probe.append('text').text(d3.format('+.0%')(t)).node().getComputedTextLength()); });
+    probe.remove();
+    const m = { l: Math.ceil(wmax) + 10, r: 12, t: 8, b: 24 };
+    const x = d3.scaleLinear([0, 30], [m.l, W - m.r]);
+    svg.append('g').selectAll('line').data(yt).join('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', y).attr('y2', y)
+      .style('stroke', (t) => (t === 0 ? 'var(--cds-chart-axis)' : 'var(--cds-chart-grid)'));
+    svg.append('g').selectAll('text').data(yt).join('text').attr('x', m.l - 6).attr('y', y).attr('dy', '0.32em').attr('text-anchor', 'end')
+      .style('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)').text(d3.format('+.0%'));
+    svg.append('g').selectAll('text').data([0, 5, 10, 15, 20, 25, 30]).join('text').attr('x', x).attr('y', H - 6).attr('text-anchor', 'middle')
+      .style('fill', 'var(--color-fg-muted)').style('font-size', 'var(--cds-font-size-caption)').text((d) => (d === 30 ? 'day 30' : d));
+    svg.append('path').attr('d', d3.line().x((r) => x(r.day)).y((r) => y(r.b))(bench)).attr('fill', 'none')
+      .style('stroke', 'var(--cds-chart-reference)').attr('stroke-width', 2).attr('stroke-dasharray', '5 4');
+    const series = g.map((p, i) => ({ p, i, pts: rows.filter((r) => r.sym === p.symbol).sort((a, b) => a.day - b.day) }));
+    series.forEach((sr) => {
+      if (!sr.pts.length) return;
+      svg.append('path').attr('d', d3.line().x((r) => x(r.day)).y((r) => y(r.ret))(sr.pts)).attr('fill', 'none')
+        .style('stroke', dash.colors[sr.i]).attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
+      const last = sr.pts[sr.pts.length - 1];
+      svg.append('circle').attr('cx', x(last.day)).attr('cy', y(last.ret)).attr('r', 3.5).style('fill', dash.colors[sr.i])
+        .style('stroke', 'var(--color-bg)').attr('stroke-width', 2);
+    });
+    const rule = svg.append('line').attr('y1', m.t).attr('y2', H - m.b).style('stroke', 'var(--cds-chart-axis)').attr('opacity', 0);
+    const tip = d3.select(el).append('div').attr('class', 'lq-tip').style('display', 'none');
+    svg.append('rect').attr('x', m.l).attr('y', 0).attr('width', W - m.l - m.r).attr('height', H).attr('fill', 'transparent')
+      .on('pointermove', (ev) => {
+        const [px] = d3.pointer(ev, svg.node());
+        const d = Math.max(0, Math.min(30, Math.round(x.invert(px))));
+        rule.attr('x1', x(d)).attr('x2', x(d)).attr('opacity', 1);
+        tip.style('display', null).selectAll('*').remove();
+        tip.append('div').attr('class', 'lq-tip-date').text('Day ' + d);
+        series.forEach((sr) => {
+          const q = sr.pts.filter((r) => r.day <= d).pop();
+          if (!q) return;
+          const line = tip.append('div');
+          line.append('span').style('color', dash.colors[sr.i]).text('● ');
+          line.append('span').text(sr.p.symbol + ' ' + pct(q.ret));
+        });
+        const bq = bench.filter((r) => r.day <= d).pop();
+        if (bq) tip.append('div').text('Market ' + pct(bq.b));
+        const scale = el.clientWidth / W, tw = tip.node().offsetWidth;
+        const left = x(d) * scale + 12 + tw > el.clientWidth ? x(d) * scale - tw - 12 : x(d) * scale + 12;
+        tip.style('left', Math.max(0, left) + 'px').style('top', '28px');
+      })
+      .on('pointerleave', () => { rule.attr('opacity', 0); tip.style('display', 'none'); });
+  });
+
+  dash.draw('t5-rows', (tbody) => {
+    const all = picks(); ensure(all);
+    tbody.replaceChildren();
+    if (!all) return;
+    const price = window.sbFmt.price;
+    all.filter((r) => r.week === st.week).sort((a, b) => num(a.rank) - num(b.rank)).forEach((r) => {
+      const tr = document.createElement('tr');
+      const td = (t, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = t; return c; };
+      const sig = document.createElement('td'); sig.append(window.sbPill(r.signal));
+      const ret = num(r.ret), mk = num(r.bench_ret);
+      tr.append(td(String(r.rank), 'num'), td(r.symbol, 'sb-sym'), sig, td(r.strength_label || '', 'sb-hide-narrow'), td(r.kind, 'sb-hide-narrow'),
+        td(r.entry_date || '', 'sb-hide-narrow'), td(Number.isFinite(num(r.entry_price)) ? price(num(r.entry_price)) : '', 'num'),
+        td(pct(ret), 'num ' + (ret > 0 ? 'sb-up' : ret < 0 ? 'sb-down' : '')), td(pct(mk), 'num'),
+        td(r.status, 'sb-hide-narrow'), td(r.hit_take_profit || '', 'sb-hide-narrow'));
+      tbody.append(tr);
+    });
+  });
+
+  dash.draw('t5-score', (tbody) => {
+    const d = dash.data('weekly_scorecard');
+    tbody.replaceChildren();
+    if (d.status !== 'ok') return;
+    d.data.forEach((r) => {
+      const tr = document.createElement('tr');
+      const td = (t, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = t; return c; };
+      tr.append(td(r.week), td(String(r.picks), 'num'), td(String(r.up), 'num'),
+        td(pct(r.avg_ret), 'num ' + (r.avg_ret > 0 ? 'sb-up' : r.avg_ret < 0 ? 'sb-down' : '')), td(pct(r.avg_bench), 'num'),
+        td(r.beat), td(r.status, 'sb-hide-narrow'));
+      tr.style.cursor = 'pointer';
+      tr.addEventListener('click', () => { window.t5State.week = r.week; ['t5-summary', 't5-chart', 't5-rows', 't5-weeks'].forEach((n) => dash.draw(n)); });
+      tbody.append(tr);
+    });
+  });
+  const ov = (k, f) => (el) => { const o = dash.data('weekly_overall'); el.textContent = o.status === 'ok' && o.data[0] ? f(o.data[0][k]) : '—'; };
+  dash.draw('t5-n', ov('weeks', (v) => String(v)));
+  dash.draw('t5-avg', ov('avg_ret', pct));
+  dash.draw('t5-mkt', ov('avg_bench', pct));
+  dash.draw('t5-beat', ov('beat_share', (v) => d3.format('.0%')(v)));
 })();
 </script>

@@ -190,7 +190,7 @@ def analyse(args):
         "AVOID": f"No {rule} uptrend. Wait.",
     }
 
-    history = signal_history(df, kind, rule, c, a14, st, st_line, pos, weekly, user_sig, larrow, vol_ratio, v,
+    history = signal_history(df, kind, rule, c, a14, st, st_line, pos, weekly, user_sig, larrow, vol_ratio, v, bright,
                              sma200 if kind in ("US stock", "Halal ETF") else None,
                              trail if kind == "EGX stock" else None)
 
@@ -226,7 +226,7 @@ def analyse(args):
 HISTORY_DAYS = 365
 
 
-def signal_history(df, kind, rule, c, a14, st, st_line, pos, weekly, user_sig, larrow, vol_ratio, v, sma200, trail):
+def signal_history(df, kind, rule, c, a14, st, st_line, pos, weekly, user_sig, larrow, vol_ratio, v, bright, sma200, trail):
     """Every buy / sell this board would have shown in the last HISTORY_DAYS, rebuilt from prices up to each
     day's close only (no look-ahead), plus what happened afterwards (bought at the next close; outcome to the
     rule's exit or to today). Rows for the dashboard's signal calendar."""
@@ -270,7 +270,9 @@ def signal_history(df, kind, rule, c, a14, st, st_line, pos, weekly, user_sig, l
                         "result": round(float(exit_px / entry_px - 1), 4) if np.isfinite(entry_px) else None,
                         "status": status if np.isfinite(entry_px) else "Not bought yet",
                         "exit_date": str(idx[j].date()) if j is not None else "",
-                        "hit_take_profit": "yes" if hit else "no", "days": int(end - t)})
+                        "hit_take_profit": "yes" if hit else "no", "days": int(end - t),
+                        # 4 of the 5 strength confirmations (the 5th, the market backdrop, is added in main)
+                        "_chk": int(weekly[t] > 0.5) + int(st[t] == 1) + int(bool(bright[t])) + int(lor5)})
         elif exit_:
             out.append({"date": str(idx[t].date()), "signal": "SELL", "why": f"{rule} exit",
                         "close": round(float(c[t]), 6), "stop": None, "take_profit": None,
@@ -334,18 +336,118 @@ def crypto_extras(df, raw, kinds):
 # Crypto lab results (reports/crypto_lab/REPORT.md, pre-registered, passed): Sharpe 2019-2020 / 2021-today
 CRYPTO_ML_FILTER = {"with": (1.57, 1.27), "without": (0.99, 1.13)}
 
-def write_history(history, shown, names):
-    """reports/signal_board/signal_history.csv: the signal calendar's rows (newest first)."""
+def market_series(raw, kinds):
+    """Benchmarks and backdrops: S&P 500 (SPY), an equal-weight index of the halal EGX stocks, Bitcoin."""
+    close = raw["Close"]
+    egx_cols = [t for t, k in kinds.items() if k == "EGX stock" and t in close]
+    egx = (1 + close[egx_cols].pct_change(fill_method=None).clip(-0.5, 0.5).mean(axis=1).fillna(0)).cumprod()
+    return {"US": close["SPY"].dropna(), "EGX": egx[egx.index >= close[egx_cols].first_valid_index()],
+            "Crypto": close["BTC-USD"].dropna()}
+
+
+MARKET_OF = {"US stock": "US", "Halal ETF": "US", "EGX stock": "EGX", "Crypto": "Crypto"}
+BENCH_NAME = {"US": "S&P 500", "EGX": "EGX halal index", "Crypto": "Bitcoin"}
+
+
+def write_history(history, shown, names, raw, kinds):
+    """reports/signal_board/signal_history.csv (signal calendar) and weekly_top5*.csv (weekly top 5, 30 days)."""
     if not history:
         return
     h = pd.DataFrame(history)
+    mkts = market_series(raw, kinds)
+    # strength: the 4 price confirmations + the backdrop as it was that day (no look-ahead)
+    up200 = {m: (x > x.rolling(200).mean()) for m, x in mkts.items() if m != "Crypto"}
+    try:
+        from lab.liquidity import series as liq_series
+        up200["Crypto"] = liq_series()["FED"][2].dropna().astype(bool)
+    except Exception:
+        up200["Crypto"] = pd.Series(dtype=bool)
+    def backdrop(kind, day):
+        x = up200[MARKET_OF[kind]]
+        x = x[x.index <= pd.Timestamp(day)]
+        return bool(x.iloc[-1]) if len(x) else False
+    buy = h.signal.isin(["BUY", "STRONG BUY"])
+    h["strength"] = None
+    h.loc[buy, "strength"] = [int(c) + backdrop(k, d) for c, k, d in zip(h.loc[buy, "_chk"], h.loc[buy, "kind"], h.loc[buy, "date"])]
+    h["strength_label"] = h.strength.map(lambda n: "" if n is None or n != n else "Strong" if n >= 4 else "Medium" if n == 3 else "Weak")
+    h["raw"] = h.symbol
     h["name"] = [names.get(s, s) for s in h.symbol]
     h["symbol"] = h.symbol.map(shown).fillna(h.symbol)
-    cols = ["date", "symbol", "name", "kind", "strategy", "signal", "why", "close", "stop", "take_profit",
-            "status", "result", "exit_date", "hit_take_profit", "days"]
-    h = h[cols].sort_values(["date", "signal", "symbol"], ascending=[False, True, True])
-    h.to_csv(OUT / "signal_history.csv", index=False)
+    cols = ["date", "symbol", "name", "kind", "strategy", "signal", "strength", "strength_label", "why", "close", "stop",
+            "take_profit", "status", "result", "exit_date", "hit_take_profit", "days"]
+    h = h.sort_values(["date", "signal", "symbol"], ascending=[False, True, True])
+    h[cols].to_csv(OUT / "signal_history.csv", index=False)
     print(f"Signal history: {len(h):,} signals over {h.date.nunique()} days")
+    weekly_top5(h[buy.reindex(h.index)], raw, mkts)
+
+
+TOP5_DAYS = 30
+
+
+def weekly_top5(b, raw, mkts):
+    """Each week's top 5 buys (Strong Buy first, then strength, then the smallest risk to the stop; one per asset),
+    each followed for 30 calendar days from the next close, as the board says: sold at the next close after the
+    rule's exit, otherwise held. Compared with its market over the same days."""
+    if b.empty:
+        return
+    b = b.copy()
+    b["week"] = (pd.to_datetime(b.date) - pd.to_timedelta(pd.to_datetime(b.date).dt.weekday, unit="D")).dt.strftime("%Y-%m-%d")
+    b["sig_rank"] = (b.signal != "STRONG BUY").astype(int)
+    b["risk"] = 1 - b.stop / b.close
+    b = b.sort_values(["week", "sig_rank", "strength", "risk"], ascending=[True, True, False, True])
+    picks = b.drop_duplicates(["week", "symbol"]).groupby("week").head(5).copy()
+    picks["rank"] = picks.groupby("week").cumcount() + 1
+    close = raw["Close"]
+    today = close.index[-1]
+    summ, paths = [], []
+    for _, p in picks.iterrows():
+        px = close[p.raw].dropna()
+        d0 = pd.Timestamp(p.date)
+        after = px[px.index > d0]
+        if after.empty:                                                    # signal at the latest close
+            summ.append({**{k: p[k] for k in ("week", "rank", "symbol", "name", "kind", "signal", "strength", "strength_label",
+                                              "close", "stop", "take_profit")}, "signal_date": p.date, "entry_date": "",
+                         "entry_price": None, "day": 0, "ret": None, "bench": BENCH_NAME[MARKET_OF[p.kind]], "bench_ret": None,
+                         "status": "Buy at the next session", "hit_take_profit": ""})
+            continue
+        e_day, e_px = after.index[0], float(after.iloc[0])
+        end = e_day + pd.Timedelta(days=TOP5_DAYS)
+        sell_px, sell_day = None, None
+        if p.exit_date:
+            ex = px[px.index > pd.Timestamp(p.exit_date)]
+            if len(ex) and ex.index[0] <= end:
+                sell_day, sell_px = ex.index[0], float(ex.iloc[0])
+        bench = mkts[MARKET_OF[p.kind]]
+        b0 = bench[bench.index <= e_day]
+        b0 = float(b0.iloc[-1]) if len(b0) else np.nan
+        win = px[(px.index >= e_day) & (px.index <= end)]
+        hit = False
+        for day, v in win.items():
+            if sell_day is not None and day > sell_day:
+                v = sell_px
+            else:
+                hit = hit or (p.take_profit == p.take_profit and v >= p.take_profit)
+            bv = bench[bench.index <= day]
+            paths.append({"week": p.week, "symbol": p.symbol, "day": int((day - e_day).days), "date": str(day.date()),
+                          "ret": round(v / e_px - 1, 4), "bench_ret": round(float(bv.iloc[-1]) / b0 - 1, 4) if len(bv) else None})
+        last = paths[-1]
+        if sell_day is not None:
+            status = f"Sold on the rule's exit ({sell_day.date()})"
+        elif today >= end:
+            status = "30 days done"
+        else:
+            status = f"Tracking: day {last['day']} of {TOP5_DAYS}"
+        summ.append({**{k: p[k] for k in ("week", "rank", "symbol", "name", "kind", "signal", "strength", "strength_label",
+                                          "close", "stop", "take_profit")}, "signal_date": p.date, "entry_date": str(e_day.date()),
+                     "entry_price": round(e_px, 6), "day": last["day"], "ret": last["ret"], "bench": BENCH_NAME[MARKET_OF[p.kind]],
+                     "bench_ret": last["bench_ret"], "status": status, "hit_take_profit": "yes" if hit else "no"})
+    sm = pd.DataFrame(summ).sort_values(["week", "rank"], ascending=[False, True])
+    sm.to_csv(OUT / "weekly_top5.csv", index=False)
+    pd.DataFrame(paths).to_csv(OUT / "weekly_top5_paths.csv", index=False)
+    done = sm[sm.status != "Buy at the next session"]
+    wk = done.groupby("week").agg(r=("ret", "mean"), m=("bench_ret", "mean"))
+    print(f"Weekly top 5: {sm.week.nunique()} weeks; average pick {wk.r.mean():+.1%} vs market {wk.m.mean():+.1%}; "
+          f"beat the market in {(wk.r > wk.m).mean():.0%} of weeks")
 
 
 RULE_WHY = {
@@ -500,7 +602,6 @@ def main():
     dup = short.duplicated(keep=False)
     shown = dict(zip(df.symbol, np.where(dup, df.symbol, short)))
     df["symbol"] = np.where(dup, df.symbol, short)
-    write_history(history, shown, names)
     # Liquidity tag for crypto (forward-tracked, information only - see reports/liquidity2/REPORT.md)
     df["liquidity"] = ""
     try:
@@ -522,6 +623,10 @@ def main():
     except Exception as e:                                                # never block the daily scan
         print(f"warning: liquidity data unavailable ({e})")
     explain_buys(df, raw, kinds)
+    try:
+        write_history(history, shown, names, raw, kinds)
+    except Exception as e:                                                # never block the daily scan
+        print(f"warning: signal history / weekly top 5 not written ({e})")
     order = {"STRONG BUY": 0, "BUY": 1, "SELL": 2, "HOLD": 3, "AVOID": 4}
     df = df.sort_values(["verdict", "score"], key=lambda s: s.map(order) if s.name == "verdict" else -s)
     df.to_csv(OUT / "signals.csv", index=False)
